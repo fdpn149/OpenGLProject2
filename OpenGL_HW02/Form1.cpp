@@ -211,9 +211,9 @@ System::Void CppCLRWinformsProject::Form1::timer1_Tick(System::Object^ sender, S
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
 	if (e->Button.ToString() == "Left")
-		scene->changeDirection(e->X, e->Y);
-	else if (e->Button.ToString() == "Right")
 		scene->picking(e->X, e->Y);
+	else if (e->Button.ToString() == "Right")
+		scene->changeDirection(e->X, e->Y);
 	if (e->Button.ToString() == "Middle")
 		scene->changePosition(e->X, e->Y);
 		//printf("Middle\n");
