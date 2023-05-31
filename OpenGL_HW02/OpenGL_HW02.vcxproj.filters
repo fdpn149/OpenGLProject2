@@ -16,6 +16,9 @@
     <Filter Include="Shader Files">
       <UniqueIdentifier>{09b7af1b-2a71-469c-8760-4ec11b18424b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object Files">
+      <UniqueIdentifier>{0242496d-bd19-4fdb-b396-04548c2de254}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -101,5 +104,13 @@
     <None Include="assets\shaders\picking.vs.glsl">
       <Filter>Shader Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="assets\models\UnionSphere.obj">
+      <Filter>Object Files</Filter>
+    </Object>
+    <Object Include="assets\models\armadillo.obj">
+      <Filter>Object Files</Filter>
+    </Object>
   </ItemGroup>
 </Project>
