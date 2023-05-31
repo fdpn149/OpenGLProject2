@@ -31,6 +31,7 @@ public:
 	void changeDirection(int x, int y);
 	void changePosition(wchar_t key, clock_t deltaTime);
 	void changePosition(int x, int y);
+	void changeDistance(int delta);
 
 	void picking(int x, int y);
 };

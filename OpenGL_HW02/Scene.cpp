@@ -157,6 +157,11 @@ void Scene::changePosition(int x, int y)
 	camera->onMousePositionChanged(x, y, 1);
 }
 
+void Scene::changeDistance(int delta)
+{
+	camera->onMouseWheelScroll(delta);
+}
+
 
 void Scene::picking(int x, int y)
 {

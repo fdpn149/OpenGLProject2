@@ -20,6 +20,7 @@ public:
 
 	glm::mat4 getViewMatrix();
 	void onMousePositionChanged(int xPos, int yPos, int key);
+	void onMouseWheelScroll(int delta);
 	void onKeyPressed(wchar_t key, long deltaTime);
 
 	bool firstMouse;

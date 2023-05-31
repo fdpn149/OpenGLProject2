@@ -94,9 +94,14 @@ void Camera::onMousePositionChanged(int xPos, int yPos, int key)
 	}
 }
 
+void Camera::onMouseWheelScroll(int delta)
+{
+	position -= (float)delta * forward * 0.001f;
+}
+
 void Camera::onKeyPressed(wchar_t key, long deltaTime)
 {
-	float cameraSpeed = 0.01f * deltaTime;
+	float cameraSpeed = 0.0001f * deltaTime;
 
 	switch (key)
 	{

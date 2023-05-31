@@ -63,6 +63,7 @@ namespace CppCLRWinformsProject {
 	private: System::Void hkoglPanelControl1_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e);
 	private: System::Void hkoglPanelControl1_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e);
 	private: System::Void hkoglPanelControl1_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e);
+	private: System::Void hkoglPanelControl1_MouseWheel(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e);
 	private: System::Void pickToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void deleteToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void vertexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
