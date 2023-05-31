@@ -11,23 +11,50 @@ namespace CppCLRWinformsProject {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Collections::Generic;
 
 	/// <summary>
 	/// Zusammenfassung für Form1
 	/// </summary>
-	public ref class Form1 : public System::Windows::Forms::Form
+	public ref class Form1 : public Form
 	{
+	private:
 		Scene* scene = nullptr;
 		clock_t deltaTime = 0;
 		clock_t lastFrame = 0;
-	private: System::Windows::Forms::MenuStrip^ menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^ settingToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripContainer^ toolStripContainer1;
-	private: System::Windows::Forms::ToolStripContainer^ toolStripContainer2;
-	private: System::Windows::Forms::ToolStripMenuItem^ faceToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ pickToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ deleteToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ vertexToolStripMenuItem;
+
+		List<GroupBox^>^ groupBoxesList;
+		List<CheckBox^>^ groupCheckBoxesList;
+
+		/* Windows Form */
+
+		// Setting UI Menu
+		MenuStrip^ menuStrip1;
+		ToolStripMenuItem^ settingToolStripMenuItem;
+		ToolStripContainer^ toolStripContainer1;
+		ToolStripContainer^ toolStripContainer2;
+		ToolStripMenuItem^ faceToolStripMenuItem;
+		ToolStripMenuItem^ pickToolStripMenuItem;
+		ToolStripMenuItem^ deleteToolStripMenuItem;
+		ToolStripMenuItem^ vertexToolStripMenuItem;
+
+		// Group UI Pannel
+		FlowLayoutPanel^ groupLayoutPannel;
+
+		// Dynamic UIs
+		Button^ addGroupButton;
+
+		// Background Worker
+		BackgroundWorker^ backgroundWorker1;
+
+		// Others
+		System::Windows::Forms::Timer^ timer1;
+		IContainer^ components;
+
+		// OpenGL
+		HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
+
+
 	public:
 		Form1(void);
 
@@ -37,9 +64,6 @@ namespace CppCLRWinformsProject {
 		/// </summary>
 		~Form1();
 
-	private: System::Windows::Forms::Timer^ timer1;
-	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
-	private: System::ComponentModel::IContainer^ components;
 	protected:
 
 	private:
@@ -66,5 +90,7 @@ namespace CppCLRWinformsProject {
 	private: System::Void pickToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void deleteToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void vertexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void onAddGroupButtonClick(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void onGroupDeleteButtonClick(System::Object^ sender, System::EventArgs^ e);
 	};
 }
