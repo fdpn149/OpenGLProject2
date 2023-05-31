@@ -20,6 +20,7 @@ Scene::Scene()
 	screenShader = new Shader("assets/shaders/drawModel.vs.glsl", "assets/shaders/drawModel.fs.glsl");
 	drawPointShader = new Shader("assets/shaders/drawPoint.vs.glsl", "assets/shaders/drawPoint.fs.glsl");
 	drawFaceShader = new Shader("assets/shaders/drawFace.vs.glsl", "assets/shaders/drawFace.fs.glsl");
+	gridShader = new Shader("assets/shaders/grid.vs.glsl", "assets/shaders/grid.fs.glsl");
 
 	camera = new Camera(glm::vec3(0, 0, 3.0f), glm::radians(0.0f), glm::radians(0.0f), glm::vec3(0, 1.0f, 0));
 
@@ -46,6 +47,10 @@ Scene::Scene()
 		printf("ERROR::FRAMEBUFFER:: Framebuffer is not complete!\n");
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
+	gridShader->use();
+	gridShader->setMat4("projMat", projMat);
+	gridShader->setMat4("modelMat", glm::mat4(1.0f));
 
 	shader->use();
 	shader->setMat4("projMat", projMat);
@@ -222,6 +227,14 @@ void Scene::draw()
 		mesh->drawPoint();
 		break;
 	}
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	gridShader->use();
+	gridShader->setMat4("viewMat", camera->getViewMatrix());
+	mesh->draw();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	screenShader->use();
 	screenShader->setMat4("viewMat", camera->getViewMatrix());

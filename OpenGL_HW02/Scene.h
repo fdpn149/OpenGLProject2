@@ -9,7 +9,7 @@ class Scene
 	const int WIDTH = 800;
 	const int HEIGHT = 600;
 
-	Shader* shader, * screenShader, * drawPointShader, * drawFaceShader;
+	Shader* shader, * screenShader, * drawPointShader, * drawFaceShader, *gridShader;
 	Camera* camera;
 	Mesh* mesh;
 

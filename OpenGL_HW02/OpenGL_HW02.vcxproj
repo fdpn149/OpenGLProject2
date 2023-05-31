@@ -206,6 +206,8 @@
     <None Include="assets\shaders\drawModel.vs.glsl" />
     <None Include="assets\shaders\drawPoint.fs.glsl" />
     <None Include="assets\shaders\drawPoint.vs.glsl" />
+    <None Include="assets\shaders\grid.fs.glsl" />
+    <None Include="assets\shaders\grid.vs.glsl" />
     <None Include="assets\shaders\picking.fs.glsl" />
     <None Include="assets\shaders\picking.vs.glsl" />
   </ItemGroup>

@@ -8,7 +8,7 @@ Mesh::Mesh()
 {
 	modelMat = glm::mat4(1.0f);
 
-	OpenMesh::IO::read_mesh(*this, "assets/models/UnionSphere.obj");
+	OpenMesh::IO::read_mesh(*this, "assets/models/armadillo.obj");
 
 	this->request_face_normals();
 	this->request_vertex_status();
