@@ -81,7 +81,7 @@ void Scene::deleteFace(uint faceID)
 	mesh->deleteSelectedFace(faceID);
 }
 
-void Scene::picking_point(float depthValue, uint faceID, int x, int y)
+void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 {
 	glm::vec4 viewport(0, 0, WIDTH, HEIGHT);
 	glm::vec3 windowPos(x, y, depthValue);
@@ -132,9 +132,9 @@ Scene::~Scene()
 	delete mesh;
 }
 
-void Scene::changeDirection(const int& x, const int& y)
+void Scene::changeDirection(int x, int y)
 {
-	camera->onMousePositionChanged(-x, -y);
+	camera->onMousePositionChanged(-x, -y, 0);
 }
 
 void Scene::mouseUp()
@@ -146,6 +146,12 @@ void Scene::changePosition(wchar_t key, clock_t deltaTime)
 {
 	camera->onKeyPressed(key, deltaTime);
 }
+
+void Scene::changePosition(int x, int y)
+{
+	camera->onMousePositionChanged(x, y, 1);
+}
+
 
 void Scene::picking(int x, int y)
 {
@@ -178,7 +184,7 @@ void Scene::picking(int x, int y)
 		deleteFace(faceID);
 		break;
 	case 2:
-		picking_point(depthValue, faceID, x, y);
+		pickingPoint(depthValue, faceID, x, y);
 		break;
 	}
 

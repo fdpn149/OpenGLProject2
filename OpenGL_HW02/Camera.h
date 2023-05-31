@@ -19,7 +19,7 @@ public:
 	Camera(glm::vec3 position, float pitch, float yaw, glm::vec3 worldUp);
 
 	glm::mat4 getViewMatrix();
-	void onMousePositionChanged(int xPos, int yPos);
+	void onMousePositionChanged(int xPos, int yPos, int key);
 	void onKeyPressed(wchar_t key, long deltaTime);
 
 	bool firstMouse;

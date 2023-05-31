@@ -214,7 +214,8 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 	else if (e->Button.ToString() == "Right")
 		scene->picking(e->X, e->Y);
 	if (e->Button.ToString() == "Middle")
-		printf("Middle\n");
+		scene->changePosition(e->X, e->Y);
+		//printf("Middle\n");
 	hkoglPanelControl1->Invalidate();
 }
 

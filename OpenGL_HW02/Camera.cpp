@@ -46,7 +46,7 @@ glm::mat4 Camera::getViewMatrix()
 	return glm::lookAt(position, position - forward, worldUp);
 }
 
-void Camera::onMousePositionChanged(int xPos, int yPos)
+void Camera::onMousePositionChanged(int xPos, int yPos, int key)
 {
 	if (freeLooking)
 	{
@@ -66,23 +66,31 @@ void Camera::onMousePositionChanged(int xPos, int yPos)
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
 
-		yaw += xOffset;
-		pitch += yOffset;
+		if (key == 0)
+		{
+			yaw += xOffset;
+			pitch += yOffset;
 
 
-		if (pitch > 89.0f)
-			pitch = 89.0f;
-		else if (pitch < -89.0f)
-			pitch = -89.0f;
+			if (pitch > 89.0f)
+				pitch = 89.0f;
+			else if (pitch < -89.0f)
+				pitch = -89.0f;
 
-		glm::vec3 front;
-		front.x = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-		front.y = sin(glm::radians(pitch));
-		front.z = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+			glm::vec3 front;
+			front.x = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+			front.y = sin(glm::radians(pitch));
+			front.z = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 
-		forward = glm::normalize(front);
-		right = glm::normalize(glm::cross(forward, worldUp));
-		up = glm::normalize(glm::cross(right, forward));
+			forward = glm::normalize(front);
+			right = glm::normalize(glm::cross(forward, worldUp));
+			up = glm::normalize(glm::cross(right, forward));
+		}
+		else if (key == 1)
+		{
+			position += xOffset * right * 0.1f;
+			position -= yOffset * up * 0.1f;
+		}
 	}
 }
 

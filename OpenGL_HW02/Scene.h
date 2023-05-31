@@ -21,14 +21,16 @@ class Scene
 
 	void pickingFace(uint faceID);
 	void deleteFace(uint faceID);
-	void picking_point(float depthValue, uint faceID, int x, int y);
+	void pickingPoint(float depthValue, uint faceID, int x, int y);
 public:
 	Scene();
 	~Scene();
 	uint mode = 0;
 	void draw();
 	void mouseUp();
-	void changeDirection(const int& x, const int& y);
+	void changeDirection(int x, int y);
 	void changePosition(wchar_t key, clock_t deltaTime);
+	void changePosition(int x, int y);
+
 	void picking(int x, int y);
 };
