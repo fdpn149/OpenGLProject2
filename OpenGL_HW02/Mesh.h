@@ -9,17 +9,19 @@
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <set>
 
+typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
+
 class Shader;
 
-class Mesh : public OpenMesh::TriMesh_ArrayKernelT<>
+class Mesh
 {
+	TriMesh model;
 
 	glm::mat4 modelMat;
 
 	std::set<uint> selectedFace;
 
 	uint vert_vbo;
-
 	uint vbo, vao, ebo;
 public:
 	Mesh();
@@ -30,5 +32,6 @@ public:
 	void addSelectedFace(uint faceID);
 	void deleteSelectedFace(uint faceID);
 
+	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
 };

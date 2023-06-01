@@ -94,33 +94,8 @@ void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 
 	printf("Position:\t(%f, %f, %f)\n\n", worldPos.x, worldPos.y, worldPos.z);
 
-	OpenMesh::FaceHandle fh = mesh->face_handle(faceID);
-	if (!fh.is_valid())
-	{
-		printf("invalid\n");
-		return;
-	}
 
-	double minDistance = 0.0;
-	Mesh::Point p(worldPos.x, worldPos.y, worldPos.z);
-	Mesh::FVIter fv_it = mesh->fv_iter(fh);
-	Mesh::VertexHandle closestVH = *fv_it;
-	Mesh::Point v1 = mesh->point(*fv_it);
-	++fv_it;
-
-	minDistance = (p - v1).norm();
-	for (; fv_it.is_valid(); ++fv_it)
-	{
-		Mesh::Point v = mesh->point(*fv_it);
-		double distance = (p - v).norm();
-		if (minDistance > distance)
-		{
-			minDistance = distance;
-			closestVH = *fv_it;
-		}
-	}
-
-	Mesh::Point closestPoint = mesh->point(closestVH);
+	TriMesh::Point closestPoint = mesh->findClosestPoint(faceID, worldPos);
 	
 	mesh->setPointPosition(glm::vec3(closestPoint[0], closestPoint[1], closestPoint[2]));
 
