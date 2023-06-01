@@ -199,7 +199,8 @@ void Scene::draw()
 	case 1:
 		drawFaceShader->use();
 		drawFaceShader->setMat4("viewMat", camera->getViewMatrix());
-		mesh->drawFace();
+		//mesh->drawFace();
+		mesh->drawSelected();
 		break;
 	case 2:
 		drawPointShader->use();

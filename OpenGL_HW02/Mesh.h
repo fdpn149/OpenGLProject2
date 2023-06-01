@@ -8,26 +8,31 @@
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <set>
+#include <map>
 
-typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
+typedef OpenMesh::PolyMesh_ArrayKernelT<> TriMesh;
 
 class Shader;
 
 class Mesh
 {
 	TriMesh model;
-
 	glm::mat4 modelMat;
-
 	std::set<uint> selectedFace;
+		
+
+	TriMesh selected;
+	std::vector<TriMesh::Point> select_vertices;
 
 	uint vert_vbo;
 	uint vbo, vao, ebo;
+	uint vao2, vbo2;
 public:
 	Mesh();
 	void draw();
 	void drawFace();
 	void drawPoint();
+	void drawSelected();
 
 	void addSelectedFace(uint faceID);
 	void deleteSelectedFace(uint faceID);
