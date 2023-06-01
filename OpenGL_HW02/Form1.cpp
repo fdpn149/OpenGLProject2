@@ -233,7 +233,7 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_KeyPress(System::O
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) 
 {
-	if (e->Button.ToString() == "Right")
+	if (e->Button.ToString() == "Left")
 		scene->picking(e->X, e->Y);
 }
 
