@@ -5,6 +5,7 @@ using namespace System::Reflection;
 using namespace System::Runtime::CompilerServices;
 using namespace System::Runtime::InteropServices;
 using namespace System::Security::Permissions;
+using namespace System::Collections::Generic;
 
 [assembly:AssemblyTitleAttribute(L"CppCLRWinformsProject")];
 [assembly:AssemblyDescriptionAttribute(L"")];
