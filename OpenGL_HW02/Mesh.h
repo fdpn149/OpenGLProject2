@@ -22,7 +22,7 @@ class Mesh
 		
 
 	TriMesh selected;
-	std::vector<TriMesh::Point> select_vertices;
+	//std::vector<TriMesh::Point> select_vertices;
 
 	uint vert_vbo;
 	uint vbo, vao, ebo;

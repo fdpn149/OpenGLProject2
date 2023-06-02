@@ -8,7 +8,7 @@ Mesh::Mesh()
 {
 	modelMat = glm::mat4(1.0f);
 
-	OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
+	OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
 
 	model.request_face_normals();
 	model.request_vertex_status();
@@ -99,39 +99,37 @@ void Mesh::addSelectedFace(uint faceID)
 
 		if (inserted)
 		{
-			TriMesh::FaceHandle fh = model.face_handle(faceID);
-			std::vector<TriMesh::VertexHandle> face_vertices;
-			TriMesh::Point select_point;
-			std::vector<TriMesh::Point>::iterator vecp_it;
-
-			int i = 0;
-			for (TriMesh::FVIter fv_it = model.fv_iter(fh); fv_it.is_valid(); fv_it++)
+			std::set<TriMesh::VertexHandle> selected_vhs;
+			
+			for (auto selected_f_it = selected.faces_begin(); selected_f_it != selected.faces_end(); selected_f_it++)
 			{
-				select_point = model.point(*fv_it);
-
-				vecp_it = std::find(select_vertices.begin(), select_vertices.end(), select_point);
-				
-				if (vecp_it == select_vertices.end())
+				for (auto selected_fv_it = selected.fv_begin(*selected_f_it); selected_fv_it.is_valid(); selected_fv_it++)
 				{
-					TriMesh::VertexHandle vh = selected.add_vertex(select_point);
+					selected_vhs.insert(*selected_fv_it);
+				}
+			}
 
-					face_vertices.push_back(vh);
-					select_vertices.push_back(select_point);
+			TriMesh::FaceHandle model_fh = model.face_handle(faceID);
+
+			std::vector<TriMesh::VertexHandle> face_vertices;
+
+			for (TriMesh::FVIter model_fv_it = model.fv_iter(model_fh); model_fv_it.is_valid(); model_fv_it++)
+			{
+				TriMesh::Point model_point = model.point(*model_fv_it);
+				TriMesh& s = selected;
+				auto find_point = std::find_if(selected_vhs.begin(), selected_vhs.end(), 
+					[model_point, s](const TriMesh::VertexHandle& selected_vh) {return s.point(selected_vh) == model_point; });
+				if(find_point != selected_vhs.end())
+				{
+					face_vertices.push_back(*find_point);
 				}
 				else
 				{
-					TriMesh::VertexHandle vh = selected.vertex_handle(vecp_it - select_vertices.begin());
-					if (!vh.is_valid())
-					{
-						vh = selected.add_vertex(select_point);
-					}
-					face_vertices.push_back(vh);
+					face_vertices.push_back(selected.add_vertex(model_point));
 				}
-				
-				i++;
 			}
-			selected.add_face(face_vertices);
 
+			selected.add_face(face_vertices);
 
 			OpenMesh::IO::write_mesh(selected, "assets/models/selected.obj");
 
