@@ -25,6 +25,7 @@ namespace CppCLRWinformsProject {
 
 		List<GroupBox^>^ groupBoxesList;
 		List<CheckBox^>^ groupCheckBoxesList;
+		List<ComboBox^>^ groupComboBoxesList;
 
 		/* Windows Form */
 
@@ -51,6 +52,8 @@ namespace CppCLRWinformsProject {
 		System::Windows::Forms::Timer^ timer1;
 		IContainer^ components;
 
+
+
 		// OpenGL
 		HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
 
@@ -71,6 +74,9 @@ namespace CppCLRWinformsProject {
 		/// Erforderliche Designervariable.
 		/// </summary>
 
+		Button^ CreateGroupRemoveButton();
+		CheckBox^ CreateGroupSelectCheckBox();
+		ComboBox^ CreateGroupColorComboBox();
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -93,5 +99,9 @@ namespace CppCLRWinformsProject {
 	private: System::Void vertexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void onAddGroupButtonClick(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void onGroupDeleteButtonClick(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void Form1_Load(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void onGroupCheckBoxClicked(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void onGroupComboBoxIndexChanged(System::Object^ sender, System::EventArgs^ e);
 	};
 }

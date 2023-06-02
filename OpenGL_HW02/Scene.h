@@ -1,8 +1,11 @@
 #pragma once
 #include <vector>
+#include <string>
+
 #include "Mesh.h"
 #include "Camera.h"
 #include "Shader.h"
+#include "FaceGroup.h"
 
 class Scene
 {
@@ -12,6 +15,9 @@ class Scene
 	Shader* shader, * screenShader, * drawPointShader, * drawFaceShader, *gridShader;
 	Camera* camera;
 	Mesh* mesh;
+
+	std::string currentGroup;
+	std::map<std::string, FaceGroup> faceGroupsMap;
 
 	uint framebuffer;
 	uint textureColorbuffer;
@@ -34,4 +40,9 @@ public:
 	void changeDistance(int delta);
 
 	void picking(int x, int y);
+
+	void addGroup(std::string groupName);
+	void deleteGroup(std::string groupName);
+	void setCurrentGroup(std::string groupName);
+	void setCurrentGroupColor(glm::vec3 color);
 };

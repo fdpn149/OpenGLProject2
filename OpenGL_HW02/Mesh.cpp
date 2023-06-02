@@ -8,7 +8,7 @@ Mesh::Mesh()
 {
 	modelMat = glm::mat4(1.0f);
 
-	OpenMesh::IO::read_mesh(*this, "assets/models/armadillo.obj");
+	OpenMesh::IO::read_mesh(*this, "assets/models/UnionSphere.obj");
 
 	this->request_face_normals();
 	this->request_vertex_status();
@@ -59,11 +59,11 @@ void Mesh::draw()
 	glBindVertexArray(0);
 }
 
-void Mesh::drawFace()
+void Mesh::drawFace(FaceGroup& faceGroup)
 {
 	glBindVertexArray(vao);
 
-	for (uint face : selectedFace)
+	for (unsigned int face : faceGroup.getFaceIds())
 	{
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (GLuint*)(face * 3 * sizeof(GLuint)));
 	}
@@ -71,24 +71,36 @@ void Mesh::drawFace()
 	glBindVertexArray(0);
 }
 
+//void Mesh::drawFace()
+//{
+//	glBindVertexArray(vao);
+//
+//	for (uint face : selectedFace)
+//	{
+//		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (GLuint*)(face * 3 * sizeof(GLuint)));
+//	}
+//
+//	glBindVertexArray(0);
+//}
+
 void Mesh::drawPoint()
 {
 	glPointSize(15.0f);
 	glDrawArrays(GL_POINTS, 0, 1);
 }
 
-void Mesh::addSelectedFace(uint faceID)
-{
-	if (faceID >= 0 && faceID < this->n_faces())
-	{
-		selectedFace.insert(faceID);
-	}
-}
+//void Mesh::addSelectedFace(uint faceID)
+//{
+//	if (faceID >= 0 && faceID < this->n_faces())
+//	{
+//		selectedFace.insert(faceID);
+//	}
+//}
 
-void Mesh::deleteSelectedFace(uint faceID)
-{
-	selectedFace.erase(faceID);
-}
+//void Mesh::deleteSelectedFace(uint faceID)
+//{
+//	selectedFace.erase(faceID);
+//}
 
 void Mesh::setPointPosition(glm::vec3 position)
 {

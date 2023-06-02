@@ -1,17 +1,31 @@
 #include "pch.h"
 #include "Form1.h"
 
-// #include "Form1.h"
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <iostream>
+#include <msclr\marshal_cppstd.h>
+
+#include "InputBoxForm.h"
+
+namespace
+{
+	enum Color
+	{
+		RED,
+		GREEN,
+		BLUE
+	};
+}
 
 CppCLRWinformsProject::Form1::Form1(void)
 {
 	InitializeComponent();
 
 	// My types
-	this->groupBoxesList = (gcnew List<GroupBox^>());
+	this->groupBoxesList = gcnew List<GroupBox^>();
+	this->groupCheckBoxesList = gcnew List<CheckBox^>();
+	this->groupComboBoxesList = gcnew List<ComboBox^>();
 }
 
 /// <summary>
@@ -32,11 +46,56 @@ CppCLRWinformsProject::Form1::~Form1()
 /// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
 /// </summary>
 
+System::Windows::Forms::Button^ CppCLRWinformsProject::Form1::CreateGroupRemoveButton()
+{
+	Button^ button = gcnew Button();
+
+	button->Location = System::Drawing::Point(300, 26);
+	button->Name = L"button";
+	button->Size = System::Drawing::Size(79, 28);
+	button->TabIndex = 0;
+	button->Text = L"Remove";
+	button->UseVisualStyleBackColor = true;
+	button->Click += gcnew System::EventHandler(this, &CppCLRWinformsProject::Form1::onGroupDeleteButtonClick);
+
+	return button;
+}
+
+System::Windows::Forms::CheckBox^ CppCLRWinformsProject::Form1::CreateGroupSelectCheckBox()
+{
+	CheckBox^ checkBox = gcnew CheckBox();
+
+	checkBox->Location = System::Drawing::Point(200, 0);
+	checkBox->Name = L"checkbox";
+	checkBox->Text = L"Select";
+	checkBox->AutoSize = true;
+	checkBox->TabIndex = 0;
+	checkBox->Click += gcnew System::EventHandler(this, &CppCLRWinformsProject::Form1::onGroupCheckBoxClicked);
+
+	return checkBox;
+}
+
+System::Windows::Forms::ComboBox^ CppCLRWinformsProject::Form1::CreateGroupColorComboBox()
+{
+	ComboBox^ comboBox = gcnew ComboBox();
+
+	comboBox->FormattingEnabled = true;
+	comboBox->Items->AddRange(gcnew cli::array< System::Object^ >(3) { L"Red", L"Green", L"Blue" });
+	comboBox->Location = System::Drawing::Point(50, 26);
+	comboBox->Name = L"comboBox";
+	comboBox->Size = System::Drawing::Size(121, 28);
+	comboBox->TabIndex = 0;
+	comboBox->SelectedIndex = 0;
+	comboBox->SelectedIndexChanged += gcnew System::EventHandler(this, &CppCLRWinformsProject::Form1::onGroupComboBoxIndexChanged);
+
+	return comboBox;
+}
+
 void CppCLRWinformsProject::Form1::InitializeComponent(void)
 {
 	this->components = (gcnew System::ComponentModel::Container());
-	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting2 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
-	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat2 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
+	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting1 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
+	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat1 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
 	this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 	this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
@@ -65,17 +124,17 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->hkoglPanelControl1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Left | System::Windows::Forms::AnchorStyles::Right));
 	this->hkoglPanelControl1->AutoSize = true;
-	hkcoglPanelCameraSetting2->Far = 1000;
-	hkcoglPanelCameraSetting2->Fov = 45;
-	hkcoglPanelCameraSetting2->Near = -1000;
-	hkcoglPanelCameraSetting2->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
-	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting2;
+	hkcoglPanelCameraSetting1->Far = 1000;
+	hkcoglPanelCameraSetting1->Fov = 45;
+	hkcoglPanelCameraSetting1->Near = -1000;
+	hkcoglPanelCameraSetting1->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting1;
 	this->hkoglPanelControl1->Location = System::Drawing::Point(3, 28);
 	this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-	hkcoglPanelPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat2;
+	hkcoglPanelPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat1;
 	this->hkoglPanelControl1->Size = System::Drawing::Size(800, 600);
 	this->hkoglPanelControl1->TabIndex = 0;
 	this->hkoglPanelControl1->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl1_Load);
@@ -192,6 +251,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->Margin = System::Windows::Forms::Padding(3, 4, 3, 4);
 	this->Name = L"Form1";
 	this->Text = L"MyForm";
+	this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
 	this->menuStrip1->ResumeLayout(false);
 	this->menuStrip1->PerformLayout();
 	this->toolStripContainer2->ContentPanel->ResumeLayout(false);
@@ -284,51 +344,23 @@ System::Void CppCLRWinformsProject::Form1::vertexToolStripMenuItem_Click(System:
 	scene->mode = 2;
 }
 
-void CppCLRWinformsProject::Form1::onAddGroupButtonClick(System::Object^ sender, System::EventArgs^ e)
+System::Void CppCLRWinformsProject::Form1::onAddGroupButtonClick(System::Object^ sender, System::EventArgs^ e)
 {
 	GroupBox^ newGroupBox = gcnew GroupBox();
-	Button^ newButton = gcnew Button();
+	CheckBox^ newCheckBox = CreateGroupSelectCheckBox();
+	Button^ newButton = CreateGroupRemoveButton();
+	ComboBox^ newComboBox = CreateGroupColorComboBox();
 
-	// Init button
-	newButton->Location = System::Drawing::Point(8, 43);
-	newButton->Name = L"button" + groupBoxesList->Count;
-	newButton->Size = System::Drawing::Size(79, 28);
-	newButton->TabIndex = 0;
-	newButton->Text = L"Temp";
-	newButton->UseVisualStyleBackColor = true;
-	newButton->Click += gcnew System::EventHandler(this, &CppCLRWinformsProject::Form1::onGroupDeleteButtonClick);
-
-	// Assigned button to group box
+	// Assigned components to group box
 	newGroupBox->Controls->Add(newButton);
+	newGroupBox->Controls->Add(newCheckBox);
+	newGroupBox->Controls->Add(newComboBox);
 
 	// Input box, used for get group name
-	Form^ inputBox = gcnew Form();
-	inputBox->Size = System::Drawing::Size(400, 300);
-	inputBox->Text = L"Input Box";
-	inputBox->Font = (gcnew System::Drawing::Font(L"·L³n¥¿¶ÂÅé", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-		static_cast<System::Byte>(136)));
+	OpenGL_HW02::InputBoxForm^ inputBoxForm = gcnew OpenGL_HW02::InputBoxForm();
+	inputBoxForm->ShowDialog();
 
-	Label^ label = gcnew Label();
-	label->Text = L"Enter the group name";
-	label->Size = System::Drawing::Size(300, 50);
-	label->Location = System::Drawing::Point(50, 50);
-
-	TextBox^ inputField = gcnew TextBox();
-	inputField->Size = System::Drawing::Size(300, 50);
-	inputField->Location = System::Drawing::Point(50, 110);
-
-	Button^ okButton = gcnew Button();
-	okButton->Size = System::Drawing::Size(50, 25);
-	okButton->Location = System::Drawing::Point(50, 165);
-	okButton->Text = L"OK!";
-
-	inputBox->Controls->Add(label);
-	inputBox->Controls->Add(inputField);
-	inputBox->Controls->Add(okButton);
-	inputBox->ShowDialog();
-
-
-	String^ groupName = inputField->Text;
+	String^ groupName = inputBoxForm->GetInputString();
 
 	// Init group box
 	newGroupBox->Size = System::Drawing::Size(429, 81);
@@ -339,22 +371,141 @@ void CppCLRWinformsProject::Form1::onAddGroupButtonClick(System::Object^ sender,
 	newGroupBox->TabStop = false;
 	newGroupBox->Text = groupName;
 
+	// Set group if there wasn't one
+	if (groupCheckBoxesList->Count == 0)
+	{
+		newCheckBox->Checked = true;
+		scene->setCurrentGroup(msclr::interop::marshal_as<std::string>(groupName));
+	}
+
 	// Assigned to layout pannel
 	this->groupLayoutPannel->Controls->Add(newGroupBox);
 
 	// Assigned to list
 	this->groupBoxesList->Add(newGroupBox);
-}
+	this->groupCheckBoxesList->Add(newCheckBox);
+	this->groupComboBoxesList->Add(newComboBox);
 
+	// Init group in scene
+	scene->addGroup(msclr::interop::marshal_as<std::string>(groupName));
+	
+	// Release input box form
+	delete inputBoxForm;
+}
 
 System::Void CppCLRWinformsProject::Form1::onGroupDeleteButtonClick(System::Object^ sender, System::EventArgs^ e)
 {
+	// Cast sender to specific type
 	Button^ button = safe_cast<Button^>(sender);
 	GroupBox^ groupBox = safe_cast<GroupBox^>(button->Parent);
+	
+	// Remove check box from list
+	CheckBox^ removedCheckbox;
 
+	for each (CheckBox^ checkbox in groupCheckBoxesList)
+	{
+		if (groupBox->Controls->Contains(checkbox))
+		{
+			removedCheckbox = checkbox;
+		}
+	}
+
+	int isChecked = removedCheckbox->Checked;
+
+	groupCheckBoxesList->Remove(removedCheckbox);
+
+	// Remove combo box from list
+	ComboBox^ removedComboBox;
+
+	for each (ComboBox^ comboBox in groupComboBoxesList)
+	{
+		if (groupBox->Controls->Contains(comboBox))
+		{
+			removedComboBox = comboBox;
+		}
+	}
+
+	groupComboBoxesList->Remove(removedComboBox);
+
+	// Unsubscribe to event
 	button->Click -= gcnew System::EventHandler(this, &CppCLRWinformsProject::Form1::onGroupDeleteButtonClick);
+	removedCheckbox->Click -= gcnew System::EventHandler(this, &CppCLRWinformsProject::Form1::onGroupCheckBoxClicked);
 
+	// Remove from list
 	groupBoxesList->Remove(groupBox);
 	groupBox->Controls->Remove(button);
+	groupBox->Controls->Remove(removedCheckbox);
+	groupBox->Controls->Remove(removedComboBox);
 	groupLayoutPannel->Controls->Remove(groupBox);
+
+	// Change current group to first if removed one is checked
+	if (isChecked && groupBoxesList->Count > 0)
+	{
+		groupCheckBoxesList[0]->Checked = true;
+		scene->setCurrentGroup(msclr::interop::marshal_as<std::string>(groupBoxesList[0]->Text));
+	}
+	// Remove current group if all group removed
+	else
+	{
+		scene->setCurrentGroup("");
+	}
+
+	// Remove from scene
+	scene->deleteGroup(msclr::interop::marshal_as<std::string>(groupBox->Text));
+}
+
+System::Void CppCLRWinformsProject::Form1::onGroupCheckBoxClicked(System::Object^ sender, System::EventArgs^ e)
+{
+	CheckBox^ senderCheckBox = safe_cast<CheckBox^>(sender);
+
+	// Boolean value cause stack overflow, use int instead
+	int isSelf = 1;
+
+	// Cancel other check boxes
+	for each (CheckBox^ checkbox in groupCheckBoxesList)
+	{
+		if (checkbox->Checked && checkbox != senderCheckBox)
+		{
+			checkbox->Checked = false;
+			isSelf = 0;
+		}
+	}
+
+	// Check self if it was clicked on a checked check box
+	if (isSelf == 1)
+	{
+		senderCheckBox->Checked = true;
+	}
+	
+	// Set current group
+	String^ csGroupText = groupBoxesList[groupCheckBoxesList->IndexOf(senderCheckBox)]->Text;
+	scene->setCurrentGroup(msclr::interop::marshal_as<std::string>(csGroupText));
+}
+
+
+void CppCLRWinformsProject::Form1::onGroupComboBoxIndexChanged(System::Object^ sender, System::EventArgs^ e)
+{
+	ComboBox^ comboBox = safe_cast<ComboBox^>(sender);
+
+	glm::vec3 color;
+
+	switch (comboBox->SelectedIndex)
+	{
+	case RED:
+		color = glm::vec3(1.0f, 0.0f, 0.0f);
+		break;
+
+	case GREEN:
+		color = glm::vec3(0.0f, 1.0f, 0.0f);
+		break;
+
+	case BLUE:
+		color = glm::vec3(0.0f, 0.0f, 1.0f);
+		break;
+
+	default:
+		break;
+	}
+
+	scene->setCurrentGroupColor(color);
 }

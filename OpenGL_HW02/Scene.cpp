@@ -7,6 +7,8 @@
 
 Scene::Scene()
 {
+	currentGroup = "";
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_POINT_SMOOTH);
 	glDisable(GL_CULL_FACE);
@@ -73,17 +75,22 @@ Scene::Scene()
 
 void Scene::pickingFace(uint faceID)
 {
-	glm::vec3 faceColor = glm::vec3(1.0, 0, 0);
-
-	drawFaceShader->use();
-	drawFaceShader->setVec3("faceColor", faceColor);
-
-	mesh->addSelectedFace(faceID);
+	if (!currentGroup.empty())
+	{
+		faceGroupsMap[currentGroup].addFace(faceID);
+	}
+	
+	//mesh->addSelectedFace(faceID);
 }
 
 void Scene::deleteFace(uint faceID)
 {
-	mesh->deleteSelectedFace(faceID);
+	if (!currentGroup.empty())
+	{
+		faceGroupsMap[currentGroup].deleteFace(faceID);
+	}
+
+	//mesh->deleteSelectedFace(faceID);
 }
 
 void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
@@ -127,7 +134,6 @@ void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 	drawPointShader->use();
 	drawPointShader->setMat4("viewMat", camera->getViewMatrix());
 	glUseProgram(0);
-
 }
 
 Scene::~Scene()
@@ -200,6 +206,33 @@ void Scene::picking(int x, int y)
 
 }
 
+/* GROUP METHODS */
+
+void Scene::addGroup(std::string groupName)
+{
+	faceGroupsMap[groupName] = FaceGroup();
+}
+
+void Scene::deleteGroup(std::string groupName)
+{
+	faceGroupsMap.erase(groupName);
+}
+
+void Scene::setCurrentGroup(std::string groupName)
+{
+	currentGroup = groupName;
+}
+
+void Scene::setCurrentGroupColor(glm::vec3 color)
+{
+	if (!currentGroup.empty())
+	{
+		faceGroupsMap[currentGroup].setColor(color);
+	}
+}
+
+/* ------------- */
+
 void Scene::draw()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -224,7 +257,9 @@ void Scene::draw()
 	case 1:
 		drawFaceShader->use();
 		drawFaceShader->setMat4("viewMat", camera->getViewMatrix());
-		mesh->drawFace();
+		drawFaceShader->setVec3("faceColor", faceGroupsMap[currentGroup].getColor());
+		mesh->drawFace(faceGroupsMap[currentGroup]);
+		//mesh->drawFace();
 		break;
 	case 2:
 		drawPointShader->use();
