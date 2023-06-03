@@ -6,10 +6,10 @@
 
 class Scene
 {
-	const int WIDTH = 800;
-	const int HEIGHT = 600;
+	int width = 800;
+	int height = 600;
 
-	Shader* shader, * screenShader, * drawPointShader, * drawFaceShader, *gridShader;
+	Shader* shader, * screenShader, * drawPointShader, * drawFaceShader, *gridShader,* drawLineShader;
 	Camera* camera;
 	Mesh* mesh;
 
@@ -34,7 +34,7 @@ public:
 	void changeDistance(int delta);
 
 	void picking(int x, int y);
-
-
 	void calculateSurround(std::vector<float>& percent);
+
+	void resize();
 };

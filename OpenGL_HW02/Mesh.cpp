@@ -8,7 +8,7 @@ Mesh::Mesh()
 {
 	modelMat = glm::mat4(1.0f);
 
-	OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
+	OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
 
 	model.request_face_normals();
 	model.request_vertex_status();
@@ -54,8 +54,13 @@ Mesh::Mesh()
 
 
 	glGenVertexArrays(1, &vao2);
-
 	glGenBuffers(1, &vbo2);
+
+
+
+	glGenVertexArrays(1, &vao3);
+	glGenBuffers(1, &vbo3);
+
 
 }
 
@@ -82,6 +87,13 @@ void Mesh::drawPoint()
 {
 	glPointSize(15.0f);
 	glDrawArrays(GL_POINTS, 0, 1);
+}
+
+void Mesh::drawLine()
+{
+	glBindVertexArray(vao3);
+	glDrawArrays(GL_LINES, 0, lines.size() / 2);
+	glBindVertexArray(0);
 }
 
 void Mesh::drawSelected()
@@ -291,6 +303,15 @@ void Mesh::setPointPosition(glm::vec3 position)
 	glEnableVertexAttribArray(0);
 }
 
+void Mesh::setLinePosition(TriMesh::Point a, TriMesh::Point b)
+{
+	glBindVertexArray(vao3);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo3);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * lines.size() * 3, lines.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(0);
+}
+
 void Mesh::calculateSurround(std::vector<float>& percent)
 {
 	percent.clear();
@@ -343,9 +364,13 @@ void Mesh::calculateSurround(std::vector<float>& percent)
 	{
 		if (!selected.is_boundary(*v_it))
 		{
-			printf("%d\n", ++count);
 			inside_points.push_back(*v_it);
+			TriMesh::Point center_point = selected.point(*v_it);
+			for (auto voh_it = selected.voh_begin(*v_it); voh_it.is_valid(); voh_it++)
+			{
+				TriMesh::Point surround_point = selected.point(selected.to_vertex_handle(*voh_it));
+				printf("%f %f %f\n", surround_point[0], surround_point[1], surround_point[2]);
+			}
 		}
 	}
-
 }

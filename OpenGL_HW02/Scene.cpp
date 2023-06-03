@@ -11,8 +11,10 @@ Scene::Scene()
 	glEnable(GL_POINT_SMOOTH);
 	glDisable(GL_CULL_FACE);
 
-	GLint _viewport[4];
-	glGetIntegerv(GL_VIEWPORT, _viewport);
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	width = viewport[2] - viewport[0];
+	height = viewport[3] - viewport[1];
 
 	mode = 0;
 
@@ -21,26 +23,27 @@ Scene::Scene()
 	drawPointShader = new Shader("assets/shaders/drawPoint.vs.glsl", "assets/shaders/drawPoint.fs.glsl");
 	drawFaceShader = new Shader("assets/shaders/drawFace.vs.glsl", "assets/shaders/drawFace.fs.glsl");
 	gridShader = new Shader("assets/shaders/grid.vs.glsl", "assets/shaders/grid.fs.glsl");
+	drawLineShader = new Shader("assets/shaders/drawLine.vs.glsl", "assets/shaders/drawLine.fs.glsl");
 
 	camera = new Camera(glm::vec3(0, 0, 3.0f), glm::radians(0.0f), glm::radians(0.0f), glm::vec3(0, 1.0f, 0));
 
 	mesh = new Mesh;
 
-	projMat = glm::perspective(glm::radians(45.0f), (float)WIDTH / HEIGHT, 0.1f, 100.0f);
+	projMat = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 	glGenTextures(1, &textureColorbuffer);
 	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, WIDTH, HEIGHT, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, width, height, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureColorbuffer, 0);
 
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WIDTH, HEIGHT);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -88,7 +91,7 @@ void Scene::deleteFace(uint faceID)
 
 void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 {
-	glm::vec4 viewport(0, 0, WIDTH, HEIGHT);
+	glm::vec4 viewport(0, 0, width, height);
 	glm::vec3 windowPos(x, y, depthValue);
 	glm::vec3 worldPos = glm::unProject(windowPos, camera->getViewMatrix(), projMat, viewport);
 
@@ -110,7 +113,7 @@ void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 
 Scene::~Scene()
 {
-	delete shader, screenShader, drawPointShader, drawFaceShader;
+	delete shader, screenShader, drawPointShader, drawFaceShader, drawLineShader;
 	delete camera;
 	delete mesh;
 }
@@ -140,6 +143,14 @@ void Scene::calculateSurround(std::vector<float>& percent)
 	mesh->calculateSurround(percent);
 }
 
+void Scene::resize()
+{
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	width = viewport[2] - viewport[0];
+	height = viewport[3] - viewport[1];
+}
+
 void Scene::changeDistance(int delta)
 {
 	camera->onMouseWheelScroll(delta);
@@ -148,9 +159,7 @@ void Scene::changeDistance(int delta)
 
 void Scene::picking(int x, int y)
 {
-	y = HEIGHT - y;
-
-
+	y = height - y;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	float depthValue = 0;
@@ -178,6 +187,7 @@ void Scene::picking(int x, int y)
 		break;
 	case 2:
 		pickingPoint(depthValue, faceID, x, y);
+		mesh->setLinePosition(TriMesh::Point(0,0,0), TriMesh::Point(100.0f,100.0f,100.0f));
 		break;
 	}
 
@@ -207,13 +217,15 @@ void Scene::draw()
 	case 1:
 		drawFaceShader->use();
 		drawFaceShader->setMat4("viewMat", camera->getViewMatrix());
-		//mesh->drawFace();
 		mesh->drawSelected();
 		break;
 	case 2:
 		drawPointShader->use();
 		drawPointShader->setMat4("viewMat", camera->getViewMatrix());
 		mesh->drawPoint();
+
+		drawLineShader->use();
+		mesh->drawLine();
 		break;
 	}
 

@@ -19,19 +19,22 @@ class Mesh
 	TriMesh model;
 	glm::mat4 modelMat;
 	std::set<uint> selectedFace;
-		
+
+	std::vector<TriMesh::Point> lines;
 
 	TriMesh selected;
-	//std::vector<TriMesh::Point> select_vertices;
 
 	uint vert_vbo;
 	uint vbo, vao, ebo;
 	uint vao2, vbo2;
+
+	uint vao3, vbo3;
 public:
 	Mesh();
 	void draw();
 	void drawFace();
 	void drawPoint();
+	void drawLine();
 	void drawSelected();
 
 	void addSelectedFace(uint faceID);
@@ -39,6 +42,7 @@ public:
 
 	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
+	void setLinePosition(TriMesh::Point a, TriMesh::Point b);
 
 	void calculateSurround(std::vector<float>& percent);
 };

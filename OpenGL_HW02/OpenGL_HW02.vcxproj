@@ -202,6 +202,8 @@
   <ItemGroup>
     <None Include="assets\shaders\drawFace.fs.glsl" />
     <None Include="assets\shaders\drawFace.vs.glsl" />
+    <None Include="assets\shaders\drawLine.fs.glsl" />
+    <None Include="assets\shaders\drawLine.vs.glsl" />
     <None Include="assets\shaders\drawModel.fs.glsl" />
     <None Include="assets\shaders\drawModel.vs.glsl" />
     <None Include="assets\shaders\drawPoint.fs.glsl" />
