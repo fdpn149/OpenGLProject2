@@ -9,6 +9,8 @@
 CppCLRWinformsProject::Form1::Form1(void)
 {
 	InitializeComponent();
+	graph = this->panel1->CreateGraphics();
+	pen = gcnew Pen(Color::Blue, 3);
 }
 
 /// <summary>
@@ -43,6 +45,8 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->deleteToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->vertexToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->toolStripContainer2 = (gcnew System::Windows::Forms::ToolStripContainer());
+	this->panel1 = (gcnew System::Windows::Forms::Panel());
+	this->testKeyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->menuStrip1->SuspendLayout();
 	this->toolStripContainer2->ContentPanel->SuspendLayout();
 	this->toolStripContainer2->TopToolStripPanel->SuspendLayout();
@@ -89,15 +93,15 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->settingToolStripMenuItem });
 	this->menuStrip1->Location = System::Drawing::Point(0, 0);
 	this->menuStrip1->Name = L"menuStrip1";
-	this->menuStrip1->Size = System::Drawing::Size(804, 24);
+	this->menuStrip1->Size = System::Drawing::Size(1188, 24);
 	this->menuStrip1->TabIndex = 1;
 	this->menuStrip1->Text = L"menuStrip1";
 	// 
 	// settingToolStripMenuItem
 	// 
-	this->settingToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+	this->settingToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
 		this->faceToolStripMenuItem,
-			this->vertexToolStripMenuItem
+			this->vertexToolStripMenuItem, this->testKeyToolStripMenuItem
 	});
 	this->settingToolStripMenuItem->Name = L"settingToolStripMenuItem";
 	this->settingToolStripMenuItem->Size = System::Drawing::Size(59, 20);
@@ -110,27 +114,27 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 			this->deleteToolStripMenuItem
 	});
 	this->faceToolStripMenuItem->Name = L"faceToolStripMenuItem";
-	this->faceToolStripMenuItem->Size = System::Drawing::Size(132, 22);
+	this->faceToolStripMenuItem->Size = System::Drawing::Size(180, 22);
 	this->faceToolStripMenuItem->Text = L"Face";
 	// 
 	// pickToolStripMenuItem
 	// 
 	this->pickToolStripMenuItem->Name = L"pickToolStripMenuItem";
-	this->pickToolStripMenuItem->Size = System::Drawing::Size(111, 22);
+	this->pickToolStripMenuItem->Size = System::Drawing::Size(180, 22);
 	this->pickToolStripMenuItem->Text = L"Pick";
 	this->pickToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::pickToolStripMenuItem_Click);
 	// 
 	// deleteToolStripMenuItem
 	// 
 	this->deleteToolStripMenuItem->Name = L"deleteToolStripMenuItem";
-	this->deleteToolStripMenuItem->Size = System::Drawing::Size(111, 22);
+	this->deleteToolStripMenuItem->Size = System::Drawing::Size(180, 22);
 	this->deleteToolStripMenuItem->Text = L"Delete";
 	this->deleteToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::deleteToolStripMenuItem_Click);
 	// 
 	// vertexToolStripMenuItem
 	// 
 	this->vertexToolStripMenuItem->Name = L"vertexToolStripMenuItem";
-	this->vertexToolStripMenuItem->Size = System::Drawing::Size(132, 22);
+	this->vertexToolStripMenuItem->Size = System::Drawing::Size(180, 22);
 	this->vertexToolStripMenuItem->Text = L"PickVertex";
 	this->vertexToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::vertexToolStripMenuItem_Click);
 	// 
@@ -140,14 +144,15 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// toolStripContainer2.ContentPanel
 	// 
+	this->toolStripContainer2->ContentPanel->Controls->Add(this->panel1);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl1);
-	this->toolStripContainer2->ContentPanel->Size = System::Drawing::Size(804, 604);
+	this->toolStripContainer2->ContentPanel->Size = System::Drawing::Size(1188, 604);
 	this->toolStripContainer2->Dock = System::Windows::Forms::DockStyle::Fill;
 	this->toolStripContainer2->LeftToolStripPanelVisible = false;
 	this->toolStripContainer2->Location = System::Drawing::Point(0, 0);
 	this->toolStripContainer2->Name = L"toolStripContainer2";
 	this->toolStripContainer2->RightToolStripPanelVisible = false;
-	this->toolStripContainer2->Size = System::Drawing::Size(804, 628);
+	this->toolStripContainer2->Size = System::Drawing::Size(1188, 628);
 	this->toolStripContainer2->TabIndex = 2;
 	this->toolStripContainer2->Text = L"toolStripContainer2";
 	// 
@@ -155,11 +160,26 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->toolStripContainer2->TopToolStripPanel->Controls->Add(this->menuStrip1);
 	// 
+	// panel1
+	// 
+	this->panel1->BackColor = System::Drawing::Color::White;
+	this->panel1->Location = System::Drawing::Point(886, 103);
+	this->panel1->Name = L"panel1";
+	this->panel1->Size = System::Drawing::Size(240, 240);
+	this->panel1->TabIndex = 1;
+	// 
+	// testKeyToolStripMenuItem
+	// 
+	this->testKeyToolStripMenuItem->Name = L"testKeyToolStripMenuItem";
+	this->testKeyToolStripMenuItem->Size = System::Drawing::Size(180, 22);
+	this->testKeyToolStripMenuItem->Text = L"TestKey";
+	this->testKeyToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::testKeyToolStripMenuItem_Click);
+	// 
 	// Form1
 	// 
 	this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-	this->ClientSize = System::Drawing::Size(804, 628);
+	this->ClientSize = System::Drawing::Size(1188, 628);
 	this->Controls->Add(this->toolStripContainer2);
 	this->MainMenuStrip = this->menuStrip1;
 	this->Margin = System::Windows::Forms::Padding(2);
@@ -210,13 +230,37 @@ System::Void CppCLRWinformsProject::Form1::timer1_Tick(System::Object^ sender, S
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
-	if (e->Button.ToString() == "Left")
-		scene->picking(e->X, e->Y);
-	else if (e->Button.ToString() == "Right")
+	if (e->Button.ToString() == "Right")
 		scene->changeDirection(e->X, e->Y);
-	if (e->Button.ToString() == "Middle")
+	else if (e->Button.ToString() == "Middle")
 		scene->changePosition(e->X, e->Y);
-		//printf("Middle\n");
+	else if (e->Button.ToString() == "Left")
+		scene->picking(e->X, e->Y);
+
+
+	if (e->Button.ToString() == "Left")
+	{
+		graph->Clear(Color::White);
+
+		std::vector<float> lengths;
+		scene->calculateSurround(lengths);
+		if (lengths.size() == 0)return;
+
+		PointF prev_pointf = transCoord(lengths[0]);
+
+		for (auto it = lengths.begin() + 1; it != lengths.end(); it++)
+		{
+			PointF pointf = transCoord(*it);
+			if (pen->Color == Color::Blue) pen->Color = Color::Red;
+			else pen->Color = Color::Blue;
+			graph->DrawLine(pen, prev_pointf, pointf);
+			prev_pointf = pointf;
+		}
+		if (pen->Color == Color::Blue) pen->Color = Color::Red;
+		else pen->Color = Color::Blue;
+		graph->DrawLine(pen, prev_pointf, transCoord(lengths[0]));
+	}
+
 	hkoglPanelControl1->Invalidate();
 }
 
@@ -231,10 +275,33 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_KeyPress(System::O
 	hkoglPanelControl1->Invalidate();
 }
 
-System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) 
+System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
 	if (e->Button.ToString() == "Left")
 		scene->picking(e->X, e->Y);
+
+	if (e->Button.ToString() == "Left")
+	{
+		graph->Clear(Color::White);
+
+		std::vector<float> lengths;
+		scene->calculateSurround(lengths);
+		if (lengths.size() == 0)return;
+
+		PointF prev_pointf = transCoord(lengths[0]);
+
+		for (auto it = lengths.begin() + 1; it != lengths.end(); it++)
+		{
+			PointF pointf = transCoord(*it);
+			if (pen->Color == Color::Blue) pen->Color = Color::Red;
+			else pen->Color = Color::Blue;
+			graph->DrawLine(pen, prev_pointf, pointf);
+			prev_pointf = pointf;
+		}
+		if (pen->Color == Color::Blue) pen->Color = Color::Red;
+		else pen->Color = Color::Blue;
+		graph->DrawLine(pen, prev_pointf, transCoord(lengths[0]));
+	}
 }
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseWheel(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
@@ -255,4 +322,30 @@ System::Void CppCLRWinformsProject::Form1::deleteToolStripMenuItem_Click(System:
 System::Void CppCLRWinformsProject::Form1::vertexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	scene->mode = 2;
+}
+
+System::Void CppCLRWinformsProject::Form1::testKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
+{
+
+}
+
+System::Drawing::PointF CppCLRWinformsProject::Form1::transCoord(float length)
+{
+	if (length >= 0.0f && length < 0.25f)
+	{
+		return PointF(40.0f + 160.0f * length * 4.0f, 200.0f);
+	}
+	else if (length >= 0.25f && length < 0.5f)
+	{
+		return PointF(200.0f, 200.0f - 160.0f * (length - 0.25f) * 4);
+	}
+	else if (length >= 0.5f && length < 0.75f)
+	{
+		return PointF(200.0f - 160.0f * (length - 0.5f) * 4, 40.0f);
+	}
+	else if (length >= 0.75f)
+	{
+		return PointF(40.0f, 40.0f + 160.0f * (length - 0.75f) * 4);
+	}
+	return PointF();
 }

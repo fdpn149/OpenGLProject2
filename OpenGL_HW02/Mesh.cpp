@@ -8,7 +8,7 @@ Mesh::Mesh()
 {
 	modelMat = glm::mat4(1.0f);
 
-	OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
+	OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
 
 	model.request_face_normals();
 	model.request_vertex_status();
@@ -100,7 +100,7 @@ void Mesh::addSelectedFace(uint faceID)
 		if (inserted)
 		{
 			std::set<TriMesh::VertexHandle> selected_vhs;
-			
+
 			for (auto selected_f_it = selected.faces_begin(); selected_f_it != selected.faces_end(); selected_f_it++)
 			{
 				for (auto selected_fv_it = selected.fv_begin(*selected_f_it); selected_fv_it.is_valid(); selected_fv_it++)
@@ -117,9 +117,9 @@ void Mesh::addSelectedFace(uint faceID)
 			{
 				TriMesh::Point model_point = model.point(*model_fv_it);
 				TriMesh& s = selected;
-				auto find_point = std::find_if(selected_vhs.begin(), selected_vhs.end(), 
+				auto find_point = std::find_if(selected_vhs.begin(), selected_vhs.end(),
 					[model_point, s](const TriMesh::VertexHandle& selected_vh) {return s.point(selected_vh) == model_point; });
-				if(find_point != selected_vhs.end())
+				if (find_point != selected_vhs.end())
 				{
 					face_vertices.push_back(*find_point);
 				}
@@ -131,7 +131,9 @@ void Mesh::addSelectedFace(uint faceID)
 
 			selected.add_face(face_vertices);
 
+#ifdef WRITE_OBJ
 			OpenMesh::IO::write_mesh(selected, "assets/models/selected.obj");
+#endif // WRITE_OBJ
 
 			selected.request_face_normals();
 			selected.request_vertex_status();
@@ -198,14 +200,17 @@ void Mesh::deleteSelectedFace(uint faceID)
 			}
 			if (same == 3)
 			{
+#ifdef DEBUG
 				printf("FaceID in Selected is %d\n", f_it->idx());
+#endif
 				selected.delete_face(*f_it);
 			}
 		}
 		selected.garbage_collection();
 
+#ifdef WRITE_OBJ
 		OpenMesh::IO::write_mesh(selected, "assets/models/selected.obj");
-
+#endif
 
 		selected.request_face_normals();
 		selected.request_vertex_status();
@@ -284,4 +289,64 @@ void Mesh::setPointPosition(glm::vec3 position)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), glm::value_ptr(position), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
+}
+
+void Mesh::calculateSurround(std::vector<float>& percent)
+{
+	percent.clear();
+#pragma region CALCULATE_PERCENT
+	TriMesh::HalfedgeIter h_it;
+	for (h_it = selected.halfedges_begin(); h_it != selected.halfedges_end(); h_it++)
+	{
+		if (selected.is_boundary(*h_it))
+			break;
+	}
+
+	TriMesh::HalfedgeHandle hh_init(*h_it);
+	if (!hh_init.is_valid())
+		return;
+
+	TriMesh::HalfedgeHandle hh(hh_init);
+
+	//travel all halfedge on boundary
+	float total = 0;
+	int t = 0;
+	do
+	{
+		TriMesh::HalfedgeHandle ohh = selected.opposite_halfedge_handle(hh);
+		TriMesh::VertexHandle vh = selected.to_vertex_handle(hh);
+		TriMesh::VertexHandle vh2 = selected.to_vertex_handle(ohh);
+
+		TriMesh::Point p1 = selected.point(vh);
+		TriMesh::Point p2 = selected.point(vh2);
+
+		float length = (p1 - p2).norm();
+
+		percent.push_back(length);
+		total += length;
+
+		hh = selected.next_halfedge_handle(hh);
+	} while (hh != hh_init);
+
+	//calculate percent
+	float sum = 0;
+	for (float& f : percent)
+	{
+		sum += f / total;
+		f = sum;
+	}
+#pragma endregion
+
+	std::vector<TriMesh::VertexHandle> inside_points;
+
+	int count = 0;
+	for (auto v_it = selected.vertices_begin(); v_it != selected.vertices_end(); v_it++)
+	{
+		if (!selected.is_boundary(*v_it))
+		{
+			printf("%d\n", ++count);
+			inside_points.push_back(*v_it);
+		}
+	}
+
 }

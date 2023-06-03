@@ -34,4 +34,7 @@ public:
 	void changeDistance(int delta);
 
 	void picking(int x, int y);
+
+
+	void calculateSurround(std::vector<float>& percent);
 };

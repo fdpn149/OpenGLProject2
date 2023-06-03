@@ -92,7 +92,10 @@ void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 	glm::vec3 windowPos(x, y, depthValue);
 	glm::vec3 worldPos = glm::unProject(windowPos, camera->getViewMatrix(), projMat, viewport);
 
+#ifdef DEBUG
 	printf("Position:\t(%f, %f, %f)\n\n", worldPos.x, worldPos.y, worldPos.z);
+#endif // DEBUG
+
 
 
 	TriMesh::Point closestPoint = mesh->findClosestPoint(faceID, worldPos);
@@ -132,6 +135,11 @@ void Scene::changePosition(int x, int y)
 	camera->onMousePositionChanged(x, y, 1);
 }
 
+void Scene::calculateSurround(std::vector<float>& percent)
+{
+	mesh->calculateSurround(percent);
+}
+
 void Scene::changeDistance(int delta)
 {
 	camera->onMouseWheelScroll(delta);
@@ -142,24 +150,24 @@ void Scene::picking(int x, int y)
 {
 	y = HEIGHT - y;
 
-	printf("Mouse Position:\t(%d, %d)\n", x, y);
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	float depthValue = 0;
 	glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depthValue);
 
-	printf("depthValue:\t%f\n", depthValue);
 
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 	uint faceID;
 	glReadPixels(x, y - 1, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &faceID);
 	faceID--;
-	printf("currentFaceID:\t%u\n\n", faceID);
-
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+#ifdef DEBUG
+	printf("Mouse Position:\t(%d, %d)\n", x, y);
+	printf("depthValue:\t%f\n", depthValue);
+	printf("currentFaceID:\t%u\n\n", faceID);
+#endif
 	switch (mode)
 	{
 	case 0:

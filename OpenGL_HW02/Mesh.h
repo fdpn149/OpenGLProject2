@@ -10,7 +10,7 @@
 #include <set>
 #include <map>
 
-typedef OpenMesh::PolyMesh_ArrayKernelT<> TriMesh;
+typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
 
 class Shader;
 
@@ -39,4 +39,6 @@ public:
 
 	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
+
+	void calculateSurround(std::vector<float>& percent);
 };

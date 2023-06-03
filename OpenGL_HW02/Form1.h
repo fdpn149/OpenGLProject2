@@ -17,6 +17,8 @@ namespace CppCLRWinformsProject {
 	/// </summary>
 	public ref class Form1 : public System::Windows::Forms::Form
 	{
+		Graphics^ graph;
+		Pen^ pen;
 		Scene* scene = nullptr;
 		clock_t deltaTime = 0;
 		clock_t lastFrame = 0;
@@ -27,6 +29,8 @@ namespace CppCLRWinformsProject {
 	private: System::Windows::Forms::ToolStripMenuItem^ faceToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ pickToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ deleteToolStripMenuItem;
+	private: System::Windows::Forms::Panel^ panel1;
+	private: System::Windows::Forms::ToolStripMenuItem^ testKeyToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ vertexToolStripMenuItem;
 	public:
 		Form1(void);
@@ -67,5 +71,7 @@ namespace CppCLRWinformsProject {
 	private: System::Void pickToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void deleteToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void vertexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void testKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+		   PointF transCoord(float length);
 	};
 }
