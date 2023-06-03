@@ -313,9 +313,8 @@ void Mesh::calculateSurround(std::vector<float>& percent)
 	int t = 0;
 	do
 	{
-		TriMesh::HalfedgeHandle ohh = selected.opposite_halfedge_handle(hh);
 		TriMesh::VertexHandle vh = selected.to_vertex_handle(hh);
-		TriMesh::VertexHandle vh2 = selected.to_vertex_handle(ohh);
+		TriMesh::VertexHandle vh2 = selected.from_vertex_handle(hh);
 
 		TriMesh::Point p1 = selected.point(vh);
 		TriMesh::Point p2 = selected.point(vh2);
