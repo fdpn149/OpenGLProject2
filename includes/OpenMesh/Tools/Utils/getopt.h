@@ -4,7 +4,7 @@
 #include <OpenMesh/Core/System/compiler.hh>
 #include <OpenMesh/Core/System/OpenMeshDLLMacros.hh>
 
-#if defined(WIN32)
+#if defined(_MSC_VER)
  #if   defined(__cplusplus)
  
   extern "C" {
@@ -21,7 +21,7 @@
 
   #endif
 
-#elif defined __APPLE__
+#elif defined __APPLE__ || defined(__FreeBSD__)
  #include <unistd.h>
 #else
  #include <getopt.h>

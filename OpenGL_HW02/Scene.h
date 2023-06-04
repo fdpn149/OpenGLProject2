@@ -22,6 +22,7 @@ class Scene
 	void pickingFace(uint faceID);
 	void deleteFace(uint faceID);
 	void pickingPoint(float depthValue, uint faceID, int x, int y);
+	TriMesh::Point percentToXY(float percent);
 public:
 	Scene();
 	~Scene();
@@ -34,7 +35,6 @@ public:
 	void changeDistance(int delta);
 
 	void picking(int x, int y);
-	void calculateSurround(std::vector<float>& percent);
+	void calculateSurround(std::vector<TriMesh::Point>& points);
 
-	void resize();
 };

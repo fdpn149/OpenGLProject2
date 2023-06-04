@@ -242,13 +242,13 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 	{
 		graph->Clear(Color::White);
 
-		std::vector<float> lengths;
-		scene->calculateSurround(lengths);
-		if (lengths.size() == 0)return;
+		std::vector<TriMesh::Point> points;
+		scene->calculateSurround(points);
+		if (points.size() == 0)return;
 
-		PointF prev_pointf = transCoord(lengths[0]);
+		PointF prev_pointf = transCoord(points[0]);
 
-		for (auto it = lengths.begin() + 1; it != lengths.end(); it++)
+		for (auto it = points.begin() + 1; it != points.end(); it++)
 		{
 			PointF pointf = transCoord(*it);
 			if (pen->Color == Color::Blue) pen->Color = Color::Red;
@@ -258,7 +258,7 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 		}
 		if (pen->Color == Color::Blue) pen->Color = Color::Red;
 		else pen->Color = Color::Blue;
-		graph->DrawLine(pen, prev_pointf, transCoord(lengths[0]));
+		graph->DrawLine(pen, prev_pointf, transCoord(points[0]));
 	}
 
 	hkoglPanelControl1->Invalidate();
@@ -284,13 +284,13 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::
 	{
 		graph->Clear(Color::White);
 
-		std::vector<float> lengths;
-		scene->calculateSurround(lengths);
-		if (lengths.size() == 0)return;
+		std::vector<TriMesh::Point> points;
+		scene->calculateSurround(points);
+		if (points.size() == 0)return;
 
-		PointF prev_pointf = transCoord(lengths[0]);
+		PointF prev_pointf = transCoord(points[0]);
 
-		for (auto it = lengths.begin() + 1; it != lengths.end(); it++)
+		for (auto it = points.begin() + 1; it != points.end(); it++)
 		{
 			PointF pointf = transCoord(*it);
 			if (pen->Color == Color::Blue) pen->Color = Color::Red;
@@ -300,7 +300,7 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::
 		}
 		if (pen->Color == Color::Blue) pen->Color = Color::Red;
 		else pen->Color = Color::Blue;
-		graph->DrawLine(pen, prev_pointf, transCoord(lengths[0]));
+		graph->DrawLine(pen, prev_pointf, transCoord(points[0]));
 	}
 }
 
@@ -329,23 +329,7 @@ System::Void CppCLRWinformsProject::Form1::testKeyToolStripMenuItem_Click(System
 
 }
 
-System::Drawing::PointF CppCLRWinformsProject::Form1::transCoord(float length)
+System::Drawing::PointF CppCLRWinformsProject::Form1::transCoord(TriMesh::Point point)
 {
-	if (length >= 0.0f && length < 0.25f)
-	{
-		return PointF(40.0f + 160.0f * length * 4.0f, 200.0f);
-	}
-	else if (length >= 0.25f && length < 0.5f)
-	{
-		return PointF(200.0f, 200.0f - 160.0f * (length - 0.25f) * 4);
-	}
-	else if (length >= 0.5f && length < 0.75f)
-	{
-		return PointF(200.0f - 160.0f * (length - 0.5f) * 4, 40.0f);
-	}
-	else if (length >= 0.75f)
-	{
-		return PointF(40.0f, 40.0f + 160.0f * (length - 0.75f) * 4);
-	}
-	return PointF();
+	return PointF(40 + point[0] * 160, 200 - point[1] * 160);
 }

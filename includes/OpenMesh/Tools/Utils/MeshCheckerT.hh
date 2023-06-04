@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 #ifndef OPENMESH_MESHCHECKER_HH
@@ -80,7 +75,7 @@ class MeshCheckerT
 public:
    
   /// constructor
-  MeshCheckerT(const Mesh& _mesh) : mesh_(_mesh) {}
+  explicit MeshCheckerT(const Mesh& _mesh) : mesh_(_mesh) {}
  
   /// destructor
   ~MeshCheckerT() {}
@@ -124,7 +119,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_MESHCHECKER_C)
 #define OPENMESH_MESHCHECKER_TEMPLATES
-#include "MeshCheckerT.cc"
+#include "MeshCheckerT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_MESHCHECKER_HH defined

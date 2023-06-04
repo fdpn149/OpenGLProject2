@@ -67,11 +67,36 @@ Scene::Scene()
 	drawFaceShader->setMat4("projMat", projMat);
 	drawFaceShader->setMat4("modelMat", glm::mat4(1.0f));
 
+	drawLineShader->use();
+	drawLineShader->setMat4("projMat", projMat);
+	drawLineShader->setMat4("modelMat", glm::mat4(1.0f));
+
 	glm::vec3 pointColor(0.0, 1.0, 0);
 	drawPointShader->use();
 	drawPointShader->setVec3("pointColor", pointColor);
 	drawPointShader->setMat4("projMat", projMat);
 	drawPointShader->setMat4("modelMat", glm::mat4(1.0f));
+}
+
+TriMesh::Point Scene::percentToXY(float percent)
+{
+	if (percent >= 0.0f && percent < 0.25f)
+	{
+		return TriMesh::Point(percent * 4.0f,0.0f,0);
+	}
+	else if (percent >= 0.25f && percent < 0.5f)
+	{
+		return TriMesh::Point(1.0f, (percent - 0.25f) * 4.0f, 0);
+	}
+	else if (percent >= 0.5f && percent < 0.75f)
+	{
+		return TriMesh::Point(1.0f - (percent - 0.5f) * 4.0f, 1.0f, 0);
+	}
+	else if (percent >= 0.75f)
+	{
+		return TriMesh::Point(0.0f, 1.0f - (percent - 0.75f) * 4.0f, 0);
+	}
+	return TriMesh::Point(-1.0f);
 }
 
 void Scene::pickingFace(uint faceID)
@@ -91,7 +116,12 @@ void Scene::deleteFace(uint faceID)
 
 void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 {
-	glm::vec4 viewport(0, 0, width, height);
+	GLint _viewport[4];
+	glGetIntegerv(GL_VIEWPORT, _viewport);
+	width = _viewport[2] - _viewport[0];
+	height = _viewport[3] - _viewport[1];
+
+	glm::vec4 viewport(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
 	glm::vec3 windowPos(x, y, depthValue);
 	glm::vec3 worldPos = glm::unProject(windowPos, camera->getViewMatrix(), projMat, viewport);
 
@@ -102,7 +132,7 @@ void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 
 
 	TriMesh::Point closestPoint = mesh->findClosestPoint(faceID, worldPos);
-	
+
 	mesh->setPointPosition(glm::vec3(closestPoint[0], closestPoint[1], closestPoint[2]));
 
 	drawPointShader->use();
@@ -138,17 +168,16 @@ void Scene::changePosition(int x, int y)
 	camera->onMousePositionChanged(x, y, 1);
 }
 
-void Scene::calculateSurround(std::vector<float>& percent)
+void Scene::calculateSurround(std::vector<TriMesh::Point>& points)
 {
+	std::vector<float> percent;
 	mesh->calculateSurround(percent);
-}
 
-void Scene::resize()
-{
-	GLint viewport[4];
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	width = viewport[2] - viewport[0];
-	height = viewport[3] - viewport[1];
+	points.clear();
+	for (const float& f : percent)
+	{
+		points.push_back(percentToXY(f));
+	}
 }
 
 void Scene::changeDistance(int delta)
@@ -187,7 +216,6 @@ void Scene::picking(int x, int y)
 		break;
 	case 2:
 		pickingPoint(depthValue, faceID, x, y);
-		mesh->setLinePosition(TriMesh::Point(0,0,0), TriMesh::Point(100.0f,100.0f,100.0f));
 		break;
 	}
 
@@ -215,6 +243,11 @@ void Scene::draw()
 	{
 	case 0:
 	case 1:
+		drawLineShader->use();
+		drawLineShader->setMat4("viewMat", camera->getViewMatrix());
+		mesh->drawLine();
+
+
 		drawFaceShader->use();
 		drawFaceShader->setMat4("viewMat", camera->getViewMatrix());
 		mesh->drawSelected();
@@ -223,9 +256,6 @@ void Scene::draw()
 		drawPointShader->use();
 		drawPointShader->setMat4("viewMat", camera->getViewMatrix());
 		mesh->drawPoint();
-
-		drawLineShader->use();
-		mesh->drawLine();
 		break;
 	}
 

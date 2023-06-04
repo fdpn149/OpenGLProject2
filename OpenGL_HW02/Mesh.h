@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <OpenMesh/Core/IO/MeshIO.hh>
+#include <OpenMesh/Core/Mesh/TriConnectivity.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <set>
@@ -29,6 +30,9 @@ class Mesh
 	uint vao2, vbo2;
 
 	uint vao3, vbo3;
+
+	glm::vec3 pointToVec3(const TriMesh::Point& point);
+	TriMesh::Point vec3ToPoint(const glm::vec3 vec);
 public:
 	Mesh();
 	void draw();
@@ -42,7 +46,7 @@ public:
 
 	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
-	void setLinePosition(TriMesh::Point a, TriMesh::Point b);
+	void setLinePosition();
 
 	void calculateSurround(std::vector<float>& percent);
 };

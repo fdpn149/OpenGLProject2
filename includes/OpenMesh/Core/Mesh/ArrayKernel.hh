@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -209,10 +204,37 @@ public:
 
 public:
 
+  /**
+   * \brief Add a new vertex.
+   *
+   * If you are rebuilding a mesh that you previously erased using clean() or
+   * clean_keep_reservation() you probably want to use new_vertex_dirty()
+   * instead.
+   *
+   * \sa new_vertex_dirty()
+   */
   inline VertexHandle new_vertex()
   {
     vertices_.push_back(Vertex());
     vprops_resize(n_vertices());//TODO:should it be push_back()?
+
+    return handle(vertices_.back());
+  }
+
+  /**
+   * Same as new_vertex() but uses PropertyContainer::resize_if_smaller() to
+   * resize the vertex property container.
+   *
+   * If you are rebuilding a mesh that you erased with clean() or
+   * clean_keep_reservation() using this method instead of new_vertex() saves
+   * reallocation and reinitialization of property memory.
+   *
+   * \sa new_vertex()
+   */
+  inline VertexHandle new_vertex_dirty()
+  {
+    vertices_.push_back(Vertex());
+    vprops_resize_if_smaller(n_vertices());//TODO:should it be push_back()?
 
     return handle(vertices_.back());
   }
@@ -294,31 +316,34 @@ public:
                           std_API_Container_FHandlePointer& fh_to_update,
                           bool _v=true, bool _e=true, bool _f=true);
 
-  /** \brief Clear the whole mesh
-   *
-   *  This will remove all properties and elements from the mesh
-   */
+  /// \brief Does the same as clean() and in addition erases all properties.
   void clear();
 
-  /** \brief Reset the whole mesh
+  /** \brief Remove all vertices, edges and faces and deallocates their memory.
    *
-   *  This will remove all elements from the mesh but keeps the properties
+   * In contrast to clear() this method does neither erases the properties
+   * nor clears the property vectors. Depending on how you add any new entities
+   * to the mesh after calling this method, your properties will be initialized
+   * with old values.
+   *
+   * \sa clean_keep_reservation()
    */
   void clean();
 
-  /** \brief Reset the whole mesh
+  /** \brief Remove all vertices, edges and faces but keep memory allocated.
    *
-   *  This will remove all elements from the mesh but keeps the properties.
-   *  In contrast to clean() the memory used for the elements will remain
-   *  allocated.
+   * This method behaves like clean() (also regarding the properties) but
+   * leaves the memory used for vertex, edge and face storage allocated. This
+   * leads to no reduction in memory consumption but allows for faster
+   * performance when rebuilding the mesh.
    */
   void clean_keep_reservation();
 
   // --- number of items ---
-  size_t n_vertices()  const { return vertices_.size(); }
-  size_t n_halfedges() const { return 2*edges_.size(); }
-  size_t n_edges()     const { return edges_.size(); }
-  size_t n_faces()     const { return faces_.size(); }
+  size_t n_vertices()  const override  { return vertices_.size(); }
+  size_t n_halfedges() const override { return 2*edges_.size(); }
+  size_t n_edges()     const override { return edges_.size(); }
+  size_t n_faces()     const override { return faces_.size(); }
 
   bool vertices_empty()  const { return vertices_.empty(); }
   bool halfedges_empty() const { return edges_.empty(); }
@@ -478,6 +503,16 @@ public:
 
   StatusInfo&                               status(VertexHandle _vh)
   { return property(vertex_status_, _vh); }
+
+  /**
+   * Reinitializes the status of all vertices using the StatusInfo default
+   * constructor, i.e. all flags will be set to false.
+   */
+  void reset_status() {
+      PropertyT<StatusInfo> &status_prop = property(vertex_status_);
+      PropertyT<StatusInfo>::vector_type &sprop_v = status_prop.data_vector();
+      std::fill(sprop_v.begin(), sprop_v.begin() + n_vertices(), StatusInfo());
+  }
 
   //----------------------------------------------------------- halfedge status
   const StatusInfo&                         status(HalfedgeHandle _hh) const
@@ -662,7 +697,7 @@ public:
     typedef StatusSetT<Handle> Base;
 
   public:
-    AutoStatusSetT(ArrayKernel& _kernel)
+    explicit AutoStatusSetT(ArrayKernel& _kernel)
     : StatusSetT<Handle>(_kernel, _kernel.pop_bit_mask(Handle()))
     { /*assert(size() == 0);*/ } //the set should be empty on creation
 
@@ -731,7 +766,7 @@ public:
     //! Complexity: O(1)
     inline void erase(iterator _it)
     {
-      assert(_it != end() && is_in(*_it));
+      assert(_it != const_cast<const ExtStatusSetT*>(this)->end() && is_in(*_it));
       Base::erase(*_it);
       *_it = handles_.back();
       _it.pop_back();
@@ -839,10 +874,7 @@ private:
   void                                      init_bit_masks(BitMaskContainer& _bmc);
   void                                      init_bit_masks();
 
-private:
-  VertexContainer                           vertices_;
-  EdgeContainer                             edges_;
-  FaceContainer                             faces_;
+protected:
 
   VertexStatusPropertyHandle                vertex_status_;
   HalfedgeStatusPropertyHandle              halfedge_status_;
@@ -853,6 +885,11 @@ private:
   unsigned int                              refcount_hstatus_;
   unsigned int                              refcount_estatus_;
   unsigned int                              refcount_fstatus_;
+
+private:
+  VertexContainer                           vertices_;
+  EdgeContainer                             edges_;
+  FaceContainer                             faces_;
 
   BitMaskContainer                          halfedge_bit_masks_;
   BitMaskContainer                          edge_bit_masks_;
@@ -866,7 +903,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_ARRAY_KERNEL_C)
 #  define OPENMESH_ARRAY_KERNEL_TEMPLATES
-#  include "ArrayKernelT.cc"
+#  include "ArrayKernelT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_ARRAY_KERNEL_HH defined

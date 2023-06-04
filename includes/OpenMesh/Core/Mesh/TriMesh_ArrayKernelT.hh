@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -74,7 +69,8 @@
 
 namespace OpenMesh {
 
-
+template<class Traits>
+class PolyMesh_ArrayKernelT;
 //== CLASS DEFINITION =========================================================
 
 
@@ -97,7 +93,16 @@ struct TriMesh_ArrayKernel_GeneratorT
 template <class Traits = DefaultTraits>
 class TriMesh_ArrayKernelT
   : public TriMesh_ArrayKernel_GeneratorT<Traits>::Mesh
-{};
+{
+public:
+  TriMesh_ArrayKernelT() {}
+  template<class OtherTraits>
+  explicit TriMesh_ArrayKernelT( const PolyMesh_ArrayKernelT<OtherTraits> & t)
+  {
+     //assign the connectivity and standard properties
+     this->assign(t,true);
+  }
+};
 
 
 //=============================================================================

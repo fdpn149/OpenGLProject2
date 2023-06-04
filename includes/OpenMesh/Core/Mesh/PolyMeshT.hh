@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -65,6 +60,7 @@
 #include <OpenMesh/Core/Geometry/MathDefs.hh>
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 #include <OpenMesh/Core/Mesh/FinalMeshItemsT.hh>
+#include <OpenMesh/Core/Mesh/Tags.hh>
 #include <vector>
 
 
@@ -100,11 +96,12 @@ public:
   //--- item types ---
 
   //@{
-  /// Determine whether this is a PolyMeshT or TriMeshT ( This function does not check the per face vertex count! It only checks if the datatype is PolyMeshT or TriMeshT )
+  /// Determine whether this is a PolyMeshT or TriMeshT (This function does not check the per face vertex count! It only checks if the datatype is PolyMeshT or TriMeshT)
+  static constexpr bool is_polymesh() { return true;  }
+  static constexpr bool is_trimesh()  { return false; }
+  using ConnectivityTag = PolyConnectivityTag;
   enum { IsPolyMesh = 1 };
   enum { IsTriMesh  = 0 };
-  static bool is_polymesh() { return true;  }
-  static bool is_trimesh()  { return false; }
   //@}
 
   /// \name Mesh Items
@@ -186,25 +183,61 @@ public:
 
   // --- constructor/destructor
   PolyMeshT() {}
+  template<typename T>
+  explicit PolyMeshT(const T& t) : Kernel(t) {}
   virtual ~PolyMeshT() {}
 
   /** Uses default copy and assignment operator.
       Use them to assign two meshes of \b equal type.
       If the mesh types vary, use PolyMeshT::assign() instead. */
 
-   // --- creation ---
-  inline VertexHandle new_vertex()
-  { return Kernel::new_vertex(); }
+  // --- creation ---
 
-  inline VertexHandle new_vertex(const Point& _p)
+  /**
+   * \brief Adds a new default-initialized vertex.
+   *
+   * \sa new_vertex(const Point&), new_vertex_dirty()
+   */
+  inline SmartVertexHandle new_vertex()
+  { return make_smart(Kernel::new_vertex(), this); }
+
+  /**
+   * \brief Adds a new vertex initialized to a custom position.
+   *
+   * \sa new_vertex(), new_vertex_dirty()
+   */
+  inline SmartVertexHandle new_vertex(const Point& _p)
   {
     VertexHandle vh(Kernel::new_vertex());
     this->set_point(vh, _p);
-    return vh;
+    return make_smart(vh, this);
   }
 
-  inline VertexHandle add_vertex(const Point& _p)
+  /**
+   * Same as new_vertex(const Point&) but never shrinks, only enlarges the
+   * vertex property vectors.
+   *
+   * If you are rebuilding a mesh that you erased with ArrayKernel::clean() or
+   * ArrayKernel::clean_keep_reservation() using this method instead of
+   * new_vertex(const Point &) saves reallocation and reinitialization of
+   * property memory.
+   *
+   * \sa new_vertex(const Point &)
+   */
+  inline SmartVertexHandle new_vertex_dirty(const Point& _p)
+  {
+    VertexHandle vh(Kernel::new_vertex_dirty());
+    this->set_point(vh, _p);
+    return make_smart(vh, this);
+  }
+
+  /// Alias for new_vertex(const Point&).
+  inline SmartVertexHandle add_vertex(const Point& _p)
   { return new_vertex(_p); }
+
+  /// Alias for new_vertex_dirty().
+  inline SmartVertexHandle add_vertex_dirty(const Point& _p)
+  { return make_smart(new_vertex_dirty(_p), this); }
 
   // --- normal vectors ---
 
@@ -238,13 +271,32 @@ public:
   /** Calculate normal vector for face (_p0, _p1, _p2). */
   Normal calc_face_normal(const Point& _p0, const Point& _p1,
                                             const Point& _p2) const;
+
+  /// same as calc_face_normal
+  Normal calc_normal(FaceHandle _fh) const;
+
   /// calculates the average of the vertices defining _fh
   void calc_face_centroid(FaceHandle _fh, Point& _pt) const {
       _pt = calc_face_centroid(_fh);
   }
 
-  /// Computes and returns the average of the vertices defining _gh
+  /// Computes and returns the average of the vertices defining _fh
   Point calc_face_centroid(FaceHandle _fh) const;
+
+  /// Computes and returns the average of the vertices defining _fh (same as calc_face_centroid)
+  Point calc_centroid(FaceHandle _fh) const;
+
+  /// Computes and returns the average of the vertices defining _eh (same as calc_edge_midpoint)
+  Point calc_centroid(EdgeHandle _eh) const;
+
+  /// Computes and returns the average of the vertices defining _heh (same as calc_edge_midpoint for edge of halfedge)
+  Point calc_centroid(HalfedgeHandle _heh) const;
+
+  /// Returns the point of _vh
+  Point calc_centroid(VertexHandle _vh) const;
+
+  /// Computes and returns the average of the vertices defining the mesh
+  Point calc_centroid(MeshHandle _mh) const;
 
   /// Update normal for halfedge _heh
   void update_normal(HalfedgeHandle _heh, const double _feature_angle = 0.8)
@@ -275,6 +327,8 @@ public:
    */
   virtual Normal calc_halfedge_normal(HalfedgeHandle _heh, const double _feature_angle = 0.8) const;
 
+  /// same as calc_halfedge_normal
+  Normal calc_normal(HalfedgeHandle, const double _feature_angle = 0.8) const;
 
   /** identifies feature edges w.r.t. the minimal dihedral angle for feature edges (in radians) */
   /** and the status feature tag */
@@ -320,6 +374,8 @@ public:
   void calc_vertex_normal_correct(VertexHandle _vh, Normal& _n) const;
   void calc_vertex_normal_loop(VertexHandle _vh, Normal& _n) const;
 
+  /// same as calc_vertex_normal_correct
+  Normal calc_normal(VertexHandle _vh) const;
 
   //@}
 
@@ -370,7 +426,32 @@ public:
   {
     Normal edge_vec;
     calc_edge_vector(_heh, edge_vec);
-    return edge_vec.sqrnorm();
+    return sqrnorm(edge_vec);
+  }
+
+  /** Calculates the midpoint of the halfedge _heh, defined by the positions of
+      the two incident vertices */
+  Point calc_edge_midpoint(HalfedgeHandle _heh) const
+  {
+    VertexHandle vh0 = this->from_vertex_handle(_heh);
+    VertexHandle vh1 = this->to_vertex_handle(_heh);
+    return 0.5 * (this->point(vh0) + this->point(vh1));
+  }
+
+  /** Calculates the midpoint of the edge _eh, defined by the positions of the
+      two incident vertices */
+  Point calc_edge_midpoint(EdgeHandle _eh) const
+  {
+    return calc_edge_midpoint(this->halfedge_handle(_eh, 0));
+  }
+
+  /// calculated and returns the average of the two vertex normals
+  Normal calc_normal(EdgeHandle _eh) const
+  {
+    HalfedgeHandle _heh = this->halfedge_handle(_eh, 0);
+    VertexHandle vh0 = this->from_vertex_handle(_heh);
+    VertexHandle vh1 = this->to_vertex_handle(_heh);
+    return 0.5 * (this->calc_normal(vh0) + this->calc_normal(vh1));
   }
 
   /** defines a consistent representation of a sector geometry:
@@ -392,8 +473,8 @@ public:
   {
     Normal v0, v1;
     calc_sector_vectors(_in_heh, v0, v1);
-    Scalar denom = v0.norm()*v1.norm();
-    if (is_zero(denom))
+    Scalar denom = norm(v0)*norm(v1);
+    if ( denom == Scalar(0))
     {
       return 0;
     }
@@ -418,7 +499,7 @@ public:
     Normal in_vec, out_vec;
     calc_edge_vector(_in_heh, in_vec);
     calc_edge_vector(next_halfedge_handle(_in_heh), out_vec);
-    Scalar denom = in_vec.norm()*out_vec.norm();
+    Scalar denom = norm(in_vec)*norm(out_vec);
     if (is_zero(denom))
     {
       _cos_a = 1;
@@ -427,7 +508,7 @@ public:
     else
     {
       _cos_a = dot(in_vec, out_vec)/denom;
-      _sin_a = cross(in_vec, out_vec).norm()/denom;
+      _sin_a = norm(cross(in_vec, out_vec))/denom;
     }
   }
   */
@@ -447,7 +528,7 @@ public:
   {
     Normal sector_normal;
     calc_sector_normal(_in_heh, sector_normal);
-    return sector_normal.norm()/2;
+    return norm(sector_normal)/2;
   }
 
   /** calculates the dihedral angle on the halfedge _heh
@@ -487,7 +568,7 @@ public:
     calc_sector_normal(_heh, n0);
     calc_sector_normal(this->opposite_halfedge_handle(_heh), n1);
     calc_edge_vector(_heh, he);
-    Scalar denom = n0.norm()*n1.norm();
+    Scalar denom = norm(n0)*norm(n1);
     if (denom == Scalar(0))
     {
       return 0;
@@ -574,13 +655,12 @@ const LHS mesh_cast(const PolyMeshT<KERNEL> *rhs) {
     return MeshCast<LHS, const PolyMeshT<KERNEL>*>::cast(rhs);
 }
 
-
 //=============================================================================
 } // namespace OpenMesh
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_POLYMESH_C)
 #  define OPENMESH_POLYMESH_TEMPLATES
-#  include "PolyMeshT.cc"
+#  include "PolyMeshT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_POLYMESHT_HH defined

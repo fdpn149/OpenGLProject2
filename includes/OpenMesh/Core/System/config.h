@@ -64,15 +64,13 @@
 
 // ----------------------------------------------------------------------------
 
-#define OM_VERSION 0x50220
-//#define OM_VERSION 0x40200
 
-// only defined, if it is a beta version
-//#define OM_VERSION_BETA 4
+#define OM_VERSION 0x80100
+//#define OM_VERSION 0x70200
 
-#define OM_GET_VER ((OM_VERSION && 0xf0000) >> 16)
-#define OM_GET_MAJ ((OM_VERSION && 0x0ff00) >> 8)
-#define OM_GET_MIN  (OM_VERSION && 0x000ff)
+#define OM_GET_VER ((OM_VERSION & 0xf0000) >> 16)
+#define OM_GET_MAJ ((OM_VERSION & 0x0ff00) >> 8)
+#define OM_GET_MIN  (OM_VERSION & 0x000ff)
 
 #ifdef WIN32
 #  ifdef min
@@ -86,20 +84,25 @@
 #endif
 
 #if defined(_MSC_VER)
-#  define DEPRECATED(msg) __declspec(deprecated(msg))
+#  define OM_DEPRECATED(msg) __declspec(deprecated(msg))
 #elif defined(__GNUC__)
 #  if (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) >= 40500 /* Test for GCC >= 4.5.0 */
-#    define DEPRECATED(msg) __attribute__ ((deprecated(msg)))
+#    define OM_DEPRECATED(msg) __attribute__ ((deprecated(msg)))
 #  else
-#    define DEPRECATED(msg) __attribute__ ((deprecated))
+#    define OM_DEPRECATED(msg) __attribute__ ((deprecated))
 #  endif
 #elif defined(__clang__)
-#  define DEPRECATED(msg) __attribute__ ((deprecated(msg)))
+#  define OM_DEPRECATED(msg) __attribute__ ((deprecated(msg)))
 #else
-#  define DEPRECATED(msg)
+#  define OM_DEPRECATED(msg)
 #endif
 
 typedef unsigned int uint;
+
+#if ((defined(_MSC_VER) && (_MSC_VER >= 1800)) || __cplusplus > 199711L || defined(__GXX_EXPERIMENTAL_CXX0X__))
+#define OM_HAS_HASH
+#endif
+
 //=============================================================================
 #endif // OPENMESH_CONFIG_H defined
 //=============================================================================

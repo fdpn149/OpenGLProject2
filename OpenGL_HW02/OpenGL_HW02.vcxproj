@@ -104,9 +104,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;OpenMeshCored.lib;</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;OpenMeshCored.lib;OpenMeshToolsd.lib</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
     </Link>
@@ -131,9 +132,10 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;OpenMeshCored.lib;</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;OpenMeshCored.lib;OpenMeshToolsd.lib</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
     </Link>

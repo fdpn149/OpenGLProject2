@@ -39,12 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*==========================================================================*\
-*                                                                           *             
-*   $Revision: 410 $                                                        *
-*   $Date: 2010-06-17 12:45:58 +0200 (Do, 17. Jun 2010) $                   *
-*                                                                           *
-\*==========================================================================*/
 
 /** \file LongestEdgeT.hh
 
@@ -82,7 +76,7 @@ namespace Uniform    { // BEGIN_NS_UNIFORM
 
 //== CLASS DEFINITION =========================================================
 
-template <typename MeshType, typename RealType = float>
+template <typename MeshType, typename RealType = double>
 class CompareLengthFunction {
   public:
 

@@ -72,6 +72,6 @@ namespace CppCLRWinformsProject {
 	private: System::Void deleteToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void vertexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void testKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
-		   PointF transCoord(float length);
+		   PointF transCoord(TriMesh::Point point);
 	};
 }

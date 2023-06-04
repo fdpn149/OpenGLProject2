@@ -39,18 +39,10 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision: 693 $                                                         *
- *   $Date: 2012-09-23 16:25:16 +0200 (So, 23 Sep 2012) $                   *
- *                                                                           *
-\*===========================================================================*/
-
-
 //=============================================================================
 //
 //  Helper Functions for generating a random number between 0.0 and 1.0 with
-//  a garantueed resolution
+//  a guaranteed resolution
 //
 //=============================================================================
 
@@ -90,7 +82,7 @@ public:
   *
   * @param _resolution specifies the desired resolution for the random number generated
   */
-  RandomNumberGenerator(const size_t _resolution);
+  explicit RandomNumberGenerator(const size_t _resolution);
 
   /// returns a random double between 0.0 and 1.0 with a guaranteed resolution
   double getRand() const;

@@ -41,12 +41,7 @@
 
 
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file Core/Geometry/QuadricT.hh
 
@@ -117,7 +112,7 @@ public:
   {}
 
   template <class _Point>
-  QuadricT(const _Point& _pt)
+  explicit QuadricT(const _Point& _pt)
   {
     set_distance_to_point(_pt);
   }
@@ -180,6 +175,12 @@ public:
     return *this;
   }
 
+  QuadricT<Scalar> operator+(const QuadricT<Scalar>& _other ) const
+  {
+    QuadricT<Scalar> result = *this;
+    return result += _other;
+  }
+
 
   /// multiply by scalar
   QuadricT<Scalar>& operator*=( Scalar _s)
@@ -191,6 +192,11 @@ public:
     return *this;
   }
 
+  QuadricT<Scalar> operator*(Scalar _s) const
+  {
+    QuadricT<Scalar> result = *this;
+    return result *= _s;
+  }
 
   /// multiply 4D vector from right: Q*v
   template <class _Vec4>
@@ -207,7 +213,7 @@ public:
   template <class _Vec>
   Scalar operator()(const _Vec& _v) const
   {
-    return evaluate(_v, GenProg::Int2Type<_Vec::size_>());
+    return evaluate(_v, GenProg::Int2Type<vector_traits<_Vec>::size_>());
   }
 
   Scalar a() const { return a_; }

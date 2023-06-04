@@ -4,11 +4,22 @@
 #include <vector>
 #include "Shader.h"
 
+glm::vec3 Mesh::pointToVec3(const TriMesh::Point& point)
+{
+	return glm::vec3(point[0], point[1], point[2]);
+}
+
+TriMesh::Point Mesh::vec3ToPoint(const glm::vec3 vec)
+{
+	return TriMesh::Point(vec.x, vec.y, vec.z);
+}
+
 Mesh::Mesh()
 {
 	modelMat = glm::mat4(1.0f);
 
 	OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
+	//OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
 
 	model.request_face_normals();
 	model.request_vertex_status();
@@ -92,7 +103,7 @@ void Mesh::drawPoint()
 void Mesh::drawLine()
 {
 	glBindVertexArray(vao3);
-	glDrawArrays(GL_LINES, 0, lines.size() / 2);
+	glDrawArrays(GL_LINES, 0, lines.size());
 	glBindVertexArray(0);
 }
 
@@ -303,7 +314,7 @@ void Mesh::setPointPosition(glm::vec3 position)
 	glEnableVertexAttribArray(0);
 }
 
-void Mesh::setLinePosition(TriMesh::Point a, TriMesh::Point b)
+void Mesh::setLinePosition()
 {
 	glBindVertexArray(vao3);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo3);
@@ -315,19 +326,21 @@ void Mesh::setLinePosition(TriMesh::Point a, TriMesh::Point b)
 void Mesh::calculateSurround(std::vector<float>& percent)
 {
 	percent.clear();
+	lines.clear();
 #pragma region CALCULATE_PERCENT
-	TriMesh::HalfedgeIter h_it;
-	for (h_it = selected.halfedges_begin(); h_it != selected.halfedges_end(); h_it++)
+	TriMesh::HalfedgeIter h_it = selected.halfedges_begin();
+	if (h_it == selected.halfedges_end())
+		return;
+	for (; h_it != selected.halfedges_end(); h_it++)
 	{
 		if (selected.is_boundary(*h_it))
 			break;
 	}
 
 	TriMesh::HalfedgeHandle hh_init(*h_it);
-	if (!hh_init.is_valid())
-		return;
 
 	TriMesh::HalfedgeHandle hh(hh_init);
+	
 
 	//travel all halfedge on boundary
 	float total = 0;
@@ -346,6 +359,8 @@ void Mesh::calculateSurround(std::vector<float>& percent)
 		total += length;
 
 		hh = selected.next_halfedge_handle(hh);
+		if (!hh.is_valid())
+			return;
 	} while (hh != hh_init);
 
 	//calculate percent
@@ -360,17 +375,42 @@ void Mesh::calculateSurround(std::vector<float>& percent)
 	std::vector<TriMesh::VertexHandle> inside_points;
 
 	int count = 0;
-	for (auto v_it = selected.vertices_begin(); v_it != selected.vertices_end(); v_it++)
+	for (auto v_it = selected.vertices_begin(); v_it != selected.vertices_end(); v_it++) //find center_point
 	{
 		if (!selected.is_boundary(*v_it))
 		{
 			inside_points.push_back(*v_it);
 			TriMesh::Point center_point = selected.point(*v_it);
-			for (auto voh_it = selected.voh_begin(*v_it); voh_it.is_valid(); voh_it++)
+			glm::vec3 center_vec = pointToVec3(center_point);
+
+			TriMesh::Point prev_point, curr_point, next_point;
+			glm::vec3 prev_vec, curr_vec, next_vec;
+			glm::vec3 to_center, to_current;
+
+			for (auto voh_it = selected.voh_begin(*v_it); voh_it != selected.voh_end(*v_it); voh_it++)
 			{
-				TriMesh::Point surround_point = selected.point(selected.to_vertex_handle(*voh_it));
-				printf("%f %f %f\n", surround_point[0], surround_point[1], surround_point[2]);
+				prev_point = selected.point(selected.opposite_vh(*voh_it));
+				curr_point = selected.point(selected.to_vertex_handle(*voh_it));
+				next_point = selected.point(selected.opposite_he_opposite_vh(*voh_it));
+
+				prev_vec = pointToVec3(prev_point);
+				curr_vec = pointToVec3(curr_point);
+				next_vec = pointToVec3(next_point);
+
+				to_center = center_vec - prev_vec;
+				to_current = curr_vec - prev_vec;
+				float gamma = glm::acos(glm::dot(to_center, to_current) / (to_center.length() * to_current.length()));
+
+				to_center = center_vec - next_vec;
+				to_current = curr_vec - next_vec;
+				float beta = glm::acos(glm::dot(to_center, to_current) / (to_center.length() * to_current.length()));
+
+				float w = 1.0f / glm::tan(beta) + 1.0f / glm::tan(gamma);
+
+				printf("%f\n", w);
 			}
 		}
 	}
+	
+	//setLinePosition();
 }

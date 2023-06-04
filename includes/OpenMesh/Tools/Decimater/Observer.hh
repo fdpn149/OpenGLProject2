@@ -39,13 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision: 1199 $                                                         *
- *   $Date: 2015-01-16 08:47:33 +0100 (Fr, 16 Jan 2015) $                   *
- *                                                                           *
-\*===========================================================================*/
-
 /** \file Observer.hh
  *
  * This file contains an observer class which is used to monitor the progress
@@ -87,7 +80,7 @@ public:
    *
    * @param _notificationInterval Interval of decimation steps between notifications.
    */
-  Observer(size_t _notificationInterval);
+  explicit Observer(size_t _notificationInterval);
   
   /// Destructor
   virtual ~Observer();
