@@ -251,21 +251,27 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 		for (auto it = points.begin() + 1; it != points.end(); it++)
 		{
 			PointF pointf = transCoord(*it);
-			if (pen->Color == Color::Blue) pen->Color = Color::Red;
-			else pen->Color = Color::Blue;
 			graph->DrawLine(pen, prev_pointf, pointf);
 			prev_pointf = pointf;
 		}
-		if (pen->Color == Color::Blue) pen->Color = Color::Red;
-		else pen->Color = Color::Blue;
 		graph->DrawLine(pen, prev_pointf, transCoord(points[0]));
 
-		std::vector<TriMesh::Point> points2;
+		std::vector<std::vector<TriMesh::Point>> points2;
 		scene->calculateInside(points2);
-		for (auto it = points2.begin(); it != points2.end(); it++)
+
+		if (points2.size() == 0)return;
+
+		for (int i = 0; i < points2.size(); i++)
 		{
-			PointF pointf = transCoord(*it);
-			drawPoint(pointf);
+			prev_pointf = transCoord(points2[i][0]);
+
+			for (auto it = points2[i].begin() + 1; it != points2[i].end(); it++)
+			{
+				PointF pointf = transCoord(*it);
+				graph->DrawLine(pen, prev_pointf, pointf);
+				prev_pointf = pointf;
+			}
+			graph->DrawLine(pen, prev_pointf, transCoord(points2[i][0]));
 		}
 	}
 
@@ -301,21 +307,27 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::
 		for (auto it = points.begin() + 1; it != points.end(); it++)
 		{
 			PointF pointf = transCoord(*it);
-			if (pen->Color == Color::Blue) pen->Color = Color::Red;
-			else pen->Color = Color::Blue;
 			graph->DrawLine(pen, prev_pointf, pointf);
 			prev_pointf = pointf;
 		}
-		if (pen->Color == Color::Blue) pen->Color = Color::Red;
-		else pen->Color = Color::Blue;
 		graph->DrawLine(pen, prev_pointf, transCoord(points[0]));
 		
-		std::vector<TriMesh::Point> points2;
+		std::vector<std::vector<TriMesh::Point>> points2;
 		scene->calculateInside(points2);
-		for (auto it = points2.begin(); it != points2.end(); it++)
+
+		if (points2.size() == 0)return;
+
+		for (int i = 0; i < points2.size(); i++)
 		{
-			PointF pointf = transCoord(*it);
-			drawPoint(pointf);
+			prev_pointf = transCoord(points2[i][0]);
+
+			for (auto it = points2[i].begin() + 1; it != points2[i].end(); it++)
+			{
+				PointF pointf = transCoord(*it);
+				graph->DrawLine(pen, prev_pointf, pointf);
+				prev_pointf = pointf;
+			}
+			graph->DrawLine(pen, prev_pointf, transCoord(points2[i][0]));
 		}
 	}
 }

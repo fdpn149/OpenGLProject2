@@ -174,7 +174,7 @@ void Scene::calculateSurround(std::vector<TriMesh::Point>& points)
 	mesh->calculateSurround(points);
 }
 
-void Scene::calculateInside(std::vector<TriMesh::Point>& points)
+void Scene::calculateInside(std::vector<std::vector<TriMesh::Point>>& points)
 {
 	mesh->calculateInside(points);
 }

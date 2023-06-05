@@ -344,7 +344,7 @@ void Mesh::calculateSurround(std::vector<TriMesh::Point>& points)
 {
 	points.clear();
 	lines.clear();
-	point3D_2D.clear();
+	boundary_point3D_2D.clear();
 
 
 	//find halfedges until it is on boundary
@@ -396,14 +396,16 @@ void Mesh::calculateSurround(std::vector<TriMesh::Point>& points)
 		sum += percent[i] / total;
 		TriMesh::Point point = percentToXY(sum);	//transform the percent value to 2d xy coordinate value
 		points.push_back(point);
-		point3D_2D[to_point[i]] = point;
+		boundary_point3D_2D[to_point[i]] = point;
 	}
 }
 
 
 
-void Mesh::calculateInside(std::vector<TriMesh::Point>& points)
+void Mesh::calculateInside(std::vector<std::vector<TriMesh::Point>>& points)
 {
+	points.clear();
+
 	int count = 0;
 	std::vector<TriMesh::Point> outside_points_sum;
 	std::vector<std::vector<float>> inside_points_w;
@@ -411,13 +413,15 @@ void Mesh::calculateInside(std::vector<TriMesh::Point>& points)
 
 	int insides_size = 0;
 
-	std::vector<std::vector<TriMesh::Point>> boundary_point_group;
+	//std::vector<std::vector<TriMesh::Point>> connect_point_group;
+	std::map<int, std::vector<TriMesh::Point>> connect_point_group;
+
 
 	for (auto v_it = selected.vertices_begin(); v_it != selected.vertices_end(); v_it++) //find center_point
 	{
 		if (!selected.is_boundary(*v_it))	//is not boundary point
 		{
-			printf("-----------------------------------\n");
+			//printf("-----------------------------------\n");
 
 			TriMesh::Point center_point = selected.point(*v_it);
 			glm::vec3 center_vec = pointToVec3(center_point);
@@ -432,16 +436,16 @@ void Mesh::calculateInside(std::vector<TriMesh::Point>& points)
 			std::vector<float> insides;
 			insides.resize(insides_size);
 
-			std::vector<TriMesh::Point> boundary;
+			std::vector<TriMesh::Point> connect;
 
 			for (auto voh_it = selected.voh_begin(*v_it); voh_it != selected.voh_end(*v_it); voh_it++)
 			{
 				TriMesh::Point v = selected.point(selected.to_vertex_handle(*voh_it));
-				if (point3D_2D.find(v) != point3D_2D.end()) //boundary point
+				if (boundary_point3D_2D.find(v) != boundary_point3D_2D.end()) //boundary point
 				{
-					TriMesh::Point p = point3D_2D[v];
-					boundary.push_back(p);
-					printf("%f %f %f\n", p[0], p[1], p[2]);
+					TriMesh::Point p = boundary_point3D_2D[v];
+					connect.push_back(p);
+					//printf("%f %f %f\n", p[0], p[1], p[2]);
 					prev_point = selected.point(selected.opposite_vh(*voh_it));
 					curr_point = selected.point(selected.to_vertex_handle(*voh_it));
 					next_point = selected.point(selected.opposite_he_opposite_vh(*voh_it));
@@ -492,6 +496,8 @@ void Mesh::calculateInside(std::vector<TriMesh::Point>& points)
 						inside_points_w_index[v] = insides_size++;
 						insides.push_back(-w);
 					}
+
+					connect.push_back(TriMesh::Point(inside_points_w_index[v]));	//create dummy point (make a mark)
 				}
 			}
 
@@ -509,8 +515,8 @@ void Mesh::calculateInside(std::vector<TriMesh::Point>& points)
 			inside_points_w.push_back(insides);
 
 
-			if (!boundary.empty())
-				boundary_point_group.push_back(boundary);
+			if (!connect.empty())
+				connect_point_group[inside_points_w_index[center_point]] = connect;
 		}
 	}
 
@@ -544,13 +550,17 @@ void Mesh::calculateInside(std::vector<TriMesh::Point>& points)
 			std::cout << (k == 0 ? 'x' : 'y') << " = " << x.transpose() << std::endl;
 		}
 
+		points.resize(insides_size);
 		for (int i = 0; i < insides_size; i++)
 		{
-			for (int j = 0; j < boundary_point_group.size(); j++)
+			for (int j = 0; j < connect_point_group[i].size(); j++)
 			{
-				points.push_back(TriMesh::Point(all_x[i], x(i), 0));
+				if (connect_point_group[i][j][2] != 0)	//if z != 0 -> it is marked
+					points[i].push_back(TriMesh::Point(all_x[connect_point_group[i][j][2]], x(connect_point_group[i][j][2]), 0.0f));
+				else
+					points[i].push_back(connect_point_group[i][j]);
+				points[i].push_back(TriMesh::Point(all_x[i], x(i), 0));
 			}
 		}
 	}
-	//setLinePosition();
 }

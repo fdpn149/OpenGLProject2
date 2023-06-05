@@ -36,6 +36,6 @@ public:
 
 	void picking(int x, int y);
 	void calculateSurround(std::vector<TriMesh::Point>& points);
-	void calculateInside(std::vector<TriMesh::Point>& points);
+	void calculateInside(std::vector<std::vector<TriMesh::Point>>& points);
 
 };

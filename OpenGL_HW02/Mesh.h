@@ -23,7 +23,8 @@ class Mesh
 
 	std::vector<TriMesh::Point> lines;
 
-	std::map<TriMesh::Point, TriMesh::Point> point3D_2D;	//convert world point to 2d xy point (0.0f~1.0f)
+	std::map<TriMesh::Point, TriMesh::Point> boundary_point3D_2D;	//convert world point to 2d xy point (0.0f~1.0f)
+	std::map<TriMesh::Point, TriMesh::Point> inside_point3D_2D;
 
 	TriMesh selected;
 
@@ -51,5 +52,5 @@ public:
 	void setLinePosition();
 
 	void calculateSurround(std::vector<TriMesh::Point>& points);
-	void calculateInside(std::vector<TriMesh::Point>& points);
+	void calculateInside(std::vector<std::vector<TriMesh::Point>>& points);
 };
