@@ -492,50 +492,44 @@ void Mesh::calculateInside()
 			}
 
 			outside_points_sum.push_back(total_outside);
-			if (!insides.empty())
+
+			if (inside_points__w_index.find(center_point) != inside_points__w_index.end())
 			{
-				if (inside_points__w_index.find(center_point) != inside_points__w_index.end())
-				{
-					insides[inside_points__w_index[center_point]] = total_w;
-				}
-				else
-				{
-					inside_points__w_index[center_point] = insides_size++;
-					insides.push_back(total_w);
-				}
-				inside_points_w.push_back(insides);
+				insides[inside_points__w_index[center_point]] = total_w;
 			}
+			else
+			{
+				inside_points__w_index[center_point] = insides_size++;
+				insides.push_back(total_w);
+			}
+			inside_points_w.push_back(insides);
 		}
 	}
 	printf("-----------------------------------\n");
 
 
-
-	Eigen::MatrixXd A(2, 2);
-	Eigen::VectorXd b(2);
-
-	std::vector<std::vector<double>> vec;
-	std::vector<double> aa{ 8,2 };
-	std::vector<double> aaa{ 6,9 };
-	std::vector<double> bb{ 74,41 };
-	vec.push_back(aa);
-	vec.push_back(aaa);
-
-	//b = Eigen::Map<Eigen::MatrixXd>(bb.data());
-
-	for (int i = 0; i < 2; i++)
+	if (insides_size > 0)
 	{
-		for (int j = 0; j < 2; j++)
+		Eigen::MatrixXf A(insides_size, insides_size);
+		Eigen::VectorXf b(insides_size);
+
+		for (int k = 0; k < 2; k++)
 		{
-			A(j, i) = vec[i][j];
+			for (int i = 0; i < insides_size; i++)
+			{
+				if (inside_points_w.size() < insides_size)
+					inside_points_w.resize(insides_size);
+				for (int j = 0; j < insides_size; j++)
+				{
+					A(j, i) = inside_points_w[i][j];
+				}
+				b(i) = outside_points_sum[i][k];
+			}
+
+			Eigen::VectorXf x = A.lu().solve(b);
+
+			std::cout << (k == 0 ? 'x' : 'y') << " = " << x.transpose() << std::endl;
 		}
-		b(i) = bb[i];
 	}
-
-	//Eigen::FullPivLU<Eigen::Matrix<double, 2, 2>> lu_decomp(A);
-	Eigen::VectorXd x = A.lu().solve(b);
-
-	std::cout << "x = " << x.transpose() << std::endl;
-
 	//setLinePosition();
 }
