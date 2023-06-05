@@ -408,9 +408,11 @@ void Mesh::calculateSurround(std::vector<TriMesh::Point>& points)
 void Mesh::calculateInside()
 {
 	int count = 0;
-	std::vector<TriMesh::Point> outside_points;
-	std::vector<std::vector<std::pair<TriMesh::Point, float>>> inside_points;
+	std::vector<TriMesh::Point> outside_points_sum;
+	std::vector<std::vector<float>> inside_points_w;
+	std::map<TriMesh::Point, int> inside_points__w_index;
 
+	int insides_size = 0;
 
 	for (auto v_it = selected.vertices_begin(); v_it != selected.vertices_end(); v_it++) //find center_point
 	{
@@ -426,11 +428,12 @@ void Mesh::calculateInside()
 			TriMesh::Point total_outside(0.0f);
 			float total_w = 0.0f;
 
-			std::vector<std::pair<TriMesh::Point, float>> insides;
+			std::vector<float> insides;
+			insides.resize(insides_size);
 
 			for (auto voh_it = selected.voh_begin(*v_it); voh_it != selected.voh_end(*v_it); voh_it++)
 			{
-				TriMesh::Point v = selected.point(selected.to_vertex_handle(voh_it));
+				TriMesh::Point v = selected.point(selected.to_vertex_handle(*voh_it));
 				if (point3D_2D.find(v) != point3D_2D.end()) //boundary point
 				{
 					TriMesh::Point p = point3D_2D[v];
@@ -476,43 +479,61 @@ void Mesh::calculateInside()
 					float w = 1.0f / glm::tan(beta) + 1.0f / glm::tan(gamma);
 					total_w += w;
 
-					insides.push_back({ v,w });
+					if (inside_points__w_index.find(v) != inside_points__w_index.end())
+					{
+						insides[inside_points__w_index[v]] = -w;
+					}
+					else
+					{
+						inside_points__w_index[v] = insides_size++;
+						insides.push_back(-w);
+					}
 				}
 			}
 
-			outside_points.push_back(total_outside);
+			outside_points_sum.push_back(total_outside);
 			if (!insides.empty())
 			{
-				insides.push_back({ center_point, total_w });
-				inside_points.push_back(insides);
+				if (inside_points__w_index.find(center_point) != inside_points__w_index.end())
+				{
+					insides[inside_points__w_index[center_point]] = total_w;
+				}
+				else
+				{
+					inside_points__w_index[center_point] = insides_size++;
+					insides.push_back(total_w);
+				}
+				inside_points_w.push_back(insides);
 			}
 		}
 	}
 	printf("-----------------------------------\n");
 
-	/*Eigen::Matrix<double, 5, 5> A;
-	Eigen::Matrix<double, 5, 1> b;
 
-	std::vector<double> vec {
-			1, 2, -1, 3, 4,
-			2, 1, -3, 4, 5,
-			-3, 1, 1, 2, -1,
-			4, -2, 5, 1, 3,
-			5, 3, -4, -1, 2
-	};
 
-	
-	A = Eigen::Map<Eigen::Matrix<double, 5, 5>>(vec.data());
-	b << 4, -7, 2, 1, 3;
+	Eigen::Matrix<double, 2, 2> A;
+	Eigen::Matrix<double, 2, 1> b;
 
-	Eigen::FullPivLU<Eigen::Matrix<double, 5, 5>> lu_decomp(A);
-	Eigen::Matrix<double, 5, 1> x = lu_decomp.solve(b);
+	std::vector<std::vector<double>> vec;
+	std::vector<double> aa{ 8,2 };
+	std::vector<double> aaa{ 6,9 };
+	std::vector<double> bb{ 74,41 };
+	vec.push_back(aa);
+	vec.push_back(aaa);
+
+	b = Eigen::Map<Eigen::Matrix<double, 2, 1>>(bb.data());
+
+	for(int i = 0; i < 2; i++)
+		for (int j = 0; j < 2; j++)
+		{
+			A(i,j) = vec[j][i];
+		}
+
+	Eigen::FullPivLU<Eigen::Matrix<double, 2, 2>> lu_decomp(A);
+	Eigen::Matrix<double, 2, 1> x = lu_decomp.solve(b);
 
 	std::cout << "x1 = " << x(0) << std::endl;
 	std::cout << "x2 = " << x(1) << std::endl;
-	std::cout << "x3 = " << x(2) << std::endl;
-	std::cout << "x4 = " << x(3) << std::endl;
-	std::cout << "x5 = " << x(4) << std::endl;*/
 
 	//setLinePosition();
 }
