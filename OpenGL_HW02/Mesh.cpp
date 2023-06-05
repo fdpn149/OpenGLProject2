@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include <GL/glew.h>
 #include <vector>
+#include <eigen3/Eigen/Dense>
 #include "Shader.h"
 
 glm::vec3 Mesh::pointToVec3(const TriMesh::Point& point)
@@ -39,8 +40,8 @@ Mesh::Mesh()
 {
 	modelMat = glm::mat4(1.0f);
 
-	OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
-	//OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
+	//OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
+	OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
 
 	model.request_face_normals();
 	model.request_vertex_status();
@@ -410,6 +411,7 @@ void Mesh::calculateInside()
 	std::vector<TriMesh::Point> outside_points;
 	std::vector<std::vector<std::pair<TriMesh::Point, float>>> inside_points;
 
+
 	for (auto v_it = selected.vertices_begin(); v_it != selected.vertices_end(); v_it++) //find center_point
 	{
 		if (!selected.is_boundary(*v_it))
@@ -423,6 +425,8 @@ void Mesh::calculateInside()
 
 			TriMesh::Point total_outside(0.0f);
 			float total_w = 0.0f;
+
+			std::vector<std::pair<TriMesh::Point, float>> insides;
 
 			for (auto voh_it = selected.voh_begin(*v_it); voh_it != selected.voh_end(*v_it); voh_it++)
 			{
@@ -471,14 +475,44 @@ void Mesh::calculateInside()
 
 					float w = 1.0f / glm::tan(beta) + 1.0f / glm::tan(gamma);
 					total_w += w;
-					//inside_points.push_back({ v, w });
+
+					insides.push_back({ v,w });
 				}
+			}
 
-
-
+			outside_points.push_back(total_outside);
+			if (!insides.empty())
+			{
+				insides.push_back({ center_point, total_w });
+				inside_points.push_back(insides);
 			}
 		}
 	}
 	printf("-----------------------------------\n");
+
+	/*Eigen::Matrix<double, 5, 5> A;
+	Eigen::Matrix<double, 5, 1> b;
+
+	std::vector<double> vec {
+			1, 2, -1, 3, 4,
+			2, 1, -3, 4, 5,
+			-3, 1, 1, 2, -1,
+			4, -2, 5, 1, 3,
+			5, 3, -4, -1, 2
+	};
+
+	
+	A = Eigen::Map<Eigen::Matrix<double, 5, 5>>(vec.data());
+	b << 4, -7, 2, 1, 3;
+
+	Eigen::FullPivLU<Eigen::Matrix<double, 5, 5>> lu_decomp(A);
+	Eigen::Matrix<double, 5, 1> x = lu_decomp.solve(b);
+
+	std::cout << "x1 = " << x(0) << std::endl;
+	std::cout << "x2 = " << x(1) << std::endl;
+	std::cout << "x3 = " << x(2) << std::endl;
+	std::cout << "x4 = " << x(3) << std::endl;
+	std::cout << "x5 = " << x(4) << std::endl;*/
+
 	//setLinePosition();
 }
