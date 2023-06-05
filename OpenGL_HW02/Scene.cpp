@@ -170,14 +170,9 @@ void Scene::changePosition(int x, int y)
 
 void Scene::calculateSurround(std::vector<TriMesh::Point>& points)
 {
-	std::vector<float> percent;
-	mesh->calculateSurround(percent);
-
-	points.clear();
-	for (const float& f : percent)
-	{
-		points.push_back(percentToXY(f));
-	}
+	
+	mesh->calculateSurround(points);
+	mesh->calculateInside();
 }
 
 void Scene::changeDistance(int delta)

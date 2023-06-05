@@ -23,6 +23,8 @@ class Mesh
 
 	std::vector<TriMesh::Point> lines;
 
+	std::map<TriMesh::Point, TriMesh::Point> point3D_2D;
+
 	TriMesh selected;
 
 	uint vert_vbo;
@@ -33,6 +35,7 @@ class Mesh
 
 	glm::vec3 pointToVec3(const TriMesh::Point& point);
 	TriMesh::Point vec3ToPoint(const glm::vec3 vec);
+	TriMesh::Point percentToXY(float percent);
 public:
 	Mesh();
 	void draw();
@@ -48,5 +51,6 @@ public:
 	void setPointPosition(glm::vec3 position);
 	void setLinePosition();
 
-	void calculateSurround(std::vector<float>& percent);
+	void calculateSurround(std::vector<TriMesh::Point>& points);
+	void calculateInside();
 };
