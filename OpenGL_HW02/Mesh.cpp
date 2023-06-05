@@ -511,8 +511,8 @@ void Mesh::calculateInside()
 
 
 
-	Eigen::Matrix<double, 2, 2> A;
-	Eigen::Matrix<double, 2, 1> b;
+	Eigen::MatrixXd A(2, 2);
+	Eigen::VectorXd b(2);
 
 	std::vector<std::vector<double>> vec;
 	std::vector<double> aa{ 8,2 };
@@ -521,19 +521,21 @@ void Mesh::calculateInside()
 	vec.push_back(aa);
 	vec.push_back(aaa);
 
-	b = Eigen::Map<Eigen::Matrix<double, 2, 1>>(bb.data());
+	//b = Eigen::Map<Eigen::MatrixXd>(bb.data());
 
-	for(int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++)
+	{
 		for (int j = 0; j < 2; j++)
 		{
-			A(i,j) = vec[j][i];
+			A(j, i) = vec[i][j];
 		}
+		b(i) = bb[i];
+	}
 
-	Eigen::FullPivLU<Eigen::Matrix<double, 2, 2>> lu_decomp(A);
-	Eigen::Matrix<double, 2, 1> x = lu_decomp.solve(b);
+	//Eigen::FullPivLU<Eigen::Matrix<double, 2, 2>> lu_decomp(A);
+	Eigen::VectorXd x = A.lu().solve(b);
 
-	std::cout << "x1 = " << x(0) << std::endl;
-	std::cout << "x2 = " << x(1) << std::endl;
+	std::cout << "x = " << x.transpose() << std::endl;
 
 	//setLinePosition();
 }
