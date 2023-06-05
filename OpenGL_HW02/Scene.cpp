@@ -172,7 +172,11 @@ void Scene::calculateSurround(std::vector<TriMesh::Point>& points)
 {
 	
 	mesh->calculateSurround(points);
-	mesh->calculateInside();
+}
+
+void Scene::calculateInside(std::vector<TriMesh::Point>& points)
+{
+	mesh->calculateInside(points);
 }
 
 void Scene::changeDistance(int delta)

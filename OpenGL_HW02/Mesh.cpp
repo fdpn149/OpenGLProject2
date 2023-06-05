@@ -405,7 +405,7 @@ void Mesh::calculateSurround(std::vector<TriMesh::Point>& points)
 
 
 
-void Mesh::calculateInside()
+void Mesh::calculateInside(std::vector<TriMesh::Point>& points)
 {
 	int count = 0;
 	std::vector<TriMesh::Point> outside_points_sum;
@@ -418,6 +418,9 @@ void Mesh::calculateInside()
 	{
 		if (!selected.is_boundary(*v_it))
 		{
+			printf("-----------------------------------\n");
+
+
 			TriMesh::Point center_point = selected.point(*v_it);
 			glm::vec3 center_vec = pointToVec3(center_point);
 
@@ -505,20 +508,23 @@ void Mesh::calculateInside()
 			inside_points_w.push_back(insides);
 		}
 	}
-	printf("-----------------------------------\n");
-
 
 	if (insides_size > 0)
 	{
 		Eigen::MatrixXf A(insides_size, insides_size);
 		Eigen::VectorXf b(insides_size);
+		Eigen::VectorXf x;
+
+		std::vector<float> all_x;
+
+		inside_points_w.resize(insides_size);
 
 		for (int k = 0; k < 2; k++)
 		{
 			for (int i = 0; i < insides_size; i++)
 			{
-				if (inside_points_w.size() < insides_size)
-					inside_points_w.resize(insides_size);
+				if (inside_points_w[i].size() < insides_size)
+					inside_points_w[i].resize(insides_size);
 				for (int j = 0; j < insides_size; j++)
 				{
 					A(j, i) = inside_points_w[i][j];
@@ -526,9 +532,16 @@ void Mesh::calculateInside()
 				b(i) = outside_points_sum[i][k];
 			}
 
-			Eigen::VectorXf x = A.lu().solve(b);
+			x = A.lu().solve(b);
+			if (k == 0)
+				all_x = std::vector<float>(x.data(), x.data() + x.size());
 
 			std::cout << (k == 0 ? 'x' : 'y') << " = " << x.transpose() << std::endl;
+		}
+
+		for (int i = 0; i < insides_size; i++)
+		{
+			points.push_back(TriMesh::Point(all_x[i], x(i), 0));
 		}
 	}
 	//setLinePosition();

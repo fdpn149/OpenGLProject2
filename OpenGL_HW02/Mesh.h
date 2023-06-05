@@ -52,5 +52,5 @@ public:
 	void setLinePosition();
 
 	void calculateSurround(std::vector<TriMesh::Point>& points);
-	void calculateInside();
+	void calculateInside(std::vector<TriMesh::Point>& points);
 };

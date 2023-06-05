@@ -259,6 +259,14 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 		if (pen->Color == Color::Blue) pen->Color = Color::Red;
 		else pen->Color = Color::Blue;
 		graph->DrawLine(pen, prev_pointf, transCoord(points[0]));
+
+		std::vector<TriMesh::Point> points2;
+		scene->calculateInside(points2);
+		for (auto it = points2.begin(); it != points2.end(); it++)
+		{
+			PointF pointf = transCoord(*it);
+			drawPoint(pointf);
+		}
 	}
 
 	hkoglPanelControl1->Invalidate();
@@ -301,6 +309,14 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::
 		if (pen->Color == Color::Blue) pen->Color = Color::Red;
 		else pen->Color = Color::Blue;
 		graph->DrawLine(pen, prev_pointf, transCoord(points[0]));
+		
+		std::vector<TriMesh::Point> points2;
+		scene->calculateInside(points2);
+		for (auto it = points2.begin(); it != points2.end(); it++)
+		{
+			PointF pointf = transCoord(*it);
+			drawPoint(pointf);
+		}
 	}
 }
 
@@ -332,4 +348,11 @@ System::Void CppCLRWinformsProject::Form1::testKeyToolStripMenuItem_Click(System
 System::Drawing::PointF CppCLRWinformsProject::Form1::transCoord(TriMesh::Point point)
 {
 	return PointF(40 + point[0] * 160, 200 - point[1] * 160);
+}
+
+void CppCLRWinformsProject::Form1::drawPoint(PointF point)
+{
+	Pen^ pen2 = gcnew Pen(Color::Green, 10);
+	PointF point2(point.X, point.Y + 10);
+	graph->DrawLine(pen2, point, point2);
 }
