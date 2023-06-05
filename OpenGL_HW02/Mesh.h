@@ -23,7 +23,7 @@ class Mesh
 
 	std::vector<TriMesh::Point> lines;
 
-	std::map<TriMesh::Point, TriMesh::Point> point3D_2D;
+	std::map<TriMesh::Point, TriMesh::Point> point3D_2D;	//convert world point to 2d xy point (0.0f~1.0f)
 
 	TriMesh selected;
 
@@ -31,17 +31,16 @@ class Mesh
 	uint vbo, vao, ebo;
 	uint vao2, vbo2;
 
-	uint vao3, vbo3;
+	uint vao3, vbo3;	//Draw Line (For Debug)
 
 	glm::vec3 pointToVec3(const TriMesh::Point& point);
-	TriMesh::Point vec3ToPoint(const glm::vec3 vec);
 	TriMesh::Point percentToXY(float percent);
 public:
 	Mesh();
 	void draw();
-	void drawFace();
+	void drawFace();	//Useless
 	void drawPoint();
-	void drawLine();
+	void drawLine();	//For Debug
 	void drawSelected();
 
 	void addSelectedFace(uint faceID);
