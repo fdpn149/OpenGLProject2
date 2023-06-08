@@ -36,11 +36,11 @@ Mesh::Mesh()
 	modelMat = glm::mat4(1.0f);
 
 	bool status;
-	//status = OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
+	status = OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
 	//status = OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
 	//status = OpenMesh::IO::read_mesh(model, "assets/models/icosahedron.obj");
 	//status = OpenMesh::IO::read_mesh(model, "assets/models/octahedron.obj");
-	status = OpenMesh::IO::read_mesh(model, "assets/models/rhombic-triacontahedron.obj");
+	//status = OpenMesh::IO::read_mesh(model, "assets/models/rhombic-triacontahedron.obj");
 
 	if (status == false)
 		throw "Error";
@@ -48,8 +48,6 @@ Mesh::Mesh()
 	model.request_vertex_status();
 	model.request_face_status();
 	model.request_edge_status();
-
-
 	model.request_face_normals();
 	model.update_normals();
 
@@ -170,6 +168,10 @@ void Mesh::addSelectedFace(uint faceID)
 #ifdef WRITE_OBJ
 			OpenMesh::IO::write_mesh(selected, "assets/models/selected.obj");
 #endif // WRITE_OBJ
+			selected.request_vertex_status();
+			selected.request_face_status();
+			selected.request_edge_status();
+
 			std::vector<TriMesh::Point> vertices;
 			for (TriMesh::VertexIter v_it = selected.vertices_begin(); v_it != selected.vertices_end(); ++v_it)
 				vertices.push_back(selected.point(*v_it));
@@ -230,6 +232,10 @@ void Mesh::deleteSelectedFace(uint faceID)
 #ifdef WRITE_OBJ
 		OpenMesh::IO::write_mesh(selected, "assets/models/selected.obj");
 #endif
+		selected.request_vertex_status();
+		selected.request_face_status();
+		selected.request_edge_status();
+
 		std::vector<TriMesh::Point> vertices;
 		for (TriMesh::VertexIter v_it = selected.vertices_begin(); v_it != selected.vertices_end(); ++v_it)
 			vertices.push_back(selected.point(*v_it));
