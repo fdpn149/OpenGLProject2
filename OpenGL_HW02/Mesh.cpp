@@ -35,33 +35,33 @@ Mesh::Mesh()
 {
 	modelMat = glm::mat4(1.0f);
 
-	//OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
-	OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
+	bool status;
+	//status = OpenMesh::IO::read_mesh(model, "assets/models/UnionSphere.obj");
+	//status = OpenMesh::IO::read_mesh(model, "assets/models/armadillo.obj");
+	//status = OpenMesh::IO::read_mesh(model, "assets/models/icosahedron.obj");
+	//status = OpenMesh::IO::read_mesh(model, "assets/models/octahedron.obj");
+	status = OpenMesh::IO::read_mesh(model, "assets/models/rhombic-triacontahedron.obj");
 
-	model.request_face_normals();
+	if (status == false)
+		throw "Error";
+
 	model.request_vertex_status();
 	model.request_face_status();
 	model.request_edge_status();
+
+
+	model.request_face_normals();
 	model.update_normals();
 
 	std::vector<TriMesh::Point> vertices;
-	vertices.reserve(model.n_vertices());
+
 	for (TriMesh::VertexIter v_it = model.vertices_begin(); v_it != model.vertices_end(); ++v_it)
-	{
 		vertices.push_back(model.point(*v_it));
 
-		TriMesh::Point p = model.point(*v_it);
-	}
-
 	std::vector<uint> indices;
-	indices.reserve(model.n_faces() * 3);
 	for (TriMesh::FaceIter f_it = model.faces_begin(); f_it != model.faces_end(); ++f_it)
-	{
 		for (TriMesh::FaceVertexIter fv_it = model.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
-		{
 			indices.push_back(fv_it->idx());
-		}
-	}
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -84,12 +84,8 @@ Mesh::Mesh()
 	glGenVertexArrays(1, &vao2);
 	glGenBuffers(1, &vbo2);
 
-
-
 	glGenVertexArrays(1, &vao3);
 	glGenBuffers(1, &vbo3);
-
-
 }
 
 void Mesh::draw()
@@ -174,32 +170,15 @@ void Mesh::addSelectedFace(uint faceID)
 #ifdef WRITE_OBJ
 			OpenMesh::IO::write_mesh(selected, "assets/models/selected.obj");
 #endif // WRITE_OBJ
-
-			selected.request_face_normals();
-			selected.request_vertex_status();
-			selected.request_face_status();
-			selected.request_edge_status();
-			selected.update_normals();
-
 			std::vector<TriMesh::Point> vertices;
-			vertices.reserve(selected.n_vertices());
 			for (TriMesh::VertexIter v_it = selected.vertices_begin(); v_it != selected.vertices_end(); ++v_it)
-			{
 				vertices.push_back(selected.point(*v_it));
 
-				TriMesh::Point p = selected.point(*v_it);
-			}
-
 			std::vector<uint> indices;
-			indices.reserve(selected.n_faces() * 3);
 			for (TriMesh::FaceIter f_it = selected.faces_begin(); f_it != selected.faces_end(); ++f_it)
-			{
 				for (TriMesh::FaceVertexIter fv_it = selected.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
-				{
 					indices.push_back(fv_it->idx());
-				}
-			}
-
+				
 			glBindVertexArray(vao2);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo2);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
@@ -251,32 +230,14 @@ void Mesh::deleteSelectedFace(uint faceID)
 #ifdef WRITE_OBJ
 		OpenMesh::IO::write_mesh(selected, "assets/models/selected.obj");
 #endif
-
-		selected.request_face_normals();
-		selected.request_vertex_status();
-		selected.request_face_status();
-		selected.request_edge_status();
-		selected.update_normals();
-
 		std::vector<TriMesh::Point> vertices;
-		vertices.reserve(selected.n_vertices());
 		for (TriMesh::VertexIter v_it = selected.vertices_begin(); v_it != selected.vertices_end(); ++v_it)
-		{
 			vertices.push_back(selected.point(*v_it));
 
-			TriMesh::Point p = selected.point(*v_it);
-		}
-
 		std::vector<uint> indices;
-		indices.reserve(selected.n_faces() * 3);
 		for (TriMesh::FaceIter f_it = selected.faces_begin(); f_it != selected.faces_end(); ++f_it)
-		{
 			for (TriMesh::FaceVertexIter fv_it = selected.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
-			{
 				indices.push_back(fv_it->idx());
-			}
-		}
-
 
 		glBindVertexArray(vao2);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo2);
@@ -378,6 +339,7 @@ void Mesh::calculateSurround(std::vector<TriMesh::Point>& points)
 		to_point.push_back(p1);
 
 		float length = (p1 - p2).norm();
+		printf("length:\t%f\n", length);
 
 		percent.push_back(length);
 		total += length;
@@ -421,7 +383,7 @@ void Mesh::calculateInside(std::vector<std::vector<TriMesh::Point>>& points)
 	{
 		if (!selected.is_boundary(*v_it))	//is not boundary point
 		{
-			//printf("-----------------------------------\n");
+			printf("-----------------------------------\n");
 
 			TriMesh::Point center_point = selected.point(*v_it);
 			glm::vec3 center_vec = pointToVec3(center_point);
@@ -445,7 +407,7 @@ void Mesh::calculateInside(std::vector<std::vector<TriMesh::Point>>& points)
 				{
 					TriMesh::Point p = boundary_point3D_2D[v];
 					connect.push_back(p);
-					//printf("%f %f %f\n", p[0], p[1], p[2]);
+					printf("%f %f %f\n", p[0], p[1], p[2]);
 					prev_point = selected.point(selected.opposite_vh(*voh_it));
 					curr_point = selected.point(selected.to_vertex_handle(*voh_it));
 					next_point = selected.point(selected.opposite_he_opposite_vh(*voh_it));
