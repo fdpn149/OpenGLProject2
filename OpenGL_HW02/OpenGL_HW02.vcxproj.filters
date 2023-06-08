@@ -124,5 +124,20 @@
     <Object Include="assets\models\armadillo.obj">
       <Filter>Object Files</Filter>
     </Object>
+    <Object Include="assets\models\triangles.obj">
+      <Filter>Object Files</Filter>
+    </Object>
+    <Object Include="assets\models\icosahedron.obj">
+      <Filter>Object Files</Filter>
+    </Object>
+    <Object Include="assets\models\octahedron.obj">
+      <Filter>Object Files</Filter>
+    </Object>
+    <Object Include="assets\models\rhombic-triacontahedron.obj">
+      <Filter>Object Files</Filter>
+    </Object>
+    <Object Include="assets\models\selected.obj">
+      <Filter>Object Files</Filter>
+    </Object>
   </ItemGroup>
 </Project>
