@@ -1,21 +1,29 @@
 #include "pch.h"
 #include "Form1.h"
 
-// #include "Form1.h"
+/*                 Standard                 */
+#include <iostream>
+
+
+/*                 OpenGL                   */
 #define GLEW_STATIC
 #include <GL/glew.h>
-#include <iostream>
+
+
+/*                 GLM                      */
+#include <glm/glm.hpp>
+
+
+/*                 My Class                 */
+#include "Scene.h"
+#include "Config.h"
+#include "utilities.h"
+
 
 CppCLRWinformsProject::Form1::Form1(void)
 {
 	InitializeComponent();
-	graph = this->panel1->CreateGraphics();
-	pen = gcnew Pen(Color::Blue, 3);
 }
-
-/// <summary>
-/// Verwendete Ressourcen bereinigen.
-/// </summary>
 
 CppCLRWinformsProject::Form1::~Form1()
 {
@@ -26,11 +34,7 @@ CppCLRWinformsProject::Form1::~Form1()
 	}
 }
 
-/// <summary>
-/// Erforderliche Methode für die Designerunterstützung.
-/// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
-/// </summary>
-
+/* WindowsForm Initializer. (Don't manully modify this function)*/
 void CppCLRWinformsProject::Form1::InitializeComponent(void)
 {
 	this->components = (gcnew System::ComponentModel::Container());
@@ -44,9 +48,8 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->pickToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->deleteToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->vertexToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-	this->toolStripContainer2 = (gcnew System::Windows::Forms::ToolStripContainer());
-	this->panel1 = (gcnew System::Windows::Forms::Panel());
 	this->testKeyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+	this->toolStripContainer2 = (gcnew System::Windows::Forms::ToolStripContainer());
 	this->menuStrip1->SuspendLayout();
 	this->toolStripContainer2->ContentPanel->SuspendLayout();
 	this->toolStripContainer2->TopToolStripPanel->SuspendLayout();
@@ -81,10 +84,8 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->hkoglPanelControl1->TabIndex = 0;
 	this->hkoglPanelControl1->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl1_Load);
 	this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
-	this->hkoglPanelControl1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &Form1::hkoglPanelControl1_KeyPress);
 	this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
 	this->hkoglPanelControl1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseMove);
-	this->hkoglPanelControl1->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseUp);
 	this->hkoglPanelControl1->MouseWheel += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseWheel);
 	// 
 	// menuStrip1
@@ -114,29 +115,36 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 			this->deleteToolStripMenuItem
 	});
 	this->faceToolStripMenuItem->Name = L"faceToolStripMenuItem";
-	this->faceToolStripMenuItem->Size = System::Drawing::Size(180, 22);
+	this->faceToolStripMenuItem->Size = System::Drawing::Size(132, 22);
 	this->faceToolStripMenuItem->Text = L"Face";
 	// 
 	// pickToolStripMenuItem
 	// 
 	this->pickToolStripMenuItem->Name = L"pickToolStripMenuItem";
-	this->pickToolStripMenuItem->Size = System::Drawing::Size(180, 22);
+	this->pickToolStripMenuItem->Size = System::Drawing::Size(111, 22);
 	this->pickToolStripMenuItem->Text = L"Pick";
 	this->pickToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::pickToolStripMenuItem_Click);
 	// 
 	// deleteToolStripMenuItem
 	// 
 	this->deleteToolStripMenuItem->Name = L"deleteToolStripMenuItem";
-	this->deleteToolStripMenuItem->Size = System::Drawing::Size(180, 22);
+	this->deleteToolStripMenuItem->Size = System::Drawing::Size(111, 22);
 	this->deleteToolStripMenuItem->Text = L"Delete";
 	this->deleteToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::deleteToolStripMenuItem_Click);
 	// 
 	// vertexToolStripMenuItem
 	// 
 	this->vertexToolStripMenuItem->Name = L"vertexToolStripMenuItem";
-	this->vertexToolStripMenuItem->Size = System::Drawing::Size(180, 22);
+	this->vertexToolStripMenuItem->Size = System::Drawing::Size(132, 22);
 	this->vertexToolStripMenuItem->Text = L"PickVertex";
 	this->vertexToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::vertexToolStripMenuItem_Click);
+	// 
+	// testKeyToolStripMenuItem
+	// 
+	this->testKeyToolStripMenuItem->Name = L"testKeyToolStripMenuItem";
+	this->testKeyToolStripMenuItem->Size = System::Drawing::Size(132, 22);
+	this->testKeyToolStripMenuItem->Text = L"TestKey";
+	this->testKeyToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::testKeyToolStripMenuItem_Click);
 	// 
 	// toolStripContainer2
 	// 
@@ -144,7 +152,6 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// toolStripContainer2.ContentPanel
 	// 
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->panel1);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl1);
 	this->toolStripContainer2->ContentPanel->Size = System::Drawing::Size(1188, 604);
 	this->toolStripContainer2->Dock = System::Windows::Forms::DockStyle::Fill;
@@ -159,21 +166,6 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// toolStripContainer2.TopToolStripPanel
 	// 
 	this->toolStripContainer2->TopToolStripPanel->Controls->Add(this->menuStrip1);
-	// 
-	// panel1
-	// 
-	this->panel1->BackColor = System::Drawing::Color::White;
-	this->panel1->Location = System::Drawing::Point(886, 103);
-	this->panel1->Name = L"panel1";
-	this->panel1->Size = System::Drawing::Size(240, 240);
-	this->panel1->TabIndex = 1;
-	// 
-	// testKeyToolStripMenuItem
-	// 
-	this->testKeyToolStripMenuItem->Name = L"testKeyToolStripMenuItem";
-	this->testKeyToolStripMenuItem->Size = System::Drawing::Size(180, 22);
-	this->testKeyToolStripMenuItem->Text = L"TestKey";
-	this->testKeyToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::testKeyToolStripMenuItem_Click);
 	// 
 	// Form1
 	// 
@@ -197,17 +189,18 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 
 }
 
+System::Void CppCLRWinformsProject::Form1::timer1_Tick(System::Object^ sender, System::EventArgs^ e)
+{
+	hkoglPanelControl1->Invalidate();
+}
+
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_Load(System::Object^ sender, System::EventArgs^ e)
 {
 	GLenum res = glewInit();
-	if (res != GLEW_OK) {
+	if (res != GLEW_OK) 
+	{
 		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
 	}
-
-	int ver[2] = { 0, 0 };
-	glGetIntegerv(GL_MAJOR_VERSION, &ver[0]);
-	glGetIntegerv(GL_MINOR_VERSION, &ver[1]);
-	printf("OpenGL Version: %d.%d\n", ver[0], ver[1]);
 
 	scene = new Scene;
 
@@ -223,148 +216,101 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_Paint(System::Obje
 	scene->draw();
 }
 
-System::Void CppCLRWinformsProject::Form1::timer1_Tick(System::Object^ sender, System::EventArgs^ e)
-{
-	hkoglPanelControl1->Invalidate();
-}
-
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
-	if (e->Button.ToString() == "Right")
-		scene->changeDirection(e->X, e->Y);
-	else if (e->Button.ToString() == "Middle")
-		scene->changePosition(e->X, e->Y);
-	else if (e->Button.ToString() == "Left")
-		scene->picking(e->X, e->Y);
-
-
+	/* Mouse0 handler */
 	if (e->Button.ToString() == "Left")
 	{
-		graph->Clear(Color::White);
+		scene->pick(e->X, e->Y);
+	}
+	/* Mouse1 handler*/
+	else if (e->Button.ToString() == "Right")
+	{
+		glm::vec4 position(scene->getCameraRef().getPosition(), 1.0f);
+		glm::vec4 pivot(scene->getCameraRef().getLookAt(), 1.0f);
 
-		std::vector<TriMesh::Point> points;
-		scene->calculateSurround(points);
-		if (points.size() == 0)return;
 
-		PointF prev_pointf = transCoord(points[0]);
+		/* Calculate the amount of rotation */
 
-		for (auto it = points.begin() + 1; it != points.end(); it++)
+		float deltaAngleX = 2 * glm::pi<float>() / Config::SCR_W;
+		float deltaAngleY =		glm::pi<float>() / Config::SCR_H;
+
+		float xAngle = (lastMouseX - e->X) * deltaAngleX;
+		float yAngle = (lastMouseY - e->Y) * deltaAngleY;
+
+		// handle camera direction equal to up vector
+		float cosAngle = glm::dot(scene->getCameraRef().getViewDir(), scene->getCameraRef().getUpVector());
+
+		if (cosAngle * Utils::sgn(yAngle) > 0.99f)
 		{
-			PointF pointf = transCoord(*it);
-			graph->DrawLine(pen, prev_pointf, pointf);
-			prev_pointf = pointf;
+			yAngle = 0.0f;
 		}
-		graph->DrawLine(pen, prev_pointf, transCoord(points[0]));
 
-		std::vector<std::vector<TriMesh::Point>> points2;
-		scene->calculateInside(points2);
 
-		if (points2.size() == 0)return;
+		/* Rotate camera around y-axis */
 
-		for (int i = 0; i < points2.size(); i++)
-		{
-			prev_pointf = transCoord(points2[i][0]);
+		glm::mat4 rotationMatX(1.0f);
+		rotationMatX = glm::rotate(rotationMatX, xAngle, scene->getCameraRef().getUpVector());
+		position = (rotationMatX * (position - pivot)) + pivot;
 
-			for (auto it = points2[i].begin() + 1; it != points2[i].end(); it++)
-			{
-				PointF pointf = transCoord(*it);
-				graph->DrawLine(pen, prev_pointf, pointf);
-				prev_pointf = pointf;
-			}
-			graph->DrawLine(pen, prev_pointf, transCoord(points2[i][0]));
-		}
+
+		/* Rotate camera around x-axis*/
+
+		glm::mat4 rotationMatY(1.0f);
+		rotationMatY = glm::rotate(rotationMatY, yAngle, scene->getCameraRef().getRightVector());
+		glm::vec3 finalPos = (rotationMatY * (position - pivot)) + pivot;
+
+
+		/* Update camera */
+
+		scene->getCameraRef().setCameraView(finalPos, scene->getCameraRef().getLookAt(), scene->getCameraRef().getUpVector());
+
+
+		/* Update mouse position for next rotation */
+
+		lastMouseX = e->X;
+		lastMouseY = e->Y;
 	}
 
-	hkoglPanelControl1->Invalidate();
-}
-
-System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
-{
-	scene->mouseUp();
-}
-
-System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)
-{
-	scene->changePosition(e->KeyChar, deltaTime);
 	hkoglPanelControl1->Invalidate();
 }
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
-	if (e->Button.ToString() == "Left")
-		scene->picking(e->X, e->Y);
-
+	/* Mouse0 handler*/
 	if (e->Button.ToString() == "Left")
 	{
-		graph->Clear(Color::White);
-
-		std::vector<TriMesh::Point> points;
-		scene->calculateSurround(points);
-		if (points.size() == 0)return;
-
-		PointF prev_pointf = transCoord(points[0]);
-
-		for (auto it = points.begin() + 1; it != points.end(); it++)
-		{
-			PointF pointf = transCoord(*it);
-			graph->DrawLine(pen, prev_pointf, pointf);
-			prev_pointf = pointf;
-		}
-		graph->DrawLine(pen, prev_pointf, transCoord(points[0]));
-		
-		std::vector<std::vector<TriMesh::Point>> points2;
-		scene->calculateInside(points2);
-
-		if (points2.size() == 0)return;
-
-		for (int i = 0; i < points2.size(); i++)
-		{
-			prev_pointf = transCoord(points2[i][0]);
-
-			for (auto it = points2[i].begin() + 1; it != points2[i].end(); it++)
-			{
-				PointF pointf = transCoord(*it);
-				graph->DrawLine(pen, prev_pointf, pointf);
-				prev_pointf = pointf;
-			}
-			graph->DrawLine(pen, prev_pointf, transCoord(points2[i][0]));
-		}
+		scene->pick(e->X, e->Y);
+	}
+	/* Mouse1 handler */
+	else if (e->Button.ToString() == "Right")
+	{
+		lastMouseX = e->X;
+		lastMouseY = e->Y;
 	}
 }
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseWheel(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
-	scene->changeDistance(e->Delta);
+	scene->getCameraRef().increaseCameraDistance(e->Delta);
 }
 
 System::Void CppCLRWinformsProject::Form1::pickToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	scene->mode = 0;
+	scene->setPickMode(PickMode::ADD_FACE);
 }
 
 System::Void CppCLRWinformsProject::Form1::deleteToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	scene->mode = 1;
+	scene->setPickMode(PickMode::DELETE_FACE);
 }
 
 System::Void CppCLRWinformsProject::Form1::vertexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	scene->mode = 2;
+	scene->setPickMode(PickMode::POINT);
 }
 
 System::Void CppCLRWinformsProject::Form1::testKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
 {
 
-}
-
-System::Drawing::PointF CppCLRWinformsProject::Form1::transCoord(TriMesh::Point point)
-{
-	return PointF(40 + point[0] * 160, 200 - point[1] * 160);
-}
-
-void CppCLRWinformsProject::Form1::drawPoint(PointF point)
-{
-	Pen^ pen2 = gcnew Pen(Color::Green, 10);
-	PointF point2(point.X, point.Y + 10);
-	graph->DrawLine(pen2, point, point2);
 }

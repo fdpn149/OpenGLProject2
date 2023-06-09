@@ -1,8 +1,19 @@
 #include "pch.h"
 #include "Mesh.h"
-#include <GL/glew.h>
+
+/*                 Standard                 */
 #include <vector>
+
+
+/*                 OpenGL                   */
+#include <GL/glew.h>
+
+
+/*                 Eigen                    */
 #include <eigen3/Eigen/Dense>
+
+
+/*                 My Class                 */
 #include "Shader.h"
 
 glm::vec3 Mesh::pointToVec3(const TriMesh::Point& point)
