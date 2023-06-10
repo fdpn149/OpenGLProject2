@@ -77,6 +77,12 @@ void ConvexCombMap::calc(const TriMesh& mesh)
 
 	innerVertHandles.clear();
 
+	// Return if mesh is empty
+	if (mesh.faces_empty())
+	{
+		return;
+	}
+
 	// Get first boundary half edge handle
 	TriMesh::HalfedgeHandle startBoundaryHeH = getFirstBoundaryHeH(mesh);
 

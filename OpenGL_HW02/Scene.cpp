@@ -90,7 +90,6 @@ void Scene::pickFace(unsigned int faceId)
 void Scene::deleteFace(unsigned int faceId)
 {
 	selectedMesh.deleteFace(mesh.getFaceVerticesById(faceId), faceId);
-	//mesh.deleteSelectedFace(faceId);
 }
 
 void Scene::pickingPoint(float depthValue, unsigned int faceId, int x, int y)

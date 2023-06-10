@@ -65,13 +65,15 @@ void SelectedMesh::deleteFace(const std::vector<TriMesh::Point>& faceVertices, u
 			// Delete the face and stop loop
 			if (isDeletingFace)
 			{
-				mesh.delete_face(*f_it, true);
+				mesh.delete_face(*f_it);
 				break;
 			}
 		}
 
 		faceIdSet.erase(id);
 	}
+
+	mesh.garbage_collection();
 
 	mesh.request_vertex_status();
 	mesh.request_face_status();
