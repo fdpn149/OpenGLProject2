@@ -187,7 +187,6 @@ void Mesh::updateFVSelectedMap(int face_3verticesID[])
 		if (found_3vertices[i] == false)
 		{
 			vertex_model_selected.erase(face_3verticesID[i]);
-			printf("erase %d\n", face_3verticesID[i]);
 		}
 	}
 
@@ -284,8 +283,6 @@ void Mesh::deleteSelectedFace(int faceID)
 		face_3verticesID[index] = selected.property(vertexID_about_model, *fv_it) - 1;
 		index++;
 	}
-
-	printf("\n");
 
 	selected.delete_face(fh_in_selected);
 
