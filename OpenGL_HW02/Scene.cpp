@@ -11,11 +11,14 @@ Scene::Scene()
 	: mode(PickMode::ADD_FACE)
 {
 	/* OpenGL configs */
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_POINT_SMOOTH);
 	glDisable(GL_CULL_FACE);
 
+
 	/* Initialize shaders */
+
 	shaders[ShaderTypes::MAIN]			= Shader("assets/shaders/picking.vs.glsl"	, "assets/shaders/picking.fs.glsl"	);
 	shaders[ShaderTypes::SCREEN]		= Shader("assets/shaders/drawModel.vs.glsl"	, "assets/shaders/drawModel.fs.glsl");
 	shaders[ShaderTypes::DRAW_POINT]	= Shader("assets/shaders/drawPoint.vs.glsl"	, "assets/shaders/drawPoint.fs.glsl");
@@ -23,15 +26,19 @@ Scene::Scene()
 	shaders[ShaderTypes::DRAW_LINE]		= Shader("assets/shaders/drawLine.vs.glsl"	, "assets/shaders/drawLine.fs.glsl"	);
 	shaders[ShaderTypes::GRID]			= Shader("assets/shaders/grid.vs.glsl"		, "assets/shaders/grid.fs.glsl"		);
 
+	
+	/* Initialize mesh*/
+
+	mesh.load(Config::MODEL_PATH + "armadillo.obj");
+
+
 	/* Initialize camera */
 
 	camera.setCameraView(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-
-	mesh = new Mesh;
-
 	projMat = glm::perspective(glm::radians(45.0f), (float)Config::SCR_W / Config::SCR_H, 0.1f, 100.0f);
 
+	
 	/* Initalize fbo */
 
 	glGenFramebuffers(1, &fbo);
@@ -67,30 +74,26 @@ Scene::Scene()
 		shaders[iii].use();
 		shaders[iii].setMat4("projMat", projMat);
 		shaders[iii].setMat4("modelMat", glm::mat4(1.0f));
-
-		if (iii == ShaderTypes::DRAW_POINT)
-		{
-			shaders[ShaderTypes::DRAW_POINT].setVec3("pointColor", glm::vec3(0.0f, 1.0f, 0.0f));
-		}
 	}
 }
 
-void Scene::pickingFace(uint faceID)
+void Scene::pickFace(unsigned int faceId)
 {
 	glm::vec3 faceColor = glm::vec3(1.0f, 0.0f, 0.0f);
 
 	shaders[ShaderTypes::DRAW_FACE].use();
 	shaders[ShaderTypes::DRAW_FACE].setVec3("faceColor", faceColor);
 
-	mesh->addSelectedFace(faceID);
+	selectedMesh.addFace(mesh.getFaceVerticesById(faceId), faceId);
 }
 
-void Scene::deleteFace(uint faceID)
+void Scene::deleteFace(unsigned int faceId)
 {
-	mesh->deleteSelectedFace(faceID);
+	selectedMesh.deleteFace(mesh.getFaceVerticesById(faceId), faceId);
+	//mesh.deleteSelectedFace(faceId);
 }
 
-void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
+void Scene::pickingPoint(float depthValue, unsigned int faceId, int x, int y)
 {
 	GLint _viewport[4];
 	glGetIntegerv(GL_VIEWPORT, _viewport);
@@ -104,18 +107,14 @@ void Scene::pickingPoint(float depthValue, uint faceID, int x, int y)
 #endif // DEBUG
 
 
-	TriMesh::Point closestPoint = mesh->findClosestPoint(faceID, worldPos);
+	TriMesh::Point closestPoint = mesh.findClosestPoint(faceId, worldPos);
 
-	mesh->setPointPosition(glm::vec3(closestPoint[0], closestPoint[1], closestPoint[2]));
+	mesh.setPointPosition(glm::vec3(closestPoint[0], closestPoint[1], closestPoint[2]));
 
 	shaders[ShaderTypes::DRAW_POINT].use();
+	shaders[ShaderTypes::DRAW_POINT].setVec3("pointColor", glm::vec3(0.0f, 1.0f, 0.0f));
 	shaders[ShaderTypes::DRAW_POINT].setMat4("viewMat", camera.getViewMatrix());
 	glUseProgram(0);
-}
-
-Scene::~Scene()
-{
-	delete mesh;
 }
 
 
@@ -143,7 +142,7 @@ void Scene::pick(int x, int y)
 	switch (mode)
 	{
 	case PickMode::ADD_FACE:
-		pickingFace(faceID);
+		pickFace(faceID);
 		break;
 	case PickMode::DELETE_FACE:
 		deleteFace(faceID);
@@ -164,7 +163,7 @@ void Scene::draw()
 	shaders[ShaderTypes::MAIN].use();
 	shaders[ShaderTypes::MAIN].setMat4("viewMat", camera.getViewMatrix());
 
-	mesh->draw();
+	mesh.draw();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -178,17 +177,19 @@ void Scene::draw()
 	case PickMode::DELETE_FACE:
 		shaders[ShaderTypes::DRAW_LINE].use();
 		shaders[ShaderTypes::DRAW_LINE].setMat4("viewMat", camera.getViewMatrix());
-		mesh->drawLine();
+		mesh.drawLine();
 
 
 		shaders[ShaderTypes::DRAW_FACE].use();
 		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
-		mesh->drawSelected();
+		mesh.drawFaceByIds(selectedMesh.getFaceIdSet());
+
 		break;
+
 	case PickMode::POINT:
 		shaders[ShaderTypes::DRAW_POINT].use();
 		shaders[ShaderTypes::DRAW_POINT].setMat4("viewMat", camera.getViewMatrix());
-		mesh->drawPoint();
+		mesh.drawPoint();
 		break;
 	}
 
@@ -196,14 +197,14 @@ void Scene::draw()
 
 	shaders[ShaderTypes::GRID].use();
 	shaders[ShaderTypes::GRID].setMat4("viewMat", camera.getViewMatrix());
-	mesh->draw();
+	mesh.draw();
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	shaders[ShaderTypes::SCREEN].use();
 	shaders[ShaderTypes::SCREEN].setMat4("viewMat", camera.getViewMatrix());
 
-	mesh->draw();
+	mesh.draw();
 
 	glBindVertexArray(0);
 }

@@ -1,56 +1,61 @@
 #pragma once
-#define _USE_MATH_DEFINES
+
+/*                 Standard                 */
 #include <iostream>
+#include <set>
+#include <map>
+#include <string>
+
+
+/*                 GLM                      */
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+
+/*                 OpenMesh                 */
+#define _USE_MATH_DEFINES
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriConnectivity.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
-#include <set>
-#include <map>
 
+
+/*                 My Class                 */
+#include "Shader.h"
+
+
+/*                 Type def                 */
 typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
 
-class Shader;
 
 class Mesh
 {
-	TriMesh model;
-	glm::mat4 modelMat;
-	std::set<uint> selectedFace;
-
-	std::vector<TriMesh::Point> lines;
-
-	std::map<TriMesh::Point, TriMesh::Point> boundary_point3D_2D;	//convert world point to 2d xy point (0.0f~1.0f)
-	std::map<TriMesh::Point, TriMesh::Point> inside_point3D_2D;
-
-	TriMesh selected;
-
-	uint vert_vbo;
-	uint vbo, vao, ebo;
-	uint vao2, vbo2;
-
-	uint vao3, vbo3;	//Draw Line (For Debug)
-
-	glm::vec3 pointToVec3(const TriMesh::Point& point);
-	TriMesh::Point percentToXY(float percent);
 public:
 	Mesh();
+	Mesh(const std::string& file);
+
+	void load(const std::string& file);
+
 	void draw();
-	void drawFace();	//Useless
+	void drawFaceByIds(std::set<unsigned int> faceIds);
 	void drawPoint();
 	void drawLine();	//For Debug
-	void drawSelected();
-
-	void addSelectedFace(uint faceID);
-	void deleteSelectedFace(uint faceID);
 
 	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
 	void setLinePosition();
 
-	void calculateSurround(std::vector<TriMesh::Point>& points);
-	void calculateInside(std::vector<std::vector<TriMesh::Point>>& points);
+	std::vector<TriMesh::Point> getFaceVerticesById(unsigned int faceId);
+
+
+private:
+	TriMesh mesh;
+	glm::mat4 modelMat;
+
+	std::vector<TriMesh::Point> lines;
+
+	unsigned int vert_vbo;
+	unsigned int vbo, vao, ebo;
+	unsigned int vao2, vbo2;
+
+	unsigned int vao3, vbo3;	//Draw Line (For Debug)
 };

@@ -18,6 +18,8 @@
 #include "Scene.h"
 #include "Config.h"
 #include "utilities.h"
+#include "TextureParamPainter.h"
+#include "ConvexCombMap.h"
 
 
 CppCLRWinformsProject::Form1::Form1(void)
@@ -34,12 +36,45 @@ CppCLRWinformsProject::Form1::~Form1()
 	}
 }
 
+std::vector<glm::vec2> CppCLRWinformsProject::Form1::getTextureParamCoords()
+{
+	const TriMesh& mesh = scene->getSelectedMeshRef();
+
+	std::vector<glm::vec2> textureCoords;
+
+	for (TriMesh::HalfedgeIter he_it = mesh.halfedges_begin(); he_it != mesh.halfedges_end(); ++he_it)
+	{
+		glm::vec3 v1 = Utils::toGlmVec3(mesh.point(mesh.to_vertex_handle(*he_it)));
+		glm::vec3 v2 = Utils::toGlmVec3(mesh.point(mesh.from_vertex_handle(*he_it)));
+
+		try
+		{
+			glm::vec2 uv1 = ConvexCombMap::map(v1);
+			glm::vec2 uv2 = ConvexCombMap::map(v2);
+
+			uv1 = glm::vec2(uv1.x * 2 - 1, uv1.y * 2 - 1);
+			uv2 = glm::vec2(uv2.x * 2 - 1, uv2.y * 2 - 1);
+
+			textureCoords.push_back(uv1);
+			textureCoords.push_back(uv2);
+		}
+		catch (std::out_of_range e)
+		{
+			return {};
+		}
+	}
+
+	return textureCoords;
+}
+
 /* WindowsForm Initializer. (Don't manully modify this function)*/
 void CppCLRWinformsProject::Form1::InitializeComponent(void)
 {
 	this->components = (gcnew System::ComponentModel::Container());
-	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting1 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
-	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat1 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
+	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting3 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
+	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat3 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
+	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting4 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
+	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat4 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
 	this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 	this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
@@ -50,6 +85,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->vertexToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->testKeyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->toolStripContainer2 = (gcnew System::Windows::Forms::ToolStripContainer());
+	this->hkoglPanelControl2 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->menuStrip1->SuspendLayout();
 	this->toolStripContainer2->ContentPanel->SuspendLayout();
 	this->toolStripContainer2->TopToolStripPanel->SuspendLayout();
@@ -68,18 +104,18 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 		| System::Windows::Forms::AnchorStyles::Left)
 		| System::Windows::Forms::AnchorStyles::Right));
 	this->hkoglPanelControl1->AutoSize = true;
-	hkcoglPanelCameraSetting1->Far = 1000;
-	hkcoglPanelCameraSetting1->Fov = 45;
-	hkcoglPanelCameraSetting1->Near = -1000;
-	hkcoglPanelCameraSetting1->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
-	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting1;
-	this->hkoglPanelControl1->Location = System::Drawing::Point(2, 2);
+	hkcoglPanelCameraSetting3->Far = 1000;
+	hkcoglPanelCameraSetting3->Fov = 45;
+	hkcoglPanelCameraSetting3->Near = -1000;
+	hkcoglPanelCameraSetting3->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting3;
+	this->hkoglPanelControl1->Location = System::Drawing::Point(11, 25);
 	this->hkoglPanelControl1->Margin = System::Windows::Forms::Padding(2);
 	this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-	hkcoglPanelPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat1;
+	hkcoglPanelPixelFormat3->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat3->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat3->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat3;
 	this->hkoglPanelControl1->Size = System::Drawing::Size(800, 600);
 	this->hkoglPanelControl1->TabIndex = 0;
 	this->hkoglPanelControl1->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl1_Load);
@@ -94,7 +130,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->settingToolStripMenuItem });
 	this->menuStrip1->Location = System::Drawing::Point(0, 0);
 	this->menuStrip1->Name = L"menuStrip1";
-	this->menuStrip1->Size = System::Drawing::Size(1188, 24);
+	this->menuStrip1->Size = System::Drawing::Size(1264, 24);
 	this->menuStrip1->TabIndex = 1;
 	this->menuStrip1->Text = L"menuStrip1";
 	// 
@@ -152,14 +188,15 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// toolStripContainer2.ContentPanel
 	// 
+	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl2);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl1);
-	this->toolStripContainer2->ContentPanel->Size = System::Drawing::Size(1188, 604);
+	this->toolStripContainer2->ContentPanel->Size = System::Drawing::Size(1264, 657);
 	this->toolStripContainer2->Dock = System::Windows::Forms::DockStyle::Fill;
 	this->toolStripContainer2->LeftToolStripPanelVisible = false;
 	this->toolStripContainer2->Location = System::Drawing::Point(0, 0);
 	this->toolStripContainer2->Name = L"toolStripContainer2";
 	this->toolStripContainer2->RightToolStripPanelVisible = false;
-	this->toolStripContainer2->Size = System::Drawing::Size(1188, 628);
+	this->toolStripContainer2->Size = System::Drawing::Size(1264, 681);
 	this->toolStripContainer2->TabIndex = 2;
 	this->toolStripContainer2->Text = L"toolStripContainer2";
 	// 
@@ -167,11 +204,29 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->toolStripContainer2->TopToolStripPanel->Controls->Add(this->menuStrip1);
 	// 
+	// hkoglPanelControl2
+	// 
+	hkcoglPanelCameraSetting4->Far = 1000;
+	hkcoglPanelCameraSetting4->Fov = 45;
+	hkcoglPanelCameraSetting4->Near = -1000;
+	hkcoglPanelCameraSetting4->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl2->Camera_Setting = hkcoglPanelCameraSetting4;
+	this->hkoglPanelControl2->Location = System::Drawing::Point(925, 191);
+	this->hkoglPanelControl2->Name = L"hkoglPanelControl2";
+	hkcoglPanelPixelFormat4->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat4->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat4->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl2->Pixel_Format = hkcoglPanelPixelFormat4;
+	this->hkoglPanelControl2->Size = System::Drawing::Size(248, 259);
+	this->hkoglPanelControl2->TabIndex = 1;
+	this->hkoglPanelControl2->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl2_Load);
+	this->hkoglPanelControl2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl2_Paint);
+	// 
 	// Form1
 	// 
 	this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-	this->ClientSize = System::Drawing::Size(1188, 628);
+	this->ClientSize = System::Drawing::Size(1264, 681);
 	this->Controls->Add(this->toolStripContainer2);
 	this->MainMenuStrip = this->menuStrip1;
 	this->Margin = System::Windows::Forms::Padding(2);
@@ -202,8 +257,7 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_Load(System::Objec
 		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
 	}
 
-	scene = new Scene;
-
+	scene = new Scene();
 	scene->draw();
 }
 
@@ -222,6 +276,9 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 	if (e->Button.ToString() == "Left")
 	{
 		scene->pick(e->X, e->Y);
+		ConvexCombMap::calc(scene->getSelectedMeshRef());
+
+		hkoglPanelControl2->Invalidate();
 	}
 	/* Mouse1 handler*/
 	else if (e->Button.ToString() == "Right")
@@ -281,6 +338,9 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::
 	if (e->Button.ToString() == "Left")
 	{
 		scene->pick(e->X, e->Y);
+		ConvexCombMap::calc(scene->getSelectedMeshRef());
+
+		hkoglPanelControl2->Invalidate();
 	}
 	/* Mouse1 handler */
 	else if (e->Button.ToString() == "Right")
@@ -313,4 +373,21 @@ System::Void CppCLRWinformsProject::Form1::vertexToolStripMenuItem_Click(System:
 System::Void CppCLRWinformsProject::Form1::testKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)
 {
 
+}
+
+System::Void CppCLRWinformsProject::Form1::hkoglPanelControl2_Load(System::Object^ sender, System::EventArgs^ e)
+{
+	GLenum res = glewInit();
+	if (res != GLEW_OK) 
+	{
+		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+	}
+
+	painter = new TextureParamPainter();
+}
+
+System::Void CppCLRWinformsProject::Form1::hkoglPanelControl2_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
+{
+	painter->setTexcoords(getTextureParamCoords());
+	painter->draw();
 }

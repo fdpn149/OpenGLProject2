@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="ConvexCombMap.h" />
     <ClInclude Include="Form1.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -166,12 +167,16 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SelectedMesh.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="TextureParamPainter.h" />
     <ClInclude Include="utilities.h" />
+    <ClInclude Include="util_glm.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ConvexCombMap.cpp" />
     <ClCompile Include="CppCLR_WinformsProject.cpp" />
     <ClCompile Include="Form1.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -182,7 +187,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SelectedMesh.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="TextureParamPainter.cpp" />
     <ClCompile Include="utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +224,8 @@
     <None Include="assets\shaders\grid.vs.glsl" />
     <None Include="assets\shaders\picking.fs.glsl" />
     <None Include="assets\shaders\picking.vs.glsl" />
+    <None Include="assets\shaders\textureParam.fs.glsl" />
+    <None Include="assets\shaders\textureParam.vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Object Include="assets\models\armadillo.obj">

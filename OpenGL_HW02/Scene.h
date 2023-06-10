@@ -2,10 +2,12 @@
 
 /*                 Standard                 */
 #include <vector>
+#include <set>
 
 
 /*                 My Class                 */
 #include "Mesh.h"
+#include "SelectedMesh.h"
 #include "Camera.h"
 #include "Shader.h"
 
@@ -38,10 +40,10 @@ class Scene
 {
 public:
 	Scene();
-	~Scene();
 
 	/* Getters */
 	Camera& getCameraRef() { return camera; }
+	const TriMesh& getSelectedMeshRef() const { return selectedMesh.getMeshRef(); }
 
 	/* Setters */
 	void setPickMode(PickMode::PickMode newMode) { mode = newMode; }
@@ -51,15 +53,17 @@ public:
 	void pick(int x, int y);
 
 private:
-	void pickingFace(uint faceID);
-	void deleteFace(uint faceID);
-	void pickingPoint(float depthValue, uint faceID, int x, int y);
+	void pickFace(unsigned int faceId);
+	void deleteFace(unsigned int faceId);
+	void pickingPoint(float depthValue, unsigned int faceId, int x, int y);
 
 private:
 	Shader shaders[ShaderTypes::MAX_SHADER_NUM];
 
 	Camera camera;
-	Mesh* mesh;
+
+	SelectedMesh selectedMesh;
+	Mesh mesh;
 
 	PickMode::PickMode mode;
 

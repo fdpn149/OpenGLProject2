@@ -19,6 +19,24 @@
     <Filter Include="Object Files">
       <UniqueIdentifier>{0242496d-bd19-4fdb-b396-04548c2de254}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{fa3ec1a6-2c85-4316-a430-3563b233e45f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{69e9851e-48fa-4e72-9d56-3c82c0619a59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets">
+      <UniqueIdentifier>{4eb98a65-f967-4410-b8a9-40478f5dc614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Enviroment">
+      <UniqueIdentifier>{6b517a16-1c98-448a-bfdb-451f39e1e07d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Assets">
+      <UniqueIdentifier>{f03bdcc1-22cc-420e-905e-33b9ca74b677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Enviroment">
+      <UniqueIdentifier>{360820c9-1784-4772-94cb-1e4fe6ad3a1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -35,23 +53,35 @@
     <ClInclude Include="Form1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Config.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="utilities.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectedMesh.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureParamPainter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util_glm.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvexCombMap.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -64,23 +94,32 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectedMesh.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
     <ClCompile Include="Form1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="utilities.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Enviroment</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files\Enviroment</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureParamPainter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utilities.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ConvexCombMap.cpp">
+      <Filter>Source Files\Enviroment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +162,12 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="assets\shaders\drawLine.vs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\textureParam.fs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\textureParam.vs.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
