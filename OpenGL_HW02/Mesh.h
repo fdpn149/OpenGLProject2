@@ -19,7 +19,9 @@ class Mesh
 {
 	TriMesh model;
 	glm::mat4 modelMat;
-	std::set<uint> selectedFace;
+
+	std::map<int, int> face_model_selected;
+	std::map<int, int> vertex_model_selected;
 
 	std::vector<TriMesh::Point> lines;
 
@@ -27,6 +29,9 @@ class Mesh
 	std::map<TriMesh::Point, TriMesh::Point> inside_point3D_2D;
 
 	TriMesh selected;
+
+	OpenMesh::FPropHandleT<int> faceID_about_model;	//add correspond model faceID to selected
+	OpenMesh::VPropHandleT<int> vertexID_about_model;
 
 	uint vert_vbo;
 	uint vbo, vao, ebo;
@@ -36,6 +41,11 @@ class Mesh
 
 	glm::vec3 pointToVec3(const TriMesh::Point& point);
 	TriMesh::Point percentToXY(float percent);
+
+	std::vector<TriMesh::VertexHandle> addVerticesToSelected(const TriMesh::FaceHandle& fh_model);
+
+	void updateBuffer();
+	void updateFVSelectedMap(int face_3verticesID[]);
 public:
 	Mesh();
 	void draw();
@@ -44,10 +54,10 @@ public:
 	void drawLine();	//For Debug
 	void drawSelected();
 
-	void addSelectedFace(uint faceID);
-	void deleteSelectedFace(uint faceID);
+	void addSelectedFace(int faceID);
+	void deleteSelectedFace(int faceID);
 
-	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
+	TriMesh::Point findClosestPoint(int faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
 	void setLinePosition();
 
