@@ -84,12 +84,12 @@ void Scene::pickFace(unsigned int faceId)
 	shaders[ShaderTypes::DRAW_FACE].use();
 	shaders[ShaderTypes::DRAW_FACE].setVec3("faceColor", faceColor);
 
-	selectedMesh.addFace(mesh.getFaceVerticesById(faceId), faceId);
+	mesh.addFaceToSelectedById(faceId);
 }
 
 void Scene::deleteFace(unsigned int faceId)
 {
-	selectedMesh.deleteFace(mesh.getFaceVerticesById(faceId), faceId);
+	mesh.deleteFaceFromSelectedById(faceId);
 }
 
 void Scene::pickingPoint(float depthValue, unsigned int faceId, int x, int y)
@@ -181,7 +181,7 @@ void Scene::draw()
 
 		shaders[ShaderTypes::DRAW_FACE].use();
 		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
-		mesh.drawFaceByIds(selectedMesh.getFaceIdSet());
+		mesh.drawSelecetedFaces();
 
 		break;
 

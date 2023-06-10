@@ -24,76 +24,97 @@
 /*                 My Class                 */
 #include "Shader.h"
 
+
 Mesh::Mesh()
 	: modelMat(glm::mat4(1.0f))
 {
+	selectedMesh.add_property(faceIdPropHanlde);
+	selectedMesh.add_property(vertIdPropHandle);
 }
 
 Mesh::Mesh(const std::string& file)
-	: modelMat(glm::mat4(1.0f))
 {
+	Mesh();
 	load(file);
 }
 
 void Mesh::load(const std::string& file)
 {
-	if (OpenMesh::IO::read_mesh(mesh, file))
+	if (OpenMesh::IO::read_mesh(modelMesh, file))
 	{
 		/* OpenMesh */
 
-		mesh.request_vertex_status();
-		mesh.request_edge_status();
-		mesh.request_face_status();
-		mesh.request_face_normals();
-		mesh.update_normals();
+		modelMesh.request_vertex_status();
+		modelMesh.request_edge_status();
+		modelMesh.request_face_status();
+		modelMesh.request_face_normals();
+		modelMesh.update_normals();
 
 
 		/* Get vertices */
 
 		std::vector<TriMesh::Point> vertices;
-		vertices.reserve(mesh.n_vertices());
+		vertices.reserve(modelMesh.n_vertices());
 
-		for (TriMesh::VertexIter v_it = mesh.vertices_begin(); v_it != mesh.vertices_end(); ++v_it)
+		for (TriMesh::VertexIter v_it = modelMesh.vertices_begin(); v_it != modelMesh.vertices_end(); ++v_it)
 		{
-			vertices.push_back(mesh.point(*v_it));
+			vertices.push_back(modelMesh.point(*v_it));
 		}
 
 
 		/* Get indices */
 
 		std::vector<unsigned int> indices;
-		indices.reserve(mesh.n_faces() * 3);
+		indices.reserve(modelMesh.n_faces() * 3);
 
-		for (TriMesh::FaceIter f_it = mesh.faces_begin(); f_it != mesh.faces_end(); ++f_it)
+		for (TriMesh::FaceIter f_it = modelMesh.faces_begin(); f_it != modelMesh.faces_end(); ++f_it)
 		{
-			for (TriMesh::FaceVertexIter fv_it = mesh.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
+			for (TriMesh::FaceVertexIter fv_it = modelMesh.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
 			{
 				indices.push_back(fv_it->idx());
 			}
 		}
 
 
-		/* VAO */
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
+		/* Initialize Model Buffer Objects */
 
-
-		/* VBO */
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		// VBO
+		glGenBuffers(1, &modelVbo);
+		glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
+		// VAO
+		glGenVertexArrays(1, &modelVao);
+		glBindVertexArray(modelVao);
 
-		/* EBO */
-		glGenBuffers(1, &ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriMesh::Point), (void*)0);
+
+
+		// EBO
+		glGenBuffers(1, &modelEbo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelEbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
 
 		glBindVertexArray(0);
 
-		/* TEMP */
-		glGenBuffers(1, &vert_vbo);
 
+		/* Initialize Selected Buffer Object */
+
+		// VAO
+		glGenVertexArrays(1, &selectedVao);
+
+
+		// VBO
+		glGenBuffers(1, &selectedVbo);
+
+
+		// EBO
+		glGenBuffers(1, &selectedEbo);
+
+		glBindVertexArray(0);
+
+		/* TEMP */
 		glGenVertexArrays(1, &vao3);
 		glGenBuffers(1, &vbo3);
 	}
@@ -105,25 +126,17 @@ void Mesh::load(const std::string& file)
 
 void Mesh::draw()
 {
-	glBindVertexArray(vao);
+	glBindVertexArray(modelVao);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriMesh::Point), (void*)0);
-
-	glDrawElements(GL_TRIANGLES, mesh.n_faces() * 3, GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, modelMesh.n_faces() * 3, GL_UNSIGNED_INT, (void*)0);
 
 	glBindVertexArray(0);
 }
 
-void Mesh::drawFaceByIds(std::set<unsigned int> faceIds)
+void Mesh::drawSelecetedFaces()
 {
-	glBindVertexArray(vao);
-
-	for (unsigned int id : faceIds)
-	{
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (unsigned int*)(id * 3 * sizeof(unsigned int)));
-	}
-
+	glBindVertexArray(selectedVao);
+	glDrawElements(GL_TRIANGLES, selectedMesh.n_faces() * 3, GL_UNSIGNED_INT, (void*)0);
 	glBindVertexArray(0);
 }
 
@@ -140,9 +153,97 @@ void Mesh::drawLine()
 	glBindVertexArray(0);
 }
 
+void Mesh::addFaceToSelectedById(int faceId)
+{
+	if (faceId >= 0 && faceId < modelMesh.n_faces())
+	{
+		TriMesh::FaceHandle modelSelectedFh = modelMesh.face_handle(faceId);
+
+		std::vector<TriMesh::VertexHandle> faceVertHandles;
+
+		// Check if it was selected
+		if (!modelMesh.status(modelSelectedFh).selected())
+		{
+			modelMesh.status(modelSelectedFh).set_selected(true);
+
+			// Loop face vertices
+			for (auto fv_it = modelMesh.fv_begin(modelSelectedFh); fv_it.is_valid(); fv_it++)
+			{
+				int vertexId = fv_it->idx();
+
+				TriMesh::VertexHandle vh;
+
+				// Check if the vertex is already in selected mesh
+				if (selectedModelVertMap.find(vertexId) != selectedModelVertMap.end())
+				{
+					vh = selectedMesh.vertex_handle(selectedModelVertMap[vertexId]);
+				}
+				// Add non-exist vertex to selected mesh
+				else
+				{
+					TriMesh::Point newVertexPos = modelMesh.point(*fv_it);
+					vh = selectedMesh.add_vertex(newVertexPos);
+
+					selectedMesh.property(vertIdPropHandle, vh) = vertexId + 1;
+
+					selectedModelVertMap[fv_it->idx()] = vh.idx();
+				}
+
+				faceVertHandles.push_back(vh);
+			}
+
+
+			TriMesh::FaceHandle newSelectedFh = selectedMesh.add_face(faceVertHandles);
+
+			selectedMesh.property(faceIdPropHanlde, newSelectedFh) = faceId + 1;
+
+			selectedModelFaceMap[faceId] = newSelectedFh.idx();
+
+			updateSelectedBufferObjects();
+		}
+	}
+}
+
+void Mesh::deleteFaceFromSelectedById(int faceId)
+{
+	TriMesh::FaceHandle fh_in_model = modelMesh.face_handle(faceId);
+
+	if (!fh_in_model.is_valid() || !modelMesh.status(fh_in_model).selected())
+		return;
+
+	modelMesh.status(fh_in_model).set_selected(false);
+	int id = selectedModelFaceMap[faceId];
+
+	TriMesh::FaceHandle fh_in_selected = selectedMesh.face_handle(id);
+
+	if (!fh_in_selected.is_valid())
+		fprintf(stderr, "Error\n");
+
+	int face_3verticesID[3] = { 0 };
+
+	int index = 0;
+	for (auto fv_it = selectedMesh.fv_begin(fh_in_selected); fv_it.is_valid(); fv_it++)
+	{
+		face_3verticesID[index] = selectedMesh.property(vertIdPropHandle, *fv_it) - 1;
+		index++;
+	}
+
+	printf("\n");
+
+	selectedMesh.delete_face(fh_in_selected);
+
+	selectedModelFaceMap.erase(faceId);
+
+	selectedMesh.garbage_collection();
+
+	updateSelectedFVMap(face_3verticesID);
+
+	updateSelectedBufferObjects();
+}
+
 TriMesh::Point Mesh::findClosestPoint(uint faceID, glm::vec3 worldPos)
 {
-	OpenMesh::FaceHandle fh = mesh.face_handle(faceID);
+	OpenMesh::FaceHandle fh = modelMesh.face_handle(faceID);
 	if (!fh.is_valid())
 	{
 		printf("invalid\n");
@@ -151,15 +252,15 @@ TriMesh::Point Mesh::findClosestPoint(uint faceID, glm::vec3 worldPos)
 
 	double minDistance = 0.0;
 	TriMesh::Point p(worldPos.x, worldPos.y, worldPos.z);
-	TriMesh::FVIter fv_it = mesh.fv_iter(fh);
+	TriMesh::FVIter fv_it = modelMesh.fv_iter(fh);
 	TriMesh::VertexHandle closestVH = *fv_it;
-	TriMesh::Point v1 = mesh.point(*fv_it);
+	TriMesh::Point v1 = modelMesh.point(*fv_it);
 	++fv_it;
 
 	minDistance = (p - v1).norm();
 	for (; fv_it.is_valid(); ++fv_it)
 	{
-		TriMesh::Point v = mesh.point(*fv_it);
+		TriMesh::Point v = modelMesh.point(*fv_it);
 		double distance = (p - v).norm();
 		if (minDistance > distance)
 		{
@@ -168,12 +269,12 @@ TriMesh::Point Mesh::findClosestPoint(uint faceID, glm::vec3 worldPos)
 		}
 	}
 
-	return mesh.point(closestVH);
+	return modelMesh.point(closestVH);
 }
 
 void Mesh::setPointPosition(glm::vec3 position)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, vert_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, selectedVertVbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), glm::value_ptr(position), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
@@ -188,19 +289,85 @@ void Mesh::setLinePosition()
 	glEnableVertexAttribArray(0);
 }
 
-std::vector<TriMesh::Point> Mesh::getFaceVerticesById(unsigned int faceId)
+void Mesh::updateSelectedBufferObjects()
 {
-	std::vector<TriMesh::Point> faceVertices;
+	selectedMesh.request_vertex_status();
+	selectedMesh.request_face_status();
+	selectedMesh.request_edge_status();
+	selectedMesh.request_face_normals();
+	selectedMesh.update_normals();
 
-	if (faceId > 0 && faceId <= mesh.n_faces())
+	// Get vertices
+	std::vector<TriMesh::Point> vertices;
+	for (TriMesh::VertexIter v_it = selectedMesh.vertices_begin(); v_it != selectedMesh.vertices_end(); ++v_it)
 	{
-		TriMesh::FaceHandle faceHandle = mesh.face_handle(faceId);
+		vertices.push_back(selectedMesh.point(*v_it));
+	}
 		
-		for (TriMesh::FVIter fv_it = mesh.fv_begin(faceHandle); fv_it.is_valid(); ++fv_it)
+	// Get indices
+	std::vector<uint> indices;
+	for (TriMesh::FaceIter f_it = selectedMesh.faces_begin(); f_it != selectedMesh.faces_end(); ++f_it)
+	{
+		for (TriMesh::FaceVertexIter fv_it = selectedMesh.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
 		{
-			faceVertices.push_back(mesh.point(*fv_it));
+			indices.push_back(fv_it->idx());
+		}
+	}
+	
+	glBindVertexArray(selectedVao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, selectedVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, selectedEbo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.size(), indices.data(), GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+}
+
+void Mesh::updateSelectedFVMap(int face_3verticesID[])
+{
+	for (TriMesh::FaceIter f_it = selectedMesh.faces_begin(); f_it != selectedMesh.faces_end(); f_it++)
+	{
+		int original_corre_id = selectedMesh.property(faceIdPropHanlde, *f_it) - 1;
+
+		auto faceID_it = selectedModelFaceMap.find(original_corre_id);
+
+		if (faceID_it != selectedModelFaceMap.end())
+			faceID_it->second = f_it->idx();
+	}
+
+	bool found_3vertices[3] = { false };
+
+	for (auto v_it = selectedMesh.vertices_begin(); v_it != selectedMesh.vertices_end(); v_it++)
+	{
+		int original_corre_id = selectedMesh.property(vertIdPropHandle, *v_it) - 1;
+
+		auto vertID_it = selectedModelVertMap.find(original_corre_id);
+
+		if (vertID_it != selectedModelVertMap.end())
+		{
+			vertID_it->second = v_it->idx();
+
+			if (found_3vertices[0] == false && original_corre_id == face_3verticesID[0])
+				found_3vertices[0] = true;
+			else if (found_3vertices[1] == false && original_corre_id == face_3verticesID[1])
+				found_3vertices[1] = true;
+			else if (found_3vertices[2] == false && original_corre_id == face_3verticesID[2])
+				found_3vertices[2] = true;
 		}
 	}
 
-	return faceVertices;
+	for (int i = 0; i < 3; i++)
+	{
+		if (found_3vertices[i] == false)
+		{
+			selectedModelVertMap.erase(face_3verticesID[i]);
+			printf("erase %d\n", face_3verticesID[i]);
+		}
+	}
 }
+

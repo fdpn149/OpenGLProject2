@@ -7,7 +7,6 @@
 
 /*                 My Class                 */
 #include "Mesh.h"
-#include "SelectedMesh.h"
 #include "Camera.h"
 #include "Shader.h"
 
@@ -43,7 +42,7 @@ public:
 
 	/* Getters */
 	Camera& getCameraRef() { return camera; }
-	const TriMesh& getSelectedMeshRef() const { return selectedMesh.getMeshRef(); }
+	const TriMesh& getSelectedMeshRef() const { return mesh.getSelectedMeshRef(); }
 
 	/* Setters */
 	void setPickMode(PickMode::PickMode newMode) { mode = newMode; }
@@ -62,7 +61,6 @@ private:
 
 	Camera camera;
 
-	SelectedMesh selectedMesh;
 	Mesh mesh;
 
 	PickMode::PickMode mode;

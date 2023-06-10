@@ -249,8 +249,6 @@ namespace
 
 			convexCombMap[vertex] = texcoord;
 
-			std::cout << "x: " << texcoord.x << " y: " << texcoord.y << std::endl;
-
 			lastTexCoord = texcoord;
 
 			// To next boundary edge

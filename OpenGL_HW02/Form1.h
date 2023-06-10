@@ -22,16 +22,9 @@ namespace CppCLRWinformsProject {
 		// Main scene
 		Scene* scene = nullptr;
 
-		// Time
-		clock_t deltaTime = 0;
-		clock_t lastFrame = 0;
-
 		// Mouse
 		float lastMouseX;
 		float lastMouseY;
-
-
-		/* Other forms */
 
 		TextureParamPainter* painter;
 
@@ -48,9 +41,11 @@ namespace CppCLRWinformsProject {
 
 	private: System::Windows::Forms::ToolStripMenuItem^ testKeyToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ vertexToolStripMenuItem;
-	private: System::Windows::Forms::Timer^ timer1;
+
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl2;
+	private: System::Windows::Forms::Button^ calculateButton;
+
 
 	private: System::ComponentModel::IContainer^ components;
 
@@ -69,7 +64,6 @@ namespace CppCLRWinformsProject {
 		void InitializeComponent(void);
 #pragma endregion
 
-	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void hkoglPanelControl1_Load(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void hkoglPanelControl1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e);
 	private: System::Void hkoglPanelControl1_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e);
@@ -81,5 +75,6 @@ namespace CppCLRWinformsProject {
 	private: System::Void testKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void hkoglPanelControl2_Load(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void hkoglPanelControl2_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e);
+	private: System::Void calculateButton_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }

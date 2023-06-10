@@ -35,27 +35,49 @@ public:
 
 	void load(const std::string& file);
 
+	const TriMesh& getSelectedMeshRef() const { return selectedMesh; }
+
 	void draw();
-	void drawFaceByIds(std::set<unsigned int> faceIds);
+	void drawSelecetedFaces();
 	void drawPoint();
 	void drawLine();	//For Debug
+
+	void addFaceToSelectedById(int faceId);
+	void deleteFaceFromSelectedById(int faceId);
 
 	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
 	void setLinePosition();
 
-	std::vector<TriMesh::Point> getFaceVerticesById(unsigned int faceId);
+private:
+	void updateSelectedBufferObjects();
+	void updateSelectedFVMap(int face_3verticesID[]);
 
 
 private:
-	TriMesh mesh;
+	TriMesh modelMesh;
+	TriMesh selectedMesh;
+
+	std::map<int, int> selectedModelFaceMap;
+	std::map<int, int> selectedModelVertMap;
+
+	OpenMesh::FPropHandleT<int> faceIdPropHanlde;
+	OpenMesh::VPropHandleT<int> vertIdPropHandle;
+
 	glm::mat4 modelMat;
 
 	std::vector<TriMesh::Point> lines;
 
-	unsigned int vert_vbo;
-	unsigned int vbo, vao, ebo;
-	unsigned int vao2, vbo2;
+	unsigned int selectedVertVbo;
+
+	unsigned int modelVbo;
+	unsigned int modelVao;
+	unsigned int modelEbo;
+
+
+	unsigned int selectedVbo;
+	unsigned int selectedVao;
+	unsigned int selectedEbo;
 
 	unsigned int vao3, vbo3;	//Draw Line (For Debug)
 };

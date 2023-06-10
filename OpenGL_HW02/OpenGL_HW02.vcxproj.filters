@@ -62,9 +62,6 @@
     <ClInclude Include="Mesh.h">
       <Filter>Header Files\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="SelectedMesh.h">
-      <Filter>Header Files\Assets</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Enviroment</Filter>
     </ClInclude>
@@ -98,9 +95,6 @@
       <Filter>Source Files\Assets</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="SelectedMesh.cpp">
       <Filter>Source Files\Assets</Filter>
     </ClCompile>
     <ClCompile Include="Form1.cpp">

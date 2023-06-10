@@ -167,7 +167,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="SelectedMesh.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="TextureParamPainter.h" />
     <ClInclude Include="utilities.h" />
@@ -187,7 +186,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SelectedMesh.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="TextureParamPainter.cpp" />
     <ClCompile Include="utilities.cpp" />
