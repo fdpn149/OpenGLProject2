@@ -1,4 +1,6 @@
 #pragma once
+/*                 Standard                 */
+#include <iostream>
 
 /*                 OpenMesh                 */
 #define _USE_MATH_DEFINES
@@ -25,4 +27,6 @@ namespace Utils
 		return (T(0) < val) - (val < T(0));
 	}
 
+	// Load texture
+	unsigned int loadTexture(const std::string& file);
 }

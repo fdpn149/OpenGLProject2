@@ -47,7 +47,7 @@ public:
 
 	/* Setters */
 	void setPickMode(PickMode::PickMode newMode) { mode = newMode; }
-
+	void setUseTextureOnSelectedMesh(bool use);
 
 	void draw();
 	void pick(int x, int y);

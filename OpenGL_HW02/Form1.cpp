@@ -412,11 +412,13 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl2_Paint(System::Obje
 System::Void CppCLRWinformsProject::Form1::calculateButton_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	ConvexCombMap::calc(scene->getSelectedMeshRef());
+	scene->setUseTextureOnSelectedMesh(true);
+	hkoglPanelControl1->Invalidate();
 	hkoglPanelControl2->Invalidate();
 }
 
 System::Void CppCLRWinformsProject::Form1::button1_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	drawSelected = true;
-	hkoglPanelControl1->Invalidate();
+	//drawSelected = true;
+	//hkoglPanelControl1->Invalidate();
 }

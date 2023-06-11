@@ -44,6 +44,8 @@ public:
 	void drawPoint();
 	void drawLine();	//For Debug
 
+	void calcTexcoord();
+
 	void addFaceToSelectedById(int faceId);
 	void deleteFaceFromSelectedById(int faceId);
 
@@ -67,6 +69,7 @@ private:
 	OpenMesh::VPropHandleT<int> vertIdPropHandle;
 
 	std::vector<TriMesh::Point> selectedVertices;
+	std::vector<glm::vec2> selectedTexcoords;
 	std::vector<unsigned int> selectedIndices;
 
 	glm::mat4 modelMat;
@@ -80,8 +83,11 @@ private:
 	unsigned int modelEbo;
 
 	unsigned int selectedVbo;
+	unsigned int selectedTexVbo;
 	unsigned int selectedVao;
 	unsigned int selectedEbo;
+
+	unsigned int selectedTexId;
 
 	unsigned int vao3, vbo3;	//Draw Line (For Debug)
 };

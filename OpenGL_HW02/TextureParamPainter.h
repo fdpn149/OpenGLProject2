@@ -29,6 +29,7 @@ private:
 	unsigned int texId;
 
 	std::vector<glm::vec2> lineVertices;
+
 	std::vector<glm::vec2> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<glm::vec2> texcoords;

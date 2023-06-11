@@ -23,6 +23,9 @@
 
 /*                 My Class                 */
 #include "Shader.h"
+#include "utilities.h"
+#include "Config.h"
+#include "ConvexCombMap.h"
 
 
 Mesh::Mesh()
@@ -30,6 +33,8 @@ Mesh::Mesh()
 {
 	selectedMesh.add_property(faceIdPropHanlde);
 	selectedMesh.add_property(vertIdPropHandle);
+
+	selectedTexId = Utils::loadTexture(Config::TEXTURE_PATH + "container.jpg");
 }
 
 Mesh::Mesh(const std::string& file)
@@ -103,20 +108,31 @@ void Mesh::load(const std::string& file)
 
 		// VAO
 		glGenVertexArrays(1, &selectedVao);
-
+		glBindVertexArray(selectedVao);
 
 		// VBO
 		glGenBuffers(1, &selectedVbo);
+		glBindBuffer(GL_ARRAY_BUFFER, selectedVbo);
 
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriMesh::Point), 0);
+
+
+		glGenBuffers(1, &selectedTexVbo);
+		glBindBuffer(GL_ARRAY_BUFFER, selectedTexVbo);
+		
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
 
 		// EBO
 		glGenBuffers(1, &selectedEbo);
 
-		glBindVertexArray(0);
 
 		/* TEMP */
 		glGenVertexArrays(1, &vao3);
 		glGenBuffers(1, &vbo3);
+
+		glBindVertexArray(0);
 	}
 	else
 	{
@@ -133,8 +149,15 @@ void Mesh::draw()
 
 void Mesh::drawSelecetedFaces()
 {
+	for (auto texcoord : selectedTexcoords)
+	{
+		std::cout << "x: " << texcoord.x << " y: " << texcoord.y << std::endl;
+	}
+
+	glBindTexture(GL_TEXTURE_2D, selectedTexId);
+
 	glBindVertexArray(selectedVao);
-	glDrawElements(GL_TRIANGLES, selectedMesh.n_faces() * 3, GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, selectedIndices.size(), GL_UNSIGNED_INT, (void*)0);
 	glBindVertexArray(0);
 }
 
@@ -149,6 +172,19 @@ void Mesh::drawLine()
 	glBindVertexArray(vao3);
 	glDrawArrays(GL_LINES, 0, lines.size());
 	glBindVertexArray(0);
+}
+
+void Mesh::calcTexcoord()
+{
+	selectedTexcoords.resize(selectedVertices.size());
+
+	for (int iii = 0; iii != selectedVertices.size(); ++iii)
+	{
+		selectedTexcoords[iii] = ConvexCombMap::map(Utils::toGlmVec3(selectedVertices[iii]));
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, selectedTexVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * selectedTexcoords.size(), selectedTexcoords.data(), GL_STATIC_DRAW);
 }
 
 void Mesh::addFaceToSelectedById(int faceId)
@@ -315,8 +351,9 @@ void Mesh::updateSelectedBufferObjects()
 	glBindBuffer(GL_ARRAY_BUFFER, selectedVbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * selectedVertices.size(), selectedVertices.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriMesh::Point), 0);
-	glEnableVertexAttribArray(0);
+	selectedTexcoords.resize(selectedVertices.size());
+	glBindBuffer(GL_ARRAY_BUFFER, selectedTexVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * selectedTexcoords.size(), selectedTexcoords.data(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, selectedEbo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * selectedIndices.size(), selectedIndices.data(), GL_STATIC_DRAW);

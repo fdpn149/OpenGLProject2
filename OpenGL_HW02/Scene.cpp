@@ -152,6 +152,12 @@ void Scene::pick(int x, int y)
 	}
 }
 
+void Scene::setUseTextureOnSelectedMesh(bool use)
+{
+	shaders[ShaderTypes::DRAW_FACE].setInt("UseTexture", use);
+	mesh.calcTexcoord();
+}
+
 void Scene::draw()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -180,6 +186,11 @@ void Scene::draw()
 
 		shaders[ShaderTypes::DRAW_FACE].use();
 		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
+
+		shaders[ShaderTypes::DRAW_FACE].setInt("UseTexture", 1);
+		shaders[ShaderTypes::DRAW_FACE].setInt("Texture", 0);
+		glActiveTexture(GL_TEXTURE0);
+
 		mesh.drawSelecetedFaces();
 
 		break;
