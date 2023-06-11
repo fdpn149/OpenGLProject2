@@ -127,9 +127,7 @@ void Mesh::load(const std::string& file)
 void Mesh::draw()
 {
 	glBindVertexArray(modelVao);
-
 	glDrawElements(GL_TRIANGLES, modelMesh.n_faces() * 3, GL_UNSIGNED_INT, (void*)0);
-
 	glBindVertexArray(0);
 }
 
@@ -228,8 +226,6 @@ void Mesh::deleteFaceFromSelectedById(int faceId)
 		index++;
 	}
 
-	printf("\n");
-
 	selectedMesh.delete_face(fh_in_selected);
 
 	selectedModelFaceMap.erase(faceId);
@@ -298,32 +294,32 @@ void Mesh::updateSelectedBufferObjects()
 	selectedMesh.update_normals();
 
 	// Get vertices
-	std::vector<TriMesh::Point> vertices;
+	selectedVertices.clear();
 	for (TriMesh::VertexIter v_it = selectedMesh.vertices_begin(); v_it != selectedMesh.vertices_end(); ++v_it)
 	{
-		vertices.push_back(selectedMesh.point(*v_it));
+		selectedVertices.push_back(selectedMesh.point(*v_it));
 	}
 		
 	// Get indices
-	std::vector<uint> indices;
+	selectedIndices.clear();
 	for (TriMesh::FaceIter f_it = selectedMesh.faces_begin(); f_it != selectedMesh.faces_end(); ++f_it)
 	{
 		for (TriMesh::FaceVertexIter fv_it = selectedMesh.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
 		{
-			indices.push_back(fv_it->idx());
+			selectedIndices.push_back(fv_it->idx());
 		}
 	}
 	
 	glBindVertexArray(selectedVao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, selectedVbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * selectedVertices.size(), selectedVertices.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriMesh::Point), 0);
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, selectedEbo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.size(), indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * selectedIndices.size(), selectedIndices.data(), GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
 }

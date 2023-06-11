@@ -36,6 +36,8 @@ public:
 	void load(const std::string& file);
 
 	const TriMesh& getSelectedMeshRef() const { return selectedMesh; }
+	const std::vector<TriMesh::Point>& getSelectedVertices() const { return selectedVertices; }
+	const std::vector<unsigned int>& getSelectedIndices() const { return selectedIndices; }
 
 	void draw();
 	void drawSelecetedFaces();
@@ -64,6 +66,9 @@ private:
 	OpenMesh::FPropHandleT<int> faceIdPropHanlde;
 	OpenMesh::VPropHandleT<int> vertIdPropHandle;
 
+	std::vector<TriMesh::Point> selectedVertices;
+	std::vector<unsigned int> selectedIndices;
+
 	glm::mat4 modelMat;
 
 	std::vector<TriMesh::Point> lines;
@@ -73,7 +78,6 @@ private:
 	unsigned int modelVbo;
 	unsigned int modelVao;
 	unsigned int modelEbo;
-
 
 	unsigned int selectedVbo;
 	unsigned int selectedVao;

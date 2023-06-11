@@ -43,6 +43,7 @@ public:
 	/* Getters */
 	Camera& getCameraRef() { return camera; }
 	const TriMesh& getSelectedMeshRef() const { return mesh.getSelectedMeshRef(); }
+	const Mesh& getMeshRef() const { return mesh; }
 
 	/* Setters */
 	void setPickMode(PickMode::PickMode newMode) { mode = newMode; }

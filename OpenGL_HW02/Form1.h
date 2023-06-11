@@ -28,6 +28,7 @@ namespace CppCLRWinformsProject {
 
 		TextureParamPainter* painter;
 
+		bool drawSelected = false;
 
 		/* DotNet tools */
 
@@ -45,6 +46,7 @@ namespace CppCLRWinformsProject {
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl2;
 	private: System::Windows::Forms::Button^ calculateButton;
+	private: System::Windows::Forms::Button^ button1;
 
 
 	private: System::ComponentModel::IContainer^ components;
@@ -56,7 +58,7 @@ namespace CppCLRWinformsProject {
 		~Form1();
 
 	private:
-		std::vector<glm::vec2> getTextureParamCoords();
+		std::vector<glm::vec2> getTextureParamVertices();
 
 
 #pragma region Windows Form Designer generated code
@@ -76,5 +78,6 @@ namespace CppCLRWinformsProject {
 	private: System::Void hkoglPanelControl2_Load(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void hkoglPanelControl2_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e);
 	private: System::Void calculateButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }

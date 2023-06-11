@@ -29,7 +29,7 @@ Scene::Scene()
 	
 	/* Initialize mesh*/
 
-	mesh.load(Config::MODEL_PATH + "armadillo.obj");
+	mesh.load(Config::MODEL_PATH + "UnionSphere.obj");
 
 
 	/* Initialize camera */
@@ -177,7 +177,6 @@ void Scene::draw()
 		shaders[ShaderTypes::DRAW_LINE].use();
 		shaders[ShaderTypes::DRAW_LINE].setMat4("viewMat", camera.getViewMatrix());
 		mesh.drawLine();
-
 
 		shaders[ShaderTypes::DRAW_FACE].use();
 		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());

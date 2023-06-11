@@ -113,7 +113,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ConvexCombMap.cpp">
-      <Filter>Source Files\Enviroment</Filter>
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

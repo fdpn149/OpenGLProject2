@@ -1,8 +1,20 @@
 #version 410
 
+in vec2 texcoord;
+
 out vec4 FragColor;
+
+uniform bool UseTexture;
+uniform sampler2D Texture;
 
 void main()
 {
-	FragColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	if(UseTexture)
+	{
+		FragColor = texture(Texture, texcoord);
+	}
+	else
+	{
+		FragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	}
 }
