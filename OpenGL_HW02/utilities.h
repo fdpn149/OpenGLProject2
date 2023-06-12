@@ -29,4 +29,7 @@ namespace Utils
 
 	// Load texture
 	unsigned int loadTexture(const std::string& file);
+
+	glm::vec2 texcoordToCartesian(const glm::vec2 position);
+	glm::vec2 cartesianToTexcoord(const glm::vec2 position);
 }

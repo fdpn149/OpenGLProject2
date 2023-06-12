@@ -1,9 +1,21 @@
 #version 410 core
+
+in vec2 texcoord;
+flat in vec3 color;
+in float useTexture;
+
 out vec4 FragColor;
 
-in vec3 aColor;
+uniform sampler2D Texture;
 
 void main()
 {
-    FragColor = vec4(1.0);
+	if(useTexture > 0.5f)
+	{
+		FragColor = texture(Texture, texcoord);
+	}
+	else
+	{
+		FragColor = vec4(color, 1.0f);
+	}
 }

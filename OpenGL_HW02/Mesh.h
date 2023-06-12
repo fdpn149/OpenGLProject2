@@ -29,6 +29,15 @@ typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
 
 class Mesh
 {
+private:
+	struct Vertex
+	{
+		glm::vec3 position;
+		glm::vec2 texcoord;
+		glm::vec3 color;
+		int useTexture;
+	};
+
 public:
 	Mesh();
 	Mesh(const std::string& file);
@@ -40,9 +49,9 @@ public:
 	const std::vector<unsigned int>& getSelectedIndices() const { return selectedIndices; }
 
 	void draw();
-	void drawSelecetedFaces();
+	//void drawSelecetedFaces();
 	void drawPoint();
-	void drawLine();	//For Debug
+	//void drawLine();	//For Debug
 
 	void calcTexcoord();
 
@@ -51,7 +60,7 @@ public:
 
 	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
-	void setLinePosition();
+	//void setLinePosition();
 
 private:
 	void updateSelectedBufferObjects();
@@ -68,9 +77,12 @@ private:
 	OpenMesh::FPropHandleT<int> faceIdPropHanlde;
 	OpenMesh::VPropHandleT<int> vertIdPropHandle;
 
+
+	std::vector<Vertex> modelVertices;
+
 	std::vector<TriMesh::Point> selectedVertices;
-	std::vector<glm::vec2> selectedTexcoords;
 	std::vector<unsigned int> selectedIndices;
+	//std::vector<glm::vec2> selectedTexcoords;
 
 	glm::mat4 modelMat;
 
@@ -80,14 +92,14 @@ private:
 
 	unsigned int modelVbo;
 	unsigned int modelVao;
-	unsigned int modelEbo;
+	//unsigned int modelEbo;
 
-	unsigned int selectedVbo;
-	unsigned int selectedTexVbo;
-	unsigned int selectedVao;
-	unsigned int selectedEbo;
+	//unsigned int selectedVbo;
+	//unsigned int selectedTexVbo;
+	//unsigned int selectedVao;
+	//unsigned int selectedEbo;
 
 	unsigned int selectedTexId;
 
-	unsigned int vao3, vbo3;	//Draw Line (For Debug)
+	//unsigned int vao3, vbo3;	//Draw Line (For Debug)
 };

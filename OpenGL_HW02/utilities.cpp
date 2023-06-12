@@ -58,3 +58,13 @@ unsigned int Utils::loadTexture(const std::string& file)
 
 	return id;
 }
+
+glm::vec2 Utils::texcoordToCartesian(const glm::vec2 position)
+{
+	return glm::vec2(position.x * 2 - 1, position.y * 2 - 1);
+}
+
+glm::vec2 Utils::cartesianToTexcoord(const glm::vec2 position)
+{
+	return glm::vec2((position.x + 1) / 2, (position.y + 1) / 2);
+}

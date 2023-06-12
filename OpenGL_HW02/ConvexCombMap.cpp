@@ -3,6 +3,7 @@
 
 /*                 Standard                 */
 #include <map>
+#include <iostream>
 
 /*                 OpenMesh                 */
 #define _USE_MATH_DEFINES
@@ -14,6 +15,7 @@
 /*                 Glm                      */
 #include <glm/glm.hpp>
 #include <glm/gtc/reciprocal.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "util_glm.hpp"
 
 /*                 Eigen                    */
@@ -101,6 +103,25 @@ void ConvexCombMap::calc(const TriMesh& mesh)
 		// Calculate inner texcoord by solve linear system
 		solveLinearSystem(mesh);
 	}
+}
+
+void ConvexCombMap::rotate(const float angle)
+{
+	glm::mat4 rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	for (auto it = convexCombMap.begin(); it != convexCombMap.end(); ++it)
+	{
+		glm::vec2 newTexcoord = Utils::texcoordToCartesian((*it).second);
+
+		std::cout << "Old X: " << newTexcoord.x << " Y: " << newTexcoord.y << std::endl;
+
+		newTexcoord = rotationMat * glm::vec4(newTexcoord.x, newTexcoord.y, 0.0f, 1.0f);
+
+		std::cout << "New X: " << newTexcoord.x << " Y: " << newTexcoord.y << std::endl;
+
+		(*it).second = Utils::cartesianToTexcoord(newTexcoord);
+	}
+
 }
 
 glm::vec2 ConvexCombMap::map(const glm::vec3& vertex)

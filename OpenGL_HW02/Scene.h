@@ -14,7 +14,7 @@ namespace ShaderTypes
 {
 	enum ShaderTypes
 	{
-		MAIN,
+		PICK,
 		SCREEN,
 		DRAW_POINT,
 		DRAW_FACE,
@@ -63,6 +63,8 @@ private:
 	Camera camera;
 
 	Mesh mesh;
+
+	bool useTexture;
 
 	PickMode::PickMode mode;
 

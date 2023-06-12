@@ -3,6 +3,7 @@
 
 /*                 Standard                 */
 #include <iostream>
+#include <ctime>
 
 
 /*                 OpenGL                   */
@@ -30,6 +31,8 @@
 CppCLRWinformsProject::Form1::Form1(void)
 {
 	InitializeComponent();
+
+	lastFrame = clock();
 }
 
 CppCLRWinformsProject::Form1::~Form1()
@@ -78,10 +81,10 @@ std::vector<glm::vec2> CppCLRWinformsProject::Form1::getTextureParamVertices()
 /* WindowsForm Initializer. (Don't manully modify this function)*/
 void CppCLRWinformsProject::Form1::InitializeComponent(void)
 {
-	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting3 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
-	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat3 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
-	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting4 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
-	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat4 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
+	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting1 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
+	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat1 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
+	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting2 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
+	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat2 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
 	this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 	this->settingToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -91,9 +94,9 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->vertexToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->testKeyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->toolStripContainer2 = (gcnew System::Windows::Forms::ToolStripContainer());
+	this->rotateButton = (gcnew System::Windows::Forms::Button());
 	this->calculateButton = (gcnew System::Windows::Forms::Button());
 	this->hkoglPanelControl2 = (gcnew HKOGLPanel::HKOGLPanelControl());
-	this->button1 = (gcnew System::Windows::Forms::Button());
 	this->menuStrip1->SuspendLayout();
 	this->toolStripContainer2->ContentPanel->SuspendLayout();
 	this->toolStripContainer2->TopToolStripPanel->SuspendLayout();
@@ -106,18 +109,18 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 		| System::Windows::Forms::AnchorStyles::Left)
 		| System::Windows::Forms::AnchorStyles::Right));
 	this->hkoglPanelControl1->AutoSize = true;
-	hkcoglPanelCameraSetting3->Far = 1000;
-	hkcoglPanelCameraSetting3->Fov = 45;
-	hkcoglPanelCameraSetting3->Near = -1000;
-	hkcoglPanelCameraSetting3->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
-	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting3;
+	hkcoglPanelCameraSetting1->Far = 1000;
+	hkcoglPanelCameraSetting1->Fov = 45;
+	hkcoglPanelCameraSetting1->Near = -1000;
+	hkcoglPanelCameraSetting1->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting1;
 	this->hkoglPanelControl1->Location = System::Drawing::Point(11, 25);
 	this->hkoglPanelControl1->Margin = System::Windows::Forms::Padding(2);
 	this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-	hkcoglPanelPixelFormat3->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat3->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat3->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat3;
+	hkcoglPanelPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat1;
 	this->hkoglPanelControl1->Size = System::Drawing::Size(800, 600);
 	this->hkoglPanelControl1->TabIndex = 0;
 	this->hkoglPanelControl1->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl1_Load);
@@ -190,7 +193,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// toolStripContainer2.ContentPanel
 	// 
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->button1);
+	this->toolStripContainer2->ContentPanel->Controls->Add(this->rotateButton);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->calculateButton);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl2);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl1);
@@ -208,6 +211,18 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->toolStripContainer2->TopToolStripPanel->Controls->Add(this->menuStrip1);
 	// 
+	// rotateButton
+	// 
+	this->rotateButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+		static_cast<System::Byte>(136)));
+	this->rotateButton->Location = System::Drawing::Point(855, 347);
+	this->rotateButton->Name = L"rotateButton";
+	this->rotateButton->Size = System::Drawing::Size(248, 37);
+	this->rotateButton->TabIndex = 3;
+	this->rotateButton->Text = L"Rotate 5 degree";
+	this->rotateButton->UseVisualStyleBackColor = true;
+	this->rotateButton->Click += gcnew System::EventHandler(this, &Form1::rotateButton_Click);
+	// 
 	// calculateButton
 	// 
 	this->calculateButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
@@ -222,33 +237,21 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// hkoglPanelControl2
 	// 
-	hkcoglPanelCameraSetting4->Far = 1000;
-	hkcoglPanelCameraSetting4->Fov = 45;
-	hkcoglPanelCameraSetting4->Near = -1000;
-	hkcoglPanelCameraSetting4->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
-	this->hkoglPanelControl2->Camera_Setting = hkcoglPanelCameraSetting4;
+	hkcoglPanelCameraSetting2->Far = 1000;
+	hkcoglPanelCameraSetting2->Fov = 45;
+	hkcoglPanelCameraSetting2->Near = -1000;
+	hkcoglPanelCameraSetting2->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl2->Camera_Setting = hkcoglPanelCameraSetting2;
 	this->hkoglPanelControl2->Location = System::Drawing::Point(855, 68);
 	this->hkoglPanelControl2->Name = L"hkoglPanelControl2";
-	hkcoglPanelPixelFormat4->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat4->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat4->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	this->hkoglPanelControl2->Pixel_Format = hkcoglPanelPixelFormat4;
+	hkcoglPanelPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl2->Pixel_Format = hkcoglPanelPixelFormat2;
 	this->hkoglPanelControl2->Size = System::Drawing::Size(248, 259);
 	this->hkoglPanelControl2->TabIndex = 1;
 	this->hkoglPanelControl2->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl2_Load);
 	this->hkoglPanelControl2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl2_Paint);
-	// 
-	// button1
-	// 
-	this->button1->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-		static_cast<System::Byte>(136)));
-	this->button1->Location = System::Drawing::Point(855, 347);
-	this->button1->Name = L"button1";
-	this->button1->Size = System::Drawing::Size(248, 37);
-	this->button1->TabIndex = 3;
-	this->button1->Text = L"Draw";
-	this->button1->UseVisualStyleBackColor = true;
-	this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
 	// 
 	// Form1
 	// 
@@ -287,6 +290,11 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_Load(System::Objec
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
 {
 	scene->draw();
+
+	auto currentFrame = clock();
+
+	std::cout << (double)(currentFrame - lastFrame) / CLOCKS_PER_SEC << "s" << std::endl;
+	lastFrame = currentFrame;
 }
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
@@ -295,6 +303,8 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 	if (e->Button.ToString() == "Left")
 	{
 		scene->pick(e->X, e->Y);
+
+		hkoglPanelControl1->Invalidate();
 	}
 	/* Mouse1 handler*/
 	else if (e->Button.ToString() == "Right")
@@ -343,9 +353,9 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 
 		lastMouseX = e->X;
 		lastMouseY = e->Y;
-	}
 
-	hkoglPanelControl1->Invalidate();
+		hkoglPanelControl1->Invalidate();
+	}
 }
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
@@ -417,8 +427,11 @@ System::Void CppCLRWinformsProject::Form1::calculateButton_Click(System::Object^
 	hkoglPanelControl2->Invalidate();
 }
 
-System::Void CppCLRWinformsProject::Form1::button1_Click(System::Object^ sender, System::EventArgs^ e)
+System::Void CppCLRWinformsProject::Form1::rotateButton_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	//drawSelected = true;
-	//hkoglPanelControl1->Invalidate();
+	ConvexCombMap::rotate(30.0f);
+	scene->setUseTextureOnSelectedMesh(true);
+	hkoglPanelControl1->Invalidate();
+	hkoglPanelControl2->Invalidate();
+	std::cout << "rotate\n";
 }

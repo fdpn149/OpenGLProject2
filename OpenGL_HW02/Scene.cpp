@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Scene.h"
 #include <ctime>
+#include <chrono>
 
 #include <GL/glew.h>
 #include <iostream>
@@ -19,7 +20,7 @@ Scene::Scene()
 
 	/* Initialize shaders */
 
-	shaders[ShaderTypes::MAIN]			= Shader("assets/shaders/picking.vs.glsl"	, "assets/shaders/picking.fs.glsl"	);
+	shaders[ShaderTypes::PICK]			= Shader("assets/shaders/picking.vs.glsl"	, "assets/shaders/picking.fs.glsl"	);
 	shaders[ShaderTypes::SCREEN]		= Shader("assets/shaders/drawModel.vs.glsl"	, "assets/shaders/drawModel.fs.glsl");
 	shaders[ShaderTypes::DRAW_POINT]	= Shader("assets/shaders/drawPoint.vs.glsl"	, "assets/shaders/drawPoint.fs.glsl");
 	shaders[ShaderTypes::DRAW_FACE]		= Shader("assets/shaders/drawFace.vs.glsl"	, "assets/shaders/drawFace.fs.glsl"	);
@@ -154,7 +155,7 @@ void Scene::pick(int x, int y)
 
 void Scene::setUseTextureOnSelectedMesh(bool use)
 {
-	shaders[ShaderTypes::DRAW_FACE].setInt("UseTexture", use);
+	useTexture = true;
 	mesh.calcTexcoord();
 }
 
@@ -162,11 +163,11 @@ void Scene::draw()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	shaders[ShaderTypes::MAIN].use();
-	shaders[ShaderTypes::MAIN].setMat4("viewMat", camera.getViewMatrix());
+	shaders[ShaderTypes::PICK].use();
+	shaders[ShaderTypes::PICK].setMat4("viewMat", camera.getViewMatrix());
 
 	mesh.draw();
 
@@ -180,18 +181,18 @@ void Scene::draw()
 	{
 	case PickMode::ADD_FACE:
 	case PickMode::DELETE_FACE:
-		shaders[ShaderTypes::DRAW_LINE].use();
-		shaders[ShaderTypes::DRAW_LINE].setMat4("viewMat", camera.getViewMatrix());
-		mesh.drawLine();
+		//shaders[ShaderTypes::DRAW_LINE].use();
+		//shaders[ShaderTypes::DRAW_LINE].setMat4("viewMat", camera.getViewMatrix());
+		//mesh.drawLine();
 
-		shaders[ShaderTypes::DRAW_FACE].use();
-		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
+		//shaders[ShaderTypes::DRAW_FACE].use();
+		//shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
 
-		shaders[ShaderTypes::DRAW_FACE].setInt("UseTexture", 1);
-		shaders[ShaderTypes::DRAW_FACE].setInt("Texture", 0);
-		glActiveTexture(GL_TEXTURE0);
+		//shaders[ShaderTypes::DRAW_FACE].setInt("UseTexture", 1);
+		//shaders[ShaderTypes::DRAW_FACE].setInt("Texture", 0);
+		//glActiveTexture(GL_TEXTURE0);
 
-		mesh.drawSelecetedFaces();
+		//mesh.drawSelecetedFaces();
 
 		break;
 
@@ -211,6 +212,11 @@ void Scene::draw()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	shaders[ShaderTypes::SCREEN].use();
+	if (useTexture)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		shaders[ShaderTypes::SCREEN].setInt("Texture", 0);
+	}
 	shaders[ShaderTypes::SCREEN].setMat4("viewMat", camera.getViewMatrix());
 
 	mesh.draw();
