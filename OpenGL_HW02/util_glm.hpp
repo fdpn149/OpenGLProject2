@@ -2,7 +2,8 @@
 #include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 
-namespace glm {
+namespace glm 
+{
     template <typename T, precision P>
     bool operator<(const tvec2<T, P>& a, const tvec2<T, P>& b)
     {

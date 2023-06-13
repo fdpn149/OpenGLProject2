@@ -15,18 +15,6 @@
 #include "Config.h"
 #include "ConvexCombMap.h"
 
-namespace
-{
-	std::vector<glm::vec2> quadVertices = { glm::vec2(-1, -1), // bottom left corner
-											glm::vec2(-1,  1), // top left corner
-											glm::vec2( 1,  1), // top right corner
-											glm::vec2( 1, -1)}; // bottom right corner
-
-
-	std::vector<unsigned int> quadIndices = { 0, 1, 2, // first triangle (bottom left - top left - top right)
-											  0, 2, 3 }; // second triangle (bottom left - top right - bottom right)
-
-}
 
 TextureParamPainter::TextureParamPainter()
 {

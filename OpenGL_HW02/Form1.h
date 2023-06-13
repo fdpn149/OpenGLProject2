@@ -23,8 +23,11 @@ namespace CppCLRWinformsProject {
 		Scene* scene = nullptr;
 
 		// Mouse
-		float lastMouseX;
-		float lastMouseY;
+		float lastMouse1X;
+		float lastMouse1Y;
+
+		float lastMouse3X;
+		float lastMouse3Y;
 
 		TextureParamPainter* painter;
 
@@ -49,9 +52,13 @@ namespace CppCLRWinformsProject {
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl2;
 	private: System::Windows::Forms::Button^ calculateButton;
+	private: System::Windows::Forms::ToolStripMenuItem^ fileToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ saveToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ loadToolStripMenuItem;
 	private: System::Windows::Forms::Button^ rotateButton;
 	private: System::Windows::Forms::Button^ scaleButton;
 	private: System::Windows::Forms::Button^ loadTexButton;
+
 	private: System::Windows::Forms::Button^ newSelectButton;
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
 
@@ -90,5 +97,8 @@ namespace CppCLRWinformsProject {
 	private: System::Void scaleButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void loadTexButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void newSelectButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void saveToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void loadToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+	
 	};
 }

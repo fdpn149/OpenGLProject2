@@ -8,7 +8,7 @@ namespace Config
 	const int SCR_H = 600;
 
 	const float MOUSE_SENSITIVITY = 1.0f;
-	const float SCROLL_SENSITIVITY = 0.001f;
+	const float SCROLL_SENSITIVITY = 0.0005f;
 
 	const std::string ASSET_PATH = "assets/";
 	const std::string SHADER_PATH = ASSET_PATH + "shaders/";

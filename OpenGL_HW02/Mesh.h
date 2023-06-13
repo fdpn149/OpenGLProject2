@@ -19,6 +19,12 @@
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 
 
+/*                 JSON                     */
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
+
+
 /*                 My Class                 */
 #include "Shader.h"
 
@@ -26,16 +32,8 @@
 /*                 Type def                 */
 typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
 
-
-class Mesh
+namespace MeshData
 {
-private:
-	//struct Vertex
-	//{
-	//	glm::vec3 position;
-	//	glm::vec2 texcoord;
-	//};
-
 	struct SelectedMeshData
 	{
 		std::vector<TriMesh::Point> vertices;
@@ -48,16 +46,47 @@ private:
 		unsigned int ebo;
 	};
 
+	struct SelectedTextureData
+	{
+		unsigned int id;
+		std::string file;
+	};
+
+	void to_json(json& j, const SelectedMeshData& data);
+	void from_json(const json& j, SelectedMeshData& data);
+
+	void to_json(json& j, const SelectedTextureData& data);
+	void from_json(const json& j, SelectedTextureData& data);
+}
+
+class Mesh
+{	
 public:
+	/*struct SelectedMeshData
+	{
+		std::vector<TriMesh::Point> vertices;
+		std::vector<glm::vec2> texcoords;
+		std::vector<unsigned int> indices;
+		bool useTexture;
+
+		unsigned int vao;
+		unsigned int vbo[2];
+		unsigned int ebo;
+	};*/
+
 	Mesh();
 	Mesh(const std::string& file);
 
-	void load(const std::string& file);
+	void loadMesh(const std::string& file);
+
+	void saveSelectedAsJson(const std::string& file);
+	void loadSelectedFromJson(const std::string& file);
+
 
 	const TriMesh& getSelectedMeshRef() const { return selectedMesh; }
-	const std::vector<TriMesh::Point>& getSelectedVertices() const { return (*(selectedDataList.end() - 1)).vertices; }
-	const std::vector<glm::vec2>& getSelectedTexcoords() const { return (*(selectedDataList.end() - 1)).texcoords; }
-	const std::vector<unsigned int>& getSelectedIndices() const { return (*(selectedDataList.end() - 1)).indices; }
+	const std::vector<TriMesh::Point>& getSelectedVertices() const { return (*(selectedMeshData.end() - 1)).vertices; }
+	const std::vector<glm::vec2>& getSelectedTexcoords() const { return (*(selectedMeshData.end() - 1)).texcoords; }
+	const std::vector<unsigned int>& getSelectedIndices() const { return (*(selectedMeshData.end() - 1)).indices; }
 	unsigned int getTexIdByIdx(int idx) { return textureIds.at(idx); }
 	int getTextureNum() { return textureIds.size(); }
 
@@ -82,11 +111,17 @@ public:
 	void setPointPosition(glm::vec3 position);
 	//void setLinePosition();
 
+	//void to_json(json& j, const SelectedMeshData& data);
+	//void from_json(json& j, SelectedMeshData& data);
+
 private:
 	void updateSelectedBufferObjects();
 	void updateSelectedFVMap(int face_3verticesID[]);
 
 	void initSelectedBufferObjs();
+	void loadSelectedBufferObjs();
+	void loadSelectedTextures();
+
 
 private:
 	TriMesh modelMesh;
@@ -102,7 +137,8 @@ private:
 	std::vector<TriMesh::Point> modelVertices;
 	std::vector<unsigned int> modelIndices;
 
-	std::vector<SelectedMeshData> selectedDataList;
+	std::vector<MeshData::SelectedMeshData> selectedMeshData;
+	std::vector<MeshData::SelectedTextureData> selectedTextureData;
 
 	glm::mat4 modelMat;
 

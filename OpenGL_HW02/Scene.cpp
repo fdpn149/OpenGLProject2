@@ -30,7 +30,7 @@ Scene::Scene()
 	
 	/* Initialize mesh*/
 
-	mesh.load(Config::MODEL_PATH + "armadillo.obj");
+	mesh.loadMesh(Config::MODEL_PATH + "armadillo.obj");
 
 
 	/* Initialize camera */
