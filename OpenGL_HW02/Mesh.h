@@ -72,11 +72,13 @@ public:
 
 	void setNewSelectMesh();
 
+	void addVertex(int faceID, glm::vec3 worldPos);
+	void addFace(int faceId);
 
 	void addFaceToSelectedById(int faceId);
 	void deleteFaceFromSelectedById(int faceId);
 
-	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
+	TriMesh::VertexHandle findClosestPoint(int faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
 	//void setLinePosition();
 

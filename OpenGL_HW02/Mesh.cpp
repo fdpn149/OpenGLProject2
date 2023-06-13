@@ -43,6 +43,9 @@ Mesh::Mesh()
 	selectedMesh.add_property(faceIdPropHanlde);
 	selectedMesh.add_property(vertIdPropHandle);
 
+	selectedMesh.property(faceIdPropHanlde).set_persistent(true);
+	selectedMesh.property(vertIdPropHandle).set_persistent(true);
+
 	selectedDataList.push_back({ {}, {}, {}, false, 0, 0, 0 });
 }
 
@@ -217,66 +220,76 @@ void Mesh::setNewSelectMesh()
 //	glBindVertexArray(0);
 //}
 
+void Mesh::addVertex(int faceID, glm::vec3 worldPos)
+{
+
+	TriMesh::VertexHandle closestVH = findClosestPoint(faceID, worldPos);
+	TriMesh::Point closestPoint = modelMesh.point(closestVH);
+
+	setPointPosition(glm::vec3(closestPoint[0], closestPoint[1], closestPoint[2]));
+
+
+	for (auto vf_it = modelMesh.vf_begin(closestVH); vf_it.is_valid(); vf_it++)
+	{
+		int neighbor_faceID = vf_it->idx();
+
+		addFace(neighbor_faceID);
+	}
+}
+
+void Mesh::addFace(int faceId)
+{
+	TriMesh::FaceHandle modelSelectedFh = modelMesh.face_handle(faceId);
+
+	std::vector<TriMesh::VertexHandle> faceVertHandles;
+
+	// Check if it was selected
+	if (!modelMesh.status(modelSelectedFh).selected())
+	{
+		modelMesh.status(modelSelectedFh).set_selected(true);
+
+		// Loop face vertices
+		for (auto fv_it = modelMesh.fv_begin(modelSelectedFh); fv_it.is_valid(); fv_it++)
+		{
+			int vertexId = fv_it->idx();
+
+			TriMesh::VertexHandle vh;
+
+			// Check if the vertex is already in selected mesh
+			if (selectedModelVertMap.find(vertexId) != selectedModelVertMap.end())
+			{
+				vh = selectedMesh.vertex_handle(selectedModelVertMap[vertexId]);
+			}
+			// Add non-exist vertex to selected mesh
+			else
+			{
+				TriMesh::Point newVertexPos = modelMesh.point(*fv_it);
+				vh = selectedMesh.add_vertex(newVertexPos);
+
+				selectedMesh.property(vertIdPropHandle, vh) = vertexId + 1;
+
+				selectedModelVertMap[fv_it->idx()] = vh.idx();
+			}
+
+			faceVertHandles.push_back(vh);
+		}
+
+
+		TriMesh::FaceHandle newSelectedFh = selectedMesh.add_face(faceVertHandles);
+
+		selectedMesh.property(faceIdPropHanlde, newSelectedFh) = faceId + 1;
+
+		selectedModelFaceMap[faceId] = newSelectedFh.idx();
+
+		updateSelectedBufferObjects();
+	}
+}
+
 void Mesh::addFaceToSelectedById(int faceId)
 {
 	if (faceId >= 0 && faceId < modelMesh.n_faces())
 	{
-		TriMesh::FaceHandle modelSelectedFh = modelMesh.face_handle(faceId);
-
-		std::vector<TriMesh::VertexHandle> faceVertHandles;
-
-		//// New draw method
-		//for (int iii = 0; iii < 3; ++iii)
-		//{
-		//	modelVertices[faceId * 3 + iii].color = glm::vec3(1.0f, 0.0f, 0.0f);
-		//	modelVertices[faceId * 3 + iii].useTexture = 0;
-		//	modelVertices[faceId * 3 + iii].needDraw = true;
-		//}
-
-		//glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_DYNAMIC_DRAW);
-
-		// Check if it was selected
-		if (!modelMesh.status(modelSelectedFh).selected())
-		{
-			modelMesh.status(modelSelectedFh).set_selected(true);
-
-
-			// Loop face vertices
-			for (auto fv_it = modelMesh.fv_begin(modelSelectedFh); fv_it.is_valid(); fv_it++)
-			{
-				int vertexId = fv_it->idx();
-
-				TriMesh::VertexHandle vh;
-
-				// Check if the vertex is already in selected mesh
-				if (selectedModelVertMap.find(vertexId) != selectedModelVertMap.end())
-				{
-					vh = selectedMesh.vertex_handle(selectedModelVertMap[vertexId]);
-				}
-				// Add non-exist vertex to selected mesh
-				else
-				{
-					TriMesh::Point newVertexPos = modelMesh.point(*fv_it);
-					vh = selectedMesh.add_vertex(newVertexPos);
-
-					selectedMesh.property(vertIdPropHandle, vh) = vertexId + 1;
-
-					selectedModelVertMap[fv_it->idx()] = vh.idx();
-				}
-
-				faceVertHandles.push_back(vh);
-			}
-
-
-			TriMesh::FaceHandle newSelectedFh = selectedMesh.add_face(faceVertHandles);
-
-			selectedMesh.property(faceIdPropHanlde, newSelectedFh) = faceId + 1;
-
-			selectedModelFaceMap[faceId] = newSelectedFh.idx();
-
-			updateSelectedBufferObjects();
-		}
+		addFace(faceId);
 	}
 }
 
@@ -325,13 +338,13 @@ void Mesh::deleteFaceFromSelectedById(int faceId)
 	updateSelectedBufferObjects();
 }
 
-TriMesh::Point Mesh::findClosestPoint(uint faceID, glm::vec3 worldPos)
+TriMesh::VertexHandle Mesh::findClosestPoint(int faceID, glm::vec3 worldPos)
 {
 	OpenMesh::FaceHandle fh = modelMesh.face_handle(faceID);
 	if (!fh.is_valid())
 	{
 		printf("invalid\n");
-		return TriMesh::Point();
+		return TriMesh::VertexHandle();
 	}
 
 	double minDistance = 0.0;
@@ -353,7 +366,7 @@ TriMesh::Point Mesh::findClosestPoint(uint faceID, glm::vec3 worldPos)
 		}
 	}
 
-	return modelMesh.point(closestVH);
+	return closestVH;
 }
 
 void Mesh::setPointPosition(glm::vec3 position)
@@ -454,7 +467,6 @@ void Mesh::updateSelectedFVMap(int face_3verticesID[])
 		if (found_3vertices[i] == false)
 		{
 			selectedModelVertMap.erase(face_3verticesID[i]);
-			printf("erase %d\n", face_3verticesID[i]);
 		}
 	}
 }

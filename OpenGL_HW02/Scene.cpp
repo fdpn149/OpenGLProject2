@@ -107,9 +107,7 @@ void Scene::pickingPoint(float depthValue, unsigned int faceId, int x, int y)
 #endif // DEBUG
 
 
-	TriMesh::Point closestPoint = mesh.findClosestPoint(faceId, worldPos);
-
-	mesh.setPointPosition(glm::vec3(closestPoint[0], closestPoint[1], closestPoint[2]));
+	mesh.addVertex(faceId, worldPos);
 
 	shaders[ShaderTypes::DRAW_POINT].use();
 	shaders[ShaderTypes::DRAW_POINT].setVec3("pointColor", glm::vec3(0.0f, 1.0f, 0.0f));
@@ -175,6 +173,7 @@ void Scene::draw()
 	{
 	case PickMode::ADD_FACE:
 	case PickMode::DELETE_FACE:
+	case PickMode::POINT:
 		//shaders[ShaderTypes::DRAW_LINE].use();
 		//shaders[ShaderTypes::DRAW_LINE].setMat4("viewMat", camera.getViewMatrix());
 		//mesh.drawLine();
@@ -185,9 +184,7 @@ void Scene::draw()
 
 		mesh.drawSelected(shaders[ShaderTypes::DRAW_FACE]);
 
-		break;
-
-	case PickMode::POINT:
+	
 		shaders[ShaderTypes::DRAW_POINT].use();
 		shaders[ShaderTypes::DRAW_POINT].setMat4("viewMat", camera.getViewMatrix());
 		mesh.drawPoint();
