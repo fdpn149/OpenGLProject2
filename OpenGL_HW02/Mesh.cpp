@@ -119,8 +119,8 @@ Mesh::Mesh()
 
 Mesh::Mesh(const std::string& file)
 {
-	Mesh();
 	loadMesh(file);
+	Mesh();
 }
 
 void Mesh::loadMesh(const std::string& file)
@@ -176,25 +176,6 @@ void Mesh::loadMesh(const std::string& file)
 		glGenBuffers(1, &modelEbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelEbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * modelIndices.size(), modelIndices.data(), GL_STATIC_DRAW);
-
-		glBindVertexArray(0);
-
-
-		/* Initialize Selected Buffer Object */
-
-		initSelectedBufferObjs();
-
-		//glGenBuffers(1, &selectedTexVbo);
-		//glBindBuffer(GL_ARRAY_BUFFER, selectedTexVbo);
-		//
-		//glEnableVertexAttribArray(1);
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
-
-
-
-		///* TEMP */
-		//glGenVertexArrays(1, &vao3);
-		//glGenBuffers(1, &vbo3);
 
 		glBindVertexArray(0);
 	}
@@ -264,9 +245,12 @@ void Mesh::loadSelectedFromJson(const std::string& file)
 
 void Mesh::setTexture(const std::string& file)
 {
-	unsigned id = Utils::loadTexture(file);
+	if ((*(selectedTextureData.end() - 1)).id != 0)
+	{
+		glDeleteTextures(1, &((*(selectedTextureData.end() - 1)).id));
+	}
 
-	std::cout << selectedTextureData.size() << std::endl;
+	unsigned id = Utils::loadTexture(file);
 
 	(*(selectedTextureData.end() - 1)).id = id;
 	(*(selectedTextureData.end() - 1)).file = file;
@@ -315,15 +299,6 @@ void Mesh::drawSelected(Shader& shader)
 	}
 }
 
-//void Mesh::drawSelecetedFaces()
-//{
-//	glBindTexture(GL_TEXTURE_2D, selectedTexId);
-//
-//	glBindVertexArray(selectedVao);
-//	glDrawElements(GL_TRIANGLES, selectedIndices.size(), GL_UNSIGNED_INT, (void*)0);
-//	glBindVertexArray(0);
-//}
-
 void Mesh::drawPoint()
 {
 	glPointSize(15.0f);
@@ -338,17 +313,11 @@ void Mesh::setNewSelectMesh()
 	initSelectedBufferObjs();
 
 	selectedMesh.clear();
+	selectedMesh.garbage_collection();
 
 	selectedModelFaceMap.clear();
 	selectedModelVertMap.clear();
 }
-
-//void Mesh::drawLine()
-//{
-//	glBindVertexArray(vao3);
-//	glDrawArrays(GL_LINES, 0, lines.size());
-//	glBindVertexArray(0);
-//}
 
 void Mesh::addFaceToSelectedById(int faceId)
 {
@@ -357,17 +326,6 @@ void Mesh::addFaceToSelectedById(int faceId)
 		TriMesh::FaceHandle modelSelectedFh = modelMesh.face_handle(faceId);
 
 		std::vector<TriMesh::VertexHandle> faceVertHandles;
-
-		//// New draw method
-		//for (int iii = 0; iii < 3; ++iii)
-		//{
-		//	modelVertices[faceId * 3 + iii].color = glm::vec3(1.0f, 0.0f, 0.0f);
-		//	modelVertices[faceId * 3 + iii].useTexture = 0;
-		//	modelVertices[faceId * 3 + iii].needDraw = true;
-		//}
-
-		//glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_DYNAMIC_DRAW);
 
 		// Check if it was selected
 		if (!modelMesh.status(modelSelectedFh).selected())
@@ -418,16 +376,6 @@ void Mesh::deleteFaceFromSelectedById(int faceId)
 
 	if (!fh_in_model.is_valid() || !modelMesh.status(fh_in_model).selected())
 		return;
-
-	//// New draw method
-	//for (int iii = 0; iii < 3; ++iii)
-	//{
-	//	modelVertices[faceId * 3 + iii].color = glm::vec3(1.0f, 1.0f, 1.0f);
-	//	modelVertices[faceId * 3 + iii].useTexture = false;
-	//}
-
-	//glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_DYNAMIC_DRAW);
 
 	modelMesh.status(fh_in_model).set_selected(false);
 	int id = selectedModelFaceMap[faceId];
@@ -495,15 +443,6 @@ void Mesh::setPointPosition(glm::vec3 position)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
 }
-
-//void Mesh::setLinePosition()
-//{
-//	glBindVertexArray(vao3);
-//	glBindBuffer(GL_ARRAY_BUFFER, vbo3);
-//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * lines.size() * 3, lines.data(), GL_STATIC_DRAW);
-//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//	glEnableVertexAttribArray(0);
-//}
 
 void Mesh::updateSelectedBufferObjects()
 {
