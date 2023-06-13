@@ -401,7 +401,7 @@ void Mesh::updateSelectedBufferObjects()
 			lastSelectedMeshRef.indices.push_back(fv_it->idx());
 		}
 	}
-	
+
 	glBindVertexArray(lastSelectedMeshRef.vao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, lastSelectedMeshRef.vbo[VertexObjType::POSITION]);

@@ -94,13 +94,13 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->vertexToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->testKeyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->toolStripContainer2 = (gcnew System::Windows::Forms::ToolStripContainer());
+	this->newSelectButton = (gcnew System::Windows::Forms::Button());
 	this->loadTexButton = (gcnew System::Windows::Forms::Button());
 	this->scaleButton = (gcnew System::Windows::Forms::Button());
 	this->rotateButton = (gcnew System::Windows::Forms::Button());
 	this->calculateButton = (gcnew System::Windows::Forms::Button());
 	this->hkoglPanelControl2 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
-	this->newSelectButton = (gcnew System::Windows::Forms::Button());
 	this->menuStrip1->SuspendLayout();
 	this->toolStripContainer2->ContentPanel->SuspendLayout();
 	this->toolStripContainer2->TopToolStripPanel->SuspendLayout();
@@ -113,6 +113,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 		| System::Windows::Forms::AnchorStyles::Left)
 		| System::Windows::Forms::AnchorStyles::Right));
 	this->hkoglPanelControl1->AutoSize = true;
+	this->hkoglPanelControl1->AutoValidate = System::Windows::Forms::AutoValidate::Disable;
 	hkcoglPanelCameraSetting3->Far = 1000;
 	hkcoglPanelCameraSetting3->Fov = 45;
 	hkcoglPanelCameraSetting3->Near = -1000;
@@ -218,6 +219,17 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->toolStripContainer2->TopToolStripPanel->Controls->Add(this->menuStrip1);
 	// 
+	// newSelectButton
+	// 
+	this->newSelectButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
+	this->newSelectButton->Location = System::Drawing::Point(855, 476);
+	this->newSelectButton->Name = L"newSelectButton";
+	this->newSelectButton->Size = System::Drawing::Size(248, 37);
+	this->newSelectButton->TabIndex = 6;
+	this->newSelectButton->Text = L"Select new mesh";
+	this->newSelectButton->UseVisualStyleBackColor = true;
+	this->newSelectButton->Click += gcnew System::EventHandler(this, &Form1::newSelectButton_Click);
+	// 
 	// loadTexButton
 	// 
 	this->loadTexButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
@@ -286,17 +298,6 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->openFileDialog1->FileName = L"openFileDialog1";
 	// 
-	// newSelectButton
-	// 
-	this->newSelectButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
-	this->newSelectButton->Location = System::Drawing::Point(855, 476);
-	this->newSelectButton->Name = L"newSelectButton";
-	this->newSelectButton->Size = System::Drawing::Size(248, 37);
-	this->newSelectButton->TabIndex = 6;
-	this->newSelectButton->Text = L"Select new mesh";
-	this->newSelectButton->UseVisualStyleBackColor = true;
-	this->newSelectButton->Click += gcnew System::EventHandler(this, &Form1::newSelectButton_Click);
-	// 
 	// Form1
 	// 
 	this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
@@ -340,12 +341,11 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_Paint(System::Obje
 		scene->setTextureUpdatedState(true);
 	}
 
-	scene->draw();
-
 	auto currentFrame = clock();
 
 	std::cout << (double)(currentFrame - lastFrame) / CLOCKS_PER_SEC << "s" << std::endl;
-	lastFrame = currentFrame;
+
+	scene->draw();
 }
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
@@ -369,8 +369,8 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 		float deltaAngleX = 2 * glm::pi<float>() / Config::SCR_W;
 		float deltaAngleY =		glm::pi<float>() / Config::SCR_H;
 
-		float xAngle = (lastMouseX - e->X) * deltaAngleX;
-		float yAngle = (lastMouseY - e->Y) * deltaAngleY;
+		float xAngle = (lastMouse1X - e->X) * deltaAngleX;
+		float yAngle = (lastMouse1Y - e->Y) * deltaAngleY;
 
 		// handle camera direction equal to up vector
 		float cosAngle = glm::dot(scene->getCameraRef().getViewDir(), scene->getCameraRef().getUpVector());
@@ -402,11 +402,33 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 
 		/* Update mouse position for next rotation */
 
-		lastMouseX = e->X;
-		lastMouseY = e->Y;
+		lastMouse1X = e->X;
+		lastMouse1Y = e->Y;
 
 		hkoglPanelControl1->Invalidate();
 	}
+	else if (e->Button.ToString() == "Middle")
+	{
+		glm::vec4 position(scene->getCameraRef().getPosition(), 1.0f);
+		glm::vec4 pivot(scene->getCameraRef().getLookAt(), 1.0f);
+
+		float deltaX = -(e->X - lastMouse3X) / Config::SCR_W;
+		float deltaY = (e->Y - lastMouse3Y) / Config::SCR_H;
+
+		glm::mat4 translateMat = glm::translate(glm::mat4(1.0f), deltaX * scene->getCameraRef().getRightVector());
+		translateMat = glm::translate(translateMat, deltaY * scene->getCameraRef().getUpVector());
+
+		position = translateMat * position;
+		pivot = translateMat * pivot;
+
+		scene->getCameraRef().setCameraView(position, pivot, scene->getCameraRef().getUpVector());
+
+		lastMouse3X = e->X;
+		lastMouse3Y = e->Y;
+
+		hkoglPanelControl1->Invalidate();
+	}
+
 }
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
@@ -419,10 +441,16 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseDown(System::
 	/* Mouse1 handler */
 	else if (e->Button.ToString() == "Right")
 	{
-		lastMouseX = e->X;
-		lastMouseY = e->Y;
+		lastMouse1X = e->X;
+		lastMouse1Y = e->Y;
 	}
-
+	/* Mouse3 handler */
+	else if (e->Button.ToString() == "Middle")
+	{
+		lastMouse3X = e->X;
+		lastMouse3Y = e->Y;
+	}
+	
 	hkoglPanelControl1->Invalidate();
 }
 

@@ -135,7 +135,7 @@
       <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;OpenMeshCored.lib;OpenMeshToolsd.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;OpenMeshCore.lib;OpenMeshTools.lib</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
     </Link>

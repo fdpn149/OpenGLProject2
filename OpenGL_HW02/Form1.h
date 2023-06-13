@@ -23,8 +23,11 @@ namespace CppCLRWinformsProject {
 		Scene* scene = nullptr;
 
 		// Mouse
-		float lastMouseX;
-		float lastMouseY;
+		float lastMouse1X;
+		float lastMouse1Y;
+
+		float lastMouse3X;
+		float lastMouse3Y;
 
 		TextureParamPainter* painter;
 
@@ -52,6 +55,7 @@ namespace CppCLRWinformsProject {
 	private: System::Windows::Forms::Button^ rotateButton;
 	private: System::Windows::Forms::Button^ scaleButton;
 	private: System::Windows::Forms::Button^ loadTexButton;
+
 	private: System::Windows::Forms::Button^ newSelectButton;
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
 
