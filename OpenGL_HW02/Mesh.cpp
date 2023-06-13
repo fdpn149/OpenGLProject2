@@ -27,6 +27,15 @@
 #include "Config.h"
 #include "ConvexCombMap.h"
 
+namespace VertexObjType
+{
+	enum VertexObjType
+	{
+		POSITION,
+		TEXCOORD,
+		MAX_NUM,
+	};
+}
 
 Mesh::Mesh()
 	: modelMat(glm::mat4(1.0f))
@@ -34,7 +43,7 @@ Mesh::Mesh()
 	selectedMesh.add_property(faceIdPropHanlde);
 	selectedMesh.add_property(vertIdPropHandle);
 
-	selectedTexId = Utils::loadTexture(Config::TEXTURE_PATH + "container.jpg");
+	selectedDataList.push_back({ {}, {}, {}, false, 0, 0, 0 });
 }
 
 Mesh::Mesh(const std::string& file)
@@ -57,40 +66,22 @@ void Mesh::load(const std::string& file)
 
 
 		/* Get vertices */
-		//modelVertices.reserve(modelMesh.n_vertices());
+		modelVertices.reserve(modelMesh.n_vertices());
 
-		//for (TriMesh::VertexIter v_it = modelMesh.vertices_begin(); v_it != modelMesh.vertices_end(); ++v_it)
-		//{
-		//	glm::vec3 position = Utils::toGlmVec3(modelMesh.point(*v_it));
-		//	glm::vec2 texcoord = glm::vec2(0.0f);
-		//	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
-		//	int useTexture = 0;
-
-		//	modelVertices.push_back({ position, texcoord, color, useTexture });
-		//}
+		for (TriMesh::VertexIter v_it = modelMesh.vertices_begin(); v_it != modelMesh.vertices_end(); ++v_it)
+		{
+			modelVertices.push_back(modelMesh.point(*v_it));
+		}
 
 
 		/* Get indices */
 
-		int count = 0;
-		modelVertices.reserve(modelMesh.n_faces() * 3);
+		modelIndices.reserve(modelMesh.n_faces() * 3);
 		for (TriMesh::FaceIter f_it = modelMesh.faces_begin(); f_it != modelMesh.faces_end(); ++f_it)
 		{
-			
 			for (TriMesh::FaceVertexIter fv_it = modelMesh.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
 			{
-				++count;
-				glm::vec3 position = Utils::toGlmVec3(modelMesh.point(*fv_it));
-				glm::vec2 texcoord = glm::vec2(0.0f);
-				glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
-				int useTexture = 0;
-
-				modelVertices.push_back({ position, texcoord, color, useTexture });
-			}
-
-			if (count > modelMesh.n_faces() * 3 - 1)
-			{
-				break;
+				modelIndices.push_back((*fv_it).idx());
 			}
 		}
 
@@ -100,44 +91,27 @@ void Mesh::load(const std::string& file)
 		glGenVertexArrays(1, &modelVao);
 		glBindVertexArray(modelVao);
 
+
 		// VBO
 		glGenBuffers(1, &modelVbo);
 		glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texcoord));
-
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-
-		glEnableVertexAttribArray(3);
-		glVertexAttribIPointer(3, 1, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, useTexture));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriMesh::Point), (void*)0);
 
 
-		//// EBO
-		//glGenBuffers(1, &modelEbo);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelEbo);
+		// EBO
+		glGenBuffers(1, &modelEbo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelEbo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * modelIndices.size(), modelIndices.data(), GL_STATIC_DRAW);
 
-		//glBindVertexArray(0);
+		glBindVertexArray(0);
 
 
-		///* Initialize Selected Buffer Object */
+		/* Initialize Selected Buffer Object */
 
-		//// VAO
-		//glGenVertexArrays(1, &selectedVao);
-		//glBindVertexArray(selectedVao);
-
-		//// VBO
-		//glGenBuffers(1, &selectedVbo);
-		//glBindBuffer(GL_ARRAY_BUFFER, selectedVbo);
-
-		//glEnableVertexAttribArray(0);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriMesh::Point), 0);
-
+		initSelectedBufferObjs();
 
 		//glGenBuffers(1, &selectedTexVbo);
 		//glBindBuffer(GL_ARRAY_BUFFER, selectedTexVbo);
@@ -145,8 +119,6 @@ void Mesh::load(const std::string& file)
 		//glEnableVertexAttribArray(1);
 		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
 
-		//// EBO
-		//glGenBuffers(1, &selectedEbo);
 
 
 		///* TEMP */
@@ -161,17 +133,54 @@ void Mesh::load(const std::string& file)
 	}
 }
 
+void Mesh::setTexture(const std::string& file)
+{
+	unsigned id = Utils::loadTexture(file);
+
+	textureIds.push_back(id);
+
+	(*(selectedDataList.end() - 1)).useTexture = true;
+}
+
+void Mesh::setTexcoord()
+{
+	SelectedMeshData& lastSelectedMeshRef = (*(selectedDataList.end() - 1));
+
+	int idx = 0;
+	for (auto v_it = selectedMesh.vertices_begin(); v_it != selectedMesh.vertices_end(); ++v_it)
+	{
+		lastSelectedMeshRef.texcoords[idx++] = ConvexCombMap::map(Utils::toGlmVec3(selectedMesh.point(*v_it)));
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, lastSelectedMeshRef.vbo[VertexObjType::TEXCOORD]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * lastSelectedMeshRef.texcoords.size(), lastSelectedMeshRef.texcoords.data(), GL_DYNAMIC_DRAW);
+}
+
 void Mesh::draw()
 {
-	glBindTexture(GL_TEXTURE_2D, selectedTexId);
-
 	glBindVertexArray(modelVao);
-	glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-	glDrawArrays(GL_TRIANGLES, 0, modelVertices.size());
-	//glDrawElements(GL_TRIANGLES, modelMesh.n_faces() * 3, GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, modelMesh.n_faces() * 3, GL_UNSIGNED_INT, (void*)0);
 	glBindVertexArray(0);
+}
 
-	std::cout << glGetError() << std::endl;
+void Mesh::drawSelected(Shader& shader)
+{
+	shader.use();
+
+	for (int iii = 0; iii != selectedDataList.size(); ++iii)
+	{
+		shader.setInt("Texture", 0);
+		shader.setInt("UseTexture", selectedDataList[iii].useTexture);
+
+		if (selectedDataList[iii].useTexture)
+		{
+			glBindTexture(GL_TEXTURE_2D, textureIds[iii]);
+		}
+
+		glBindVertexArray(selectedDataList[iii].vao);
+		glDrawElements(GL_TRIANGLES, selectedDataList[iii].indices.size(), GL_UNSIGNED_INT, (void*)0);
+		glBindVertexArray(0);
+	}
 }
 
 //void Mesh::drawSelecetedFaces()
@@ -189,43 +198,24 @@ void Mesh::drawPoint()
 	glDrawArrays(GL_POINTS, 0, 1);
 }
 
+void Mesh::setNewSelectMesh()
+{
+	selectedDataList.push_back({ {}, {}, {}, false, 0, 0, 0 });
+
+	initSelectedBufferObjs();
+
+	selectedMesh.clear();
+
+	selectedModelFaceMap.clear();
+	selectedModelVertMap.clear();
+}
+
 //void Mesh::drawLine()
 //{
 //	glBindVertexArray(vao3);
 //	glDrawArrays(GL_LINES, 0, lines.size());
 //	glBindVertexArray(0);
 //}
-
-void Mesh::calcTexcoord()
-{
-	//selectedTexcoords.resize(selectedVertices.size());
-
-	for (auto f_it = modelMesh.faces_begin(); f_it != modelMesh.faces_end(); ++f_it)
-	{
-		if (modelMesh.status(*f_it).selected())
-		{
-			for (int iii = 0; iii < 3; ++iii)
-			{
-				modelVertices[(*f_it).idx() * 3	   ].texcoord = ConvexCombMap::map(modelVertices[(*f_it).idx() * 3    ].position);
-				modelVertices[(*f_it).idx() * 3 + 1].texcoord = ConvexCombMap::map(modelVertices[(*f_it).idx() * 3 + 1].position);
-				modelVertices[(*f_it).idx() * 3 + 2].texcoord = ConvexCombMap::map(modelVertices[(*f_it).idx() * 3 + 2].position);
-
-				modelVertices[(*f_it).idx() * 3    ].useTexture = 1;
-				modelVertices[(*f_it).idx() * 3 + 1].useTexture = 1;
-				modelVertices[(*f_it).idx() * 3 + 2].useTexture = 1;
-			}	
-		}
-	}
-
-	glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
-
-	//for (int iii = 0; iii != selectedVertices.size(); ++iii)
-	//{
-	//	selectedTexcoords[iii] = ConvexCombMap::map(Utils::toGlmVec3(selectedVertices[iii]));
-	//}
-
-}
 
 void Mesh::addFaceToSelectedById(int faceId)
 {
@@ -235,15 +225,16 @@ void Mesh::addFaceToSelectedById(int faceId)
 
 		std::vector<TriMesh::VertexHandle> faceVertHandles;
 
-		// New draw method
-		for (int iii = 0; iii < 3; ++iii)
-		{
-			modelVertices[faceId * 3 + iii].color = glm::vec3(1.0f, 0.0f, 0.0f);
-			modelVertices[faceId * 3 + iii].useTexture = 0;
-		}
+		//// New draw method
+		//for (int iii = 0; iii < 3; ++iii)
+		//{
+		//	modelVertices[faceId * 3 + iii].color = glm::vec3(1.0f, 0.0f, 0.0f);
+		//	modelVertices[faceId * 3 + iii].useTexture = 0;
+		//	modelVertices[faceId * 3 + iii].needDraw = true;
+		//}
 
-		glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
+		//glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_DYNAMIC_DRAW);
 
 		// Check if it was selected
 		if (!modelMesh.status(modelSelectedFh).selected())
@@ -291,22 +282,20 @@ void Mesh::addFaceToSelectedById(int faceId)
 
 void Mesh::deleteFaceFromSelectedById(int faceId)
 {
-
-	
 	TriMesh::FaceHandle fh_in_model = modelMesh.face_handle(faceId);
 
 	if (!fh_in_model.is_valid() || !modelMesh.status(fh_in_model).selected())
 		return;
 
-	// New draw method
-	for (int iii = 0; iii < 3; ++iii)
-	{
-		modelVertices[faceId * 3 + iii].color = glm::vec3(1.0f, 1.0f, 1.0f);
-		modelVertices[faceId * 3 + iii].useTexture = false;
-	}
+	//// New draw method
+	//for (int iii = 0; iii < 3; ++iii)
+	//{
+	//	modelVertices[faceId * 3 + iii].color = glm::vec3(1.0f, 1.0f, 1.0f);
+	//	modelVertices[faceId * 3 + iii].useTexture = false;
+	//}
 
-	glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_DYNAMIC_DRAW);
 
 	modelMesh.status(fh_in_model).set_selected(false);
 	int id = selectedModelFaceMap[faceId];
@@ -392,36 +381,39 @@ void Mesh::updateSelectedBufferObjects()
 	selectedMesh.request_face_normals();
 	selectedMesh.update_normals();
 
+	SelectedMeshData& lastSelectedMeshRef = (*(selectedDataList.end() - 1));
+
 	// Get vertices
-	selectedVertices.clear();
+	lastSelectedMeshRef.vertices.clear();
+	lastSelectedMeshRef.texcoords.clear();
 	for (TriMesh::VertexIter v_it = selectedMesh.vertices_begin(); v_it != selectedMesh.vertices_end(); ++v_it)
 	{
-		selectedVertices.push_back(selectedMesh.point(*v_it));
+		lastSelectedMeshRef.vertices.push_back(selectedMesh.point(*v_it));
+		lastSelectedMeshRef.texcoords.push_back(glm::vec2(0.0f));
 	}
 		
 	// Get indices
-	selectedIndices.clear();
+	lastSelectedMeshRef.indices.clear();
 	for (TriMesh::FaceIter f_it = selectedMesh.faces_begin(); f_it != selectedMesh.faces_end(); ++f_it)
 	{
 		for (TriMesh::FaceVertexIter fv_it = selectedMesh.fv_iter(*f_it); fv_it.is_valid(); ++fv_it)
 		{
-			selectedIndices.push_back(fv_it->idx());
+			lastSelectedMeshRef.indices.push_back(fv_it->idx());
 		}
 	}
 	
-	//glBindVertexArray(selectedVao);
+	glBindVertexArray(lastSelectedMeshRef.vao);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, selectedVbo);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * selectedVertices.size(), selectedVertices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, lastSelectedMeshRef.vbo[VertexObjType::POSITION]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(TriMesh::Point) * lastSelectedMeshRef.vertices.size(), lastSelectedMeshRef.vertices.data(), GL_DYNAMIC_DRAW);
 
-	//selectedTexcoords.resize(selectedVertices.size());
-	//glBindBuffer(GL_ARRAY_BUFFER, selectedTexVbo);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * selectedTexcoords.size(), selectedTexcoords.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, lastSelectedMeshRef.vbo[VertexObjType::TEXCOORD]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * lastSelectedMeshRef.texcoords.size(), lastSelectedMeshRef.texcoords.data(), GL_DYNAMIC_DRAW);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, selectedEbo);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * selectedIndices.size(), selectedIndices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lastSelectedMeshRef.ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * lastSelectedMeshRef.indices.size(), lastSelectedMeshRef.indices.data(), GL_DYNAMIC_DRAW);
 
-	//glBindVertexArray(0);
+	glBindVertexArray(0);
 }
 
 void Mesh::updateSelectedFVMap(int face_3verticesID[])
@@ -465,5 +457,38 @@ void Mesh::updateSelectedFVMap(int face_3verticesID[])
 			printf("erase %d\n", face_3verticesID[i]);
 		}
 	}
+}
+
+void Mesh::initSelectedBufferObjs()
+{
+	SelectedMeshData& selectedMeshData = (*(selectedDataList.end() - 1));
+
+	// VAO
+	glGenVertexArrays(1, &selectedMeshData.vao);
+	glBindVertexArray(selectedMeshData.vao);
+
+	std::cout << "VAO: " << selectedMeshData.vao << std::endl;
+
+	// VBO
+	glGenBuffers(2, selectedMeshData.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, selectedMeshData.vbo[VertexObjType::POSITION]);
+
+	std::cout << "VBO POS: " << selectedMeshData.vbo[0] << std::endl;
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriMesh::Point), (void*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, selectedMeshData.vbo[VertexObjType::TEXCOORD]);
+
+	std::cout << "VBO TEX: " << selectedMeshData.vbo[1] << std::endl;
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+	
+	// EBO
+	glGenBuffers(1, &selectedMeshData.ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, selectedMeshData.ebo);
+
+	glBindVertexArray(0);
 }
 

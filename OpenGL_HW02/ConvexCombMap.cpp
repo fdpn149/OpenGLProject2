@@ -113,15 +113,27 @@ void ConvexCombMap::rotate(const float angle)
 	{
 		glm::vec2 newTexcoord = Utils::texcoordToCartesian((*it).second);
 
-		std::cout << "Old X: " << newTexcoord.x << " Y: " << newTexcoord.y << std::endl;
-
 		newTexcoord = rotationMat * glm::vec4(newTexcoord.x, newTexcoord.y, 0.0f, 1.0f);
 
-		std::cout << "New X: " << newTexcoord.x << " Y: " << newTexcoord.y << std::endl;
+
 
 		(*it).second = Utils::cartesianToTexcoord(newTexcoord);
 	}
 
+}
+
+void ConvexCombMap::scale(const float ratio)
+{
+	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(ratio, ratio, ratio));
+
+	for (auto it = convexCombMap.begin(); it != convexCombMap.end(); ++it)
+	{
+		glm::vec2 newTexcoord = Utils::texcoordToCartesian((*it).second);
+
+		newTexcoord = scaleMat * glm::vec4(newTexcoord.x, newTexcoord.y, 0.0f, 1.0f);
+
+		(*it).second = Utils::cartesianToTexcoord(newTexcoord);
+	}
 }
 
 glm::vec2 ConvexCombMap::map(const glm::vec3& vertex)

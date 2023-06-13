@@ -44,10 +44,16 @@ public:
 	Camera& getCameraRef() { return camera; }
 	const TriMesh& getSelectedMeshRef() const { return mesh.getSelectedMeshRef(); }
 	const Mesh& getMeshRef() const { return mesh; }
+	bool isTextureUpdated() const { return textureUpdated; }
 
 	/* Setters */
 	void setPickMode(PickMode::PickMode newMode) { mode = newMode; }
-	void setUseTextureOnSelectedMesh(bool use);
+	void setTextureToMesh(const std::string& file) { mesh.setTexture(file); }
+	void setTextureUpdatedState(bool updated) { textureUpdated = updated; }
+
+	void updateSelectedMeshTexcoords() { mesh.setTexcoord(); }
+
+	void setNewSelectMesh() { mesh.setNewSelectMesh(); }
 
 	void draw();
 	void pick(int x, int y);
@@ -64,7 +70,8 @@ private:
 
 	Mesh mesh;
 
-	bool useTexture;
+	//bool useTexture;
+	bool textureUpdated;
 
 	PickMode::PickMode mode;
 

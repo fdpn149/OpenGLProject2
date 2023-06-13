@@ -80,29 +80,29 @@ void Shader::use()
 	glUseProgram(id);
 }
 
-void Shader::setInt(const char* name, int value)
+void Shader::setInt(const std::string& name, int value)
 {
-	glUniform1i(glGetUniformLocation(id, name), value);
+	glUniform1i(glGetUniformLocation(id, name.c_str()), value);
 }
 
-void Shader::setFloat(const char* name, float value)
+void Shader::setFloat(const std::string& name, float value)
 {
-	glUniform1f(glGetUniformLocation(id, name), value);
+	glUniform1f(glGetUniformLocation(id, name.c_str()), value);
 }
 
-void Shader::set3Float(const char* name, float v0, float v1, float v2)
+void Shader::set3Float(const std::string& name, float v0, float v1, float v2)
 {
-	glUniform3f(glGetUniformLocation(id, name), v0, v1, v2);
+	glUniform3f(glGetUniformLocation(id, name.c_str()), v0, v1, v2);
 }
 
-void Shader::setVec3(const char* name, glm::vec3 vec)
+void Shader::setVec3(const std::string& name, glm::vec3 vec)
 {
-	glUniform3f(glGetUniformLocation(id, name), vec.x, vec.y, vec.z);
+	glUniform3f(glGetUniformLocation(id, name.c_str()), vec.x, vec.y, vec.z);
 }
 
-void Shader::setMat4(const char* name, glm::mat4 mat)
+void Shader::setMat4(const std::string& name, glm::mat4 mat)
 {
-	glUniformMatrix4fv(glGetUniformLocation(id, name), 1, GL_FALSE, glm::value_ptr(mat));
+	glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 std::string Shader::readFileAsString(const std::string& path)

@@ -30,12 +30,22 @@ typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
 class Mesh
 {
 private:
-	struct Vertex
+	//struct Vertex
+	//{
+	//	glm::vec3 position;
+	//	glm::vec2 texcoord;
+	//};
+
+	struct SelectedMeshData
 	{
-		glm::vec3 position;
-		glm::vec2 texcoord;
-		glm::vec3 color;
-		int useTexture;
+		std::vector<TriMesh::Point> vertices;
+		std::vector<glm::vec2> texcoords;
+		std::vector<unsigned int> indices;
+		bool useTexture;
+
+		unsigned int vao;
+		unsigned int vbo[2];
+		unsigned int ebo;
 	};
 
 public:
@@ -45,15 +55,23 @@ public:
 	void load(const std::string& file);
 
 	const TriMesh& getSelectedMeshRef() const { return selectedMesh; }
-	const std::vector<TriMesh::Point>& getSelectedVertices() const { return selectedVertices; }
-	const std::vector<unsigned int>& getSelectedIndices() const { return selectedIndices; }
+	const std::vector<TriMesh::Point>& getSelectedVertices() const { return (*(selectedDataList.end() - 1)).vertices; }
+	const std::vector<glm::vec2>& getSelectedTexcoords() const { return (*(selectedDataList.end() - 1)).texcoords; }
+	const std::vector<unsigned int>& getSelectedIndices() const { return (*(selectedDataList.end() - 1)).indices; }
+	unsigned int getTexIdByIdx(int idx) { return textureIds.at(idx); }
+	int getTextureNum() { return textureIds.size(); }
+
+	void setTexture(const std::string& file);
+	void setTexcoord();
 
 	void draw();
+	void drawSelected(Shader& shader);
 	//void drawSelecetedFaces();
 	void drawPoint();
 	//void drawLine();	//For Debug
 
-	void calcTexcoord();
+	void setNewSelectMesh();
+
 
 	void addFaceToSelectedById(int faceId);
 	void deleteFaceFromSelectedById(int faceId);
@@ -66,6 +84,7 @@ private:
 	void updateSelectedBufferObjects();
 	void updateSelectedFVMap(int face_3verticesID[]);
 
+	void initSelectedBufferObjs();
 
 private:
 	TriMesh modelMesh;
@@ -78,11 +97,10 @@ private:
 	OpenMesh::VPropHandleT<int> vertIdPropHandle;
 
 
-	std::vector<Vertex> modelVertices;
+	std::vector<TriMesh::Point> modelVertices;
+	std::vector<unsigned int> modelIndices;
 
-	std::vector<TriMesh::Point> selectedVertices;
-	std::vector<unsigned int> selectedIndices;
-	//std::vector<glm::vec2> selectedTexcoords;
+	std::vector<SelectedMeshData> selectedDataList;
 
 	glm::mat4 modelMat;
 
@@ -92,12 +110,9 @@ private:
 
 	unsigned int modelVbo;
 	unsigned int modelVao;
-	//unsigned int modelEbo;
+	unsigned int modelEbo;
 
-	//unsigned int selectedVbo;
-	//unsigned int selectedTexVbo;
-	//unsigned int selectedVao;
-	//unsigned int selectedEbo;
+	std::vector<unsigned int> textureIds;
 
 	unsigned int selectedTexId;
 

@@ -4,8 +4,8 @@ in vec2 texcoord;
 
 out vec4 FragColor;
 
-uniform bool UseTexture;
 uniform sampler2D Texture;
+uniform bool UseTexture;
 
 void main()
 {

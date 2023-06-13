@@ -1,6 +1,7 @@
 #pragma once
 /*                 Standard                 */
 #include <iostream>
+#include <string>
 
 /*                 OpenMesh                 */
 #define _USE_MATH_DEFINES
@@ -12,8 +13,14 @@
 /*                 Glm                      */
 #include <glm/glm.hpp>
 
+
+/*                 DonNet                   */
+#include <msclr\marshal_cppstd.h>
+
+
 /*                 Type Defs                */
 typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
+
 
 namespace Utils
 {
@@ -32,4 +39,6 @@ namespace Utils
 
 	glm::vec2 texcoordToCartesian(const glm::vec2 position);
 	glm::vec2 cartesianToTexcoord(const glm::vec2 position);
+
+	std::string donNetStringToSTLString(System::String^ str);
 }

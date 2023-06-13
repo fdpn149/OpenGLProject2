@@ -68,3 +68,10 @@ glm::vec2 Utils::cartesianToTexcoord(const glm::vec2 position)
 {
 	return glm::vec2((position.x + 1) / 2, (position.y + 1) / 2);
 }
+
+std::string Utils::donNetStringToSTLString(System::String^ str)
+{
+	msclr::interop::marshal_context context;
+
+	return context.marshal_as<std::string>(str);
+}

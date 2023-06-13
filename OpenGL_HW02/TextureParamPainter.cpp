@@ -7,6 +7,10 @@
 
 #include <STB/stb_image.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/reciprocal.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "utilities.h"
 #include "Config.h"
 #include "ConvexCombMap.h"
@@ -30,12 +34,26 @@ TextureParamPainter::TextureParamPainter()
 
 	myShader = Shader(Config::SHADER_PATH + "textureParam.vs.glsl", Config::SHADER_PATH + "textureParam.fs.glsl");
 
-	texId = Utils::loadTexture(Config::TEXTURE_PATH + "container.jpg");
+	textureUpdated = true;
+	texId = 0;
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vertVbo);
 	glGenBuffers(1, &texVbo);
 	glGenBuffers(1, &ebo);
+}
+
+void TextureParamPainter::setTexture(const std::string& file)
+{
+	if (texId != 0)
+	{
+		glDeleteTextures(1, &texId);
+	}
+
+	if (!file.empty())
+	{
+		texId = Utils::loadTexture(file);
+	}
 }
 
 void TextureParamPainter::setLineData(const std::vector<glm::vec2> lineVertices)
@@ -48,15 +66,14 @@ void TextureParamPainter::setMesh2DData(const Mesh& mesh)
 	vertices.clear();
 	indices = mesh.getSelectedIndices();
 
+	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(1.25f, 1.25f, 1.25f));
+
 	for (const auto& vertex : mesh.getSelectedVertices())
 	{
 		glm::vec2 texcoord = ConvexCombMap::map(Utils::toGlmVec3(vertex));
-		this->texcoords.push_back(texcoord);
+		texcoords.push_back(texcoord);
 
-		texcoord.x = texcoord.x * 2 - 1;
-		texcoord.y = texcoord.y * 2 - 1;
-
-		this->vertices.push_back(texcoord);
+		vertices.push_back(Utils::texcoordToCartesian(texcoord));
 	}
 
 	glBindVertexArray(vao);
@@ -97,18 +114,22 @@ void TextureParamPainter::draw()
 		glDrawArrays(GL_LINES, 0, lineVertices.size());
 
 		// Draw texture
-		myShader.setInt("UseTexture", 1);
+		if (texId != 0)
+		{
+			myShader.setInt("UseTexture", 1);
 
-		myShader.setInt("Texture", 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texId);
+			myShader.setInt("Texture", 0);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texId);
 
-		glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER, vertVbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+			glBindVertexArray(vao);
+			glBindBuffer(GL_ARRAY_BUFFER, vertVbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+		}
+		
 	}
 	else
 	{

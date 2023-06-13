@@ -12,13 +12,14 @@ class TextureParamPainter
 public:
 	TextureParamPainter();
 
+	bool isUpdatedTexture() { return textureUpdated; }
+
+	void setTextureUpdatedState(bool updated) { textureUpdated = updated; }
+	void setTexture(const std::string& file);
 	void setLineData(const std::vector<glm::vec2> lineVertices);
 	void setMesh2DData(const Mesh& mesh);
 
 	void draw();
-
-private:
-	void loadTexture(const std::string& path);
 
 private:
 	unsigned int vao;
@@ -35,5 +36,7 @@ private:
 	std::vector<glm::vec2> texcoords;
 
 	Shader myShader;
+
+	bool textureUpdated;
 };
 

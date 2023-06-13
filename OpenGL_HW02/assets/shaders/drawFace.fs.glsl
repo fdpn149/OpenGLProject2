@@ -6,7 +6,6 @@ out vec4 fragColor;
 
 uniform bool UseTexture;
 uniform sampler2D Texture;
-uniform vec3 faceColor;
 
 void main(void) 
 {
@@ -16,6 +15,6 @@ void main(void)
 	}
 	else
 	{
-		fragColor = vec4(faceColor, 1.0f);
+		fragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	}
 }

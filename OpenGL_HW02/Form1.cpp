@@ -81,10 +81,10 @@ std::vector<glm::vec2> CppCLRWinformsProject::Form1::getTextureParamVertices()
 /* WindowsForm Initializer. (Don't manully modify this function)*/
 void CppCLRWinformsProject::Form1::InitializeComponent(void)
 {
-	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting1 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
-	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat1 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
-	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting2 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
-	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat2 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
+	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting3 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
+	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat3 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
+	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting4 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
+	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat4 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
 	this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 	this->settingToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -94,9 +94,13 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->vertexToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->testKeyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->toolStripContainer2 = (gcnew System::Windows::Forms::ToolStripContainer());
+	this->loadTexButton = (gcnew System::Windows::Forms::Button());
+	this->scaleButton = (gcnew System::Windows::Forms::Button());
 	this->rotateButton = (gcnew System::Windows::Forms::Button());
 	this->calculateButton = (gcnew System::Windows::Forms::Button());
 	this->hkoglPanelControl2 = (gcnew HKOGLPanel::HKOGLPanelControl());
+	this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+	this->newSelectButton = (gcnew System::Windows::Forms::Button());
 	this->menuStrip1->SuspendLayout();
 	this->toolStripContainer2->ContentPanel->SuspendLayout();
 	this->toolStripContainer2->TopToolStripPanel->SuspendLayout();
@@ -109,18 +113,18 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 		| System::Windows::Forms::AnchorStyles::Left)
 		| System::Windows::Forms::AnchorStyles::Right));
 	this->hkoglPanelControl1->AutoSize = true;
-	hkcoglPanelCameraSetting1->Far = 1000;
-	hkcoglPanelCameraSetting1->Fov = 45;
-	hkcoglPanelCameraSetting1->Near = -1000;
-	hkcoglPanelCameraSetting1->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
-	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting1;
+	hkcoglPanelCameraSetting3->Far = 1000;
+	hkcoglPanelCameraSetting3->Fov = 45;
+	hkcoglPanelCameraSetting3->Near = -1000;
+	hkcoglPanelCameraSetting3->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting3;
 	this->hkoglPanelControl1->Location = System::Drawing::Point(11, 25);
 	this->hkoglPanelControl1->Margin = System::Windows::Forms::Padding(2);
 	this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-	hkcoglPanelPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat1;
+	hkcoglPanelPixelFormat3->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat3->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat3->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat3;
 	this->hkoglPanelControl1->Size = System::Drawing::Size(800, 600);
 	this->hkoglPanelControl1->TabIndex = 0;
 	this->hkoglPanelControl1->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl1_Load);
@@ -193,6 +197,9 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// toolStripContainer2.ContentPanel
 	// 
+	this->toolStripContainer2->ContentPanel->Controls->Add(this->newSelectButton);
+	this->toolStripContainer2->ContentPanel->Controls->Add(this->loadTexButton);
+	this->toolStripContainer2->ContentPanel->Controls->Add(this->scaleButton);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->rotateButton);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->calculateButton);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl2);
@@ -211,6 +218,28 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->toolStripContainer2->TopToolStripPanel->Controls->Add(this->menuStrip1);
 	// 
+	// loadTexButton
+	// 
+	this->loadTexButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
+	this->loadTexButton->Location = System::Drawing::Point(855, 433);
+	this->loadTexButton->Name = L"loadTexButton";
+	this->loadTexButton->Size = System::Drawing::Size(248, 37);
+	this->loadTexButton->TabIndex = 5;
+	this->loadTexButton->Text = L"Load Texture";
+	this->loadTexButton->UseVisualStyleBackColor = true;
+	this->loadTexButton->Click += gcnew System::EventHandler(this, &Form1::loadTexButton_Click);
+	// 
+	// scaleButton
+	// 
+	this->scaleButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
+	this->scaleButton->Location = System::Drawing::Point(855, 390);
+	this->scaleButton->Name = L"scaleButton";
+	this->scaleButton->Size = System::Drawing::Size(248, 37);
+	this->scaleButton->TabIndex = 4;
+	this->scaleButton->Text = L"Scale 1.25x";
+	this->scaleButton->UseVisualStyleBackColor = true;
+	this->scaleButton->Click += gcnew System::EventHandler(this, &Form1::scaleButton_Click);
+	// 
 	// rotateButton
 	// 
 	this->rotateButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
@@ -219,7 +248,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->rotateButton->Name = L"rotateButton";
 	this->rotateButton->Size = System::Drawing::Size(248, 37);
 	this->rotateButton->TabIndex = 3;
-	this->rotateButton->Text = L"Rotate 5 degree";
+	this->rotateButton->Text = L"Rotate 30 degree";
 	this->rotateButton->UseVisualStyleBackColor = true;
 	this->rotateButton->Click += gcnew System::EventHandler(this, &Form1::rotateButton_Click);
 	// 
@@ -237,21 +266,36 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// hkoglPanelControl2
 	// 
-	hkcoglPanelCameraSetting2->Far = 1000;
-	hkcoglPanelCameraSetting2->Fov = 45;
-	hkcoglPanelCameraSetting2->Near = -1000;
-	hkcoglPanelCameraSetting2->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
-	this->hkoglPanelControl2->Camera_Setting = hkcoglPanelCameraSetting2;
+	hkcoglPanelCameraSetting4->Far = 1000;
+	hkcoglPanelCameraSetting4->Fov = 45;
+	hkcoglPanelCameraSetting4->Near = -1000;
+	hkcoglPanelCameraSetting4->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl2->Camera_Setting = hkcoglPanelCameraSetting4;
 	this->hkoglPanelControl2->Location = System::Drawing::Point(855, 68);
 	this->hkoglPanelControl2->Name = L"hkoglPanelControl2";
-	hkcoglPanelPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	this->hkoglPanelControl2->Pixel_Format = hkcoglPanelPixelFormat2;
+	hkcoglPanelPixelFormat4->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat4->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat4->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl2->Pixel_Format = hkcoglPanelPixelFormat4;
 	this->hkoglPanelControl2->Size = System::Drawing::Size(248, 259);
 	this->hkoglPanelControl2->TabIndex = 1;
 	this->hkoglPanelControl2->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl2_Load);
 	this->hkoglPanelControl2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl2_Paint);
+	// 
+	// openFileDialog1
+	// 
+	this->openFileDialog1->FileName = L"openFileDialog1";
+	// 
+	// newSelectButton
+	// 
+	this->newSelectButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
+	this->newSelectButton->Location = System::Drawing::Point(855, 476);
+	this->newSelectButton->Name = L"newSelectButton";
+	this->newSelectButton->Size = System::Drawing::Size(248, 37);
+	this->newSelectButton->TabIndex = 6;
+	this->newSelectButton->Text = L"Select new mesh";
+	this->newSelectButton->UseVisualStyleBackColor = true;
+	this->newSelectButton->Click += gcnew System::EventHandler(this, &Form1::newSelectButton_Click);
 	// 
 	// Form1
 	// 
@@ -289,6 +333,13 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_Load(System::Objec
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
 {
+	if (!scene->isTextureUpdated())
+	{
+		scene->setTextureToMesh(Utils::donNetStringToSTLString(openFileDialog1->FileName));
+
+		scene->setTextureUpdatedState(true);
+	}
+
 	scene->draw();
 
 	auto currentFrame = clock();
@@ -414,6 +465,13 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl2_Load(System::Objec
 
 System::Void CppCLRWinformsProject::Form1::hkoglPanelControl2_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
 {
+	if (!painter->isUpdatedTexture())
+	{
+		painter->setTexture(Utils::donNetStringToSTLString(openFileDialog1->FileName));
+
+		painter->setTextureUpdatedState(true);
+	}
+
 	painter->setMesh2DData(scene->getMeshRef());
 	painter->setLineData(getTextureParamVertices());
 	painter->draw();
@@ -422,16 +480,52 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl2_Paint(System::Obje
 System::Void CppCLRWinformsProject::Form1::calculateButton_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	ConvexCombMap::calc(scene->getSelectedMeshRef());
-	scene->setUseTextureOnSelectedMesh(true);
+	scene->updateSelectedMeshTexcoords();
 	hkoglPanelControl1->Invalidate();
 	hkoglPanelControl2->Invalidate();
 }
 
 System::Void CppCLRWinformsProject::Form1::rotateButton_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	ConvexCombMap::rotate(30.0f);
-	scene->setUseTextureOnSelectedMesh(true);
+	ConvexCombMap::rotate(5.0f);
+	scene->updateSelectedMeshTexcoords();
 	hkoglPanelControl1->Invalidate();
 	hkoglPanelControl2->Invalidate();
-	std::cout << "rotate\n";
+}
+
+System::Void CppCLRWinformsProject::Form1::scaleButton_Click(System::Object^ sender, System::EventArgs^ e)
+{
+	ConvexCombMap::scale(0.8f);
+	scene->updateSelectedMeshTexcoords();
+	hkoglPanelControl1->Invalidate();
+	hkoglPanelControl2->Invalidate();
+}
+
+System::Void CppCLRWinformsProject::Form1::loadTexButton_Click(System::Object^ sender, System::EventArgs^ e)
+{
+	openFileDialog1->InitialDirectory = Environment::CurrentDirectory;
+	openFileDialog1->Filter = "Image Files|*.jpg;*.jpeg;*.png;....";
+
+	std::cout << Utils::donNetStringToSTLString(openFileDialog1->InitialDirectory) << std::endl;
+
+	if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	{
+		/* Using state here to delay set texture when seperate context actives */
+		scene->setTextureUpdatedState(false);
+		painter->setTextureUpdatedState(false);
+
+		ConvexCombMap::calc(scene->getSelectedMeshRef());
+
+		hkoglPanelControl1->Invalidate();
+		hkoglPanelControl2->Invalidate();
+	}
+}
+
+System::Void CppCLRWinformsProject::Form1::newSelectButton_Click(System::Object^ sender, System::EventArgs^ e)
+{
+	scene->setNewSelectMesh();
+	painter->setTexture("");
+
+	hkoglPanelControl1->Invalidate();
+	hkoglPanelControl2->Invalidate();
 }

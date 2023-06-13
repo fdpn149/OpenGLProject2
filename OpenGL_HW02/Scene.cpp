@@ -30,7 +30,7 @@ Scene::Scene()
 	
 	/* Initialize mesh*/
 
-	mesh.load(Config::MODEL_PATH + "UnionSphere.obj");
+	mesh.load(Config::MODEL_PATH + "armadillo.obj");
 
 
 	/* Initialize camera */
@@ -153,12 +153,6 @@ void Scene::pick(int x, int y)
 	}
 }
 
-void Scene::setUseTextureOnSelectedMesh(bool use)
-{
-	useTexture = true;
-	mesh.calcTexcoord();
-}
-
 void Scene::draw()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -185,14 +179,11 @@ void Scene::draw()
 		//shaders[ShaderTypes::DRAW_LINE].setMat4("viewMat", camera.getViewMatrix());
 		//mesh.drawLine();
 
-		//shaders[ShaderTypes::DRAW_FACE].use();
-		//shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
+		shaders[ShaderTypes::DRAW_FACE].use();
+		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
+		
 
-		//shaders[ShaderTypes::DRAW_FACE].setInt("UseTexture", 1);
-		//shaders[ShaderTypes::DRAW_FACE].setInt("Texture", 0);
-		//glActiveTexture(GL_TEXTURE0);
-
-		//mesh.drawSelecetedFaces();
+		mesh.drawSelected(shaders[ShaderTypes::DRAW_FACE]);
 
 		break;
 
@@ -212,12 +203,8 @@ void Scene::draw()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	shaders[ShaderTypes::SCREEN].use();
-	if (useTexture)
-	{
-		glActiveTexture(GL_TEXTURE0);
-		shaders[ShaderTypes::SCREEN].setInt("Texture", 0);
-	}
 	shaders[ShaderTypes::SCREEN].setMat4("viewMat", camera.getViewMatrix());
+	shaders[ShaderTypes::SCREEN].setVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	mesh.draw();
 

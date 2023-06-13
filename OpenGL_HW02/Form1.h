@@ -31,6 +31,7 @@ namespace CppCLRWinformsProject {
 		clock_t lastFrame;
 
 		bool drawSelected = false;
+		String^ textureFile;
 
 		/* DotNet tools */
 
@@ -49,6 +50,10 @@ namespace CppCLRWinformsProject {
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl2;
 	private: System::Windows::Forms::Button^ calculateButton;
 	private: System::Windows::Forms::Button^ rotateButton;
+	private: System::Windows::Forms::Button^ scaleButton;
+	private: System::Windows::Forms::Button^ loadTexButton;
+	private: System::Windows::Forms::Button^ newSelectButton;
+	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
 
 
 
@@ -82,5 +87,8 @@ namespace CppCLRWinformsProject {
 	private: System::Void hkoglPanelControl2_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e);
 	private: System::Void calculateButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void rotateButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void scaleButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void loadTexButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void newSelectButton_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }
