@@ -55,6 +55,9 @@ public:
 
 	void setNewSelectMesh() { mesh.setNewSelectMesh(); }
 
+	void saveSelectedMeshData(const std::string& file) { mesh.saveSelectedAsJson(file); }
+	void loadSelectedMeshData(const std::string& file) { mesh.loadSelectedFromJson(file); }
+
 	void draw();
 	void pick(int x, int y);
 

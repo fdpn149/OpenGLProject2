@@ -52,6 +52,9 @@ namespace CppCLRWinformsProject {
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl2;
 	private: System::Windows::Forms::Button^ calculateButton;
+	private: System::Windows::Forms::ToolStripMenuItem^ fileToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ saveToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ loadToolStripMenuItem;
 	private: System::Windows::Forms::Button^ rotateButton;
 	private: System::Windows::Forms::Button^ scaleButton;
 	private: System::Windows::Forms::Button^ loadTexButton;
@@ -94,5 +97,8 @@ namespace CppCLRWinformsProject {
 	private: System::Void scaleButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void loadTexButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void newSelectButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void saveToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void loadToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+	
 	};
 }
