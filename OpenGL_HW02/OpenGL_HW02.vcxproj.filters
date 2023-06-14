@@ -78,7 +78,10 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Header Files\Assets</Filter>
+      <Filter>Header Files\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Header Files\Enviroment</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +117,9 @@
     </ClCompile>
     <ClCompile Include="ConvexCombMap.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source Files\Enviroment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

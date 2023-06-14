@@ -281,10 +281,10 @@ void Mesh::draw()
 
 void Mesh::drawSelected(Shader& shader)
 {
-	shader.use();
-
 	for (int iii = 0; iii != selectedMeshData.size(); ++iii)
 	{
+		shader.use();
+
 		shader.setInt("Texture", 0);
 		shader.setInt("UseTexture", selectedMeshData[iii].useTexture);
 
@@ -309,6 +309,8 @@ void Mesh::setNewSelectMesh()
 {
 	selectedMeshData.push_back({ {}, {}, {}, false, 0, 0, 0 });
 	selectedTextureData.push_back({ 0, "" });
+
+	std::cout << selectedMeshData.size() << '|' << selectedTextureData.size() << std::endl;
 
 	initSelectedBufferObjs();
 

@@ -15,11 +15,11 @@ namespace ShaderTypes
 	enum ShaderTypes
 	{
 		PICK,
-		SCREEN,
+		MODEL,
 		DRAW_POINT,
 		DRAW_FACE,
-		DRAW_LINE,
 		GRID,
+		SKYBOX,
 		MAX_SHADER_NUM
 	};
 }

@@ -21,10 +21,9 @@ Scene::Scene()
 	/* Initialize shaders */
 
 	shaders[ShaderTypes::PICK]			= Shader("assets/shaders/picking.vs.glsl"	, "assets/shaders/picking.fs.glsl"	);
-	shaders[ShaderTypes::SCREEN]		= Shader("assets/shaders/drawModel.vs.glsl"	, "assets/shaders/drawModel.fs.glsl");
+	shaders[ShaderTypes::MODEL]		= Shader("assets/shaders/drawModel.vs.glsl"	, "assets/shaders/drawModel.fs.glsl");
 	shaders[ShaderTypes::DRAW_POINT]	= Shader("assets/shaders/drawPoint.vs.glsl"	, "assets/shaders/drawPoint.fs.glsl");
 	shaders[ShaderTypes::DRAW_FACE]		= Shader("assets/shaders/drawFace.vs.glsl"	, "assets/shaders/drawFace.fs.glsl"	);
-	shaders[ShaderTypes::DRAW_LINE]		= Shader("assets/shaders/drawLine.vs.glsl"	, "assets/shaders/drawLine.fs.glsl"	);
 	shaders[ShaderTypes::GRID]			= Shader("assets/shaders/grid.vs.glsl"		, "assets/shaders/grid.fs.glsl"		);
 
 	
@@ -175,14 +174,9 @@ void Scene::draw()
 	{
 	case PickMode::ADD_FACE:
 	case PickMode::DELETE_FACE:
-		//shaders[ShaderTypes::DRAW_LINE].use();
-		//shaders[ShaderTypes::DRAW_LINE].setMat4("viewMat", camera.getViewMatrix());
-		//mesh.drawLine();
-
 		shaders[ShaderTypes::DRAW_FACE].use();
 		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
 		
-
 		mesh.drawSelected(shaders[ShaderTypes::DRAW_FACE]);
 
 		break;
@@ -202,9 +196,9 @@ void Scene::draw()
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	shaders[ShaderTypes::SCREEN].use();
-	shaders[ShaderTypes::SCREEN].setMat4("viewMat", camera.getViewMatrix());
-	shaders[ShaderTypes::SCREEN].setVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
+	shaders[ShaderTypes::MODEL].use();
+	shaders[ShaderTypes::MODEL].setMat4("viewMat", camera.getViewMatrix());
+	shaders[ShaderTypes::MODEL].setVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	mesh.draw();
 
