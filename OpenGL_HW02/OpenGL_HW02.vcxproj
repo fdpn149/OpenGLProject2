@@ -171,6 +171,7 @@
     <ClInclude Include="Quad.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="ScreenQuad.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="TextureParamPainter.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="ScreenQuad.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="TextureParamPainter.cpp" />

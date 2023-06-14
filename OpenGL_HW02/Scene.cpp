@@ -23,15 +23,15 @@ Scene::Scene()
 
 	/* Initialize shaders */
 
-	shaders[ShaderTypes::PICK]			= Shader("assets/shaders/picking.vs.glsl"	, "assets/shaders/picking.fs.glsl"	);
-	shaders[ShaderTypes::MODEL]			= Shader("assets/shaders/drawModel.vs.glsl"	, "assets/shaders/drawModel.fs.glsl");
-	shaders[ShaderTypes::DRAW_POINT]	= Shader("assets/shaders/drawPoint.vs.glsl"	, "assets/shaders/drawPoint.fs.glsl");
-	shaders[ShaderTypes::DRAW_FACE]		= Shader("assets/shaders/drawFace.vs.glsl"	, "assets/shaders/drawFace.fs.glsl"	);
-	shaders[ShaderTypes::GRID]			= Shader("assets/shaders/grid.vs.glsl"		, "assets/shaders/grid.fs.glsl"		);
-	shaders[ShaderTypes::PLANE]			= Shader("assets/shaders/plane.vs.glsl"		, "assets/shaders/plane.fs.glsl"	);
-	shaders[ShaderTypes::SHADOW_MAP]	= Shader("assets/shaders/shadowMap.vs.glsl" , "assets/shaders/shadowMap.fs.glsl");
-	shaders[ShaderTypes::SKYBOX]		= Shader("assets/shaders/skybox.vs.glsl"	, "assets/shaders/skybox.fs.glsl"	);
-	shaders[ShaderTypes::SCREEN]		= Shader("assets/shaders/screen.vs.glsl"	, "assets/shaders/screen.fs.glsl");
+	shaders[ShaderTypes::PICK] = Shader("assets/shaders/picking.vs.glsl", "assets/shaders/picking.fs.glsl");
+	shaders[ShaderTypes::MODEL] = Shader("assets/shaders/drawModel.vs.glsl", "assets/shaders/drawModel.fs.glsl");
+	shaders[ShaderTypes::DRAW_POINT] = Shader("assets/shaders/drawPoint.vs.glsl", "assets/shaders/drawPoint.fs.glsl");
+	shaders[ShaderTypes::DRAW_FACE] = Shader("assets/shaders/drawFace.vs.glsl", "assets/shaders/drawFace.fs.glsl");
+	shaders[ShaderTypes::GRID] = Shader("assets/shaders/grid.vs.glsl", "assets/shaders/grid.fs.glsl");
+	shaders[ShaderTypes::PLANE] = Shader("assets/shaders/plane.vs.glsl", "assets/shaders/plane.fs.glsl");
+	shaders[ShaderTypes::SHADOW_MAP] = Shader("assets/shaders/shadowMap.vs.glsl", "assets/shaders/shadowMap.fs.glsl");
+	shaders[ShaderTypes::SKYBOX] = Shader("assets/shaders/skybox.vs.glsl", "assets/shaders/skybox.fs.glsl");
+	shaders[ShaderTypes::SCREEN] = Shader("assets/shaders/screen.vs.glsl", "assets/shaders/screen.fs.glsl");
 
 	/* Initialize mesh*/
 
@@ -48,7 +48,7 @@ Scene::Scene()
 
 	projMat = glm::perspective(glm::radians(45.0f), (float)Config::SCR_W / Config::SCR_H, 0.1f, 100.0f);
 
-	
+#pragma region INIT_PICKING_FBO
 	/* Initalize picking fbo */
 
 	glGenFramebuffers(1, &pickingFbo);
@@ -64,10 +64,10 @@ Scene::Scene()
 
 	/* Initalize rbo */
 
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glGenRenderbuffers(1, &pickingRbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, pickingRbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, Config::SCR_W, Config::SCR_H);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickingRbo);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -75,8 +75,8 @@ Scene::Scene()
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
+#pragma endregion
+#pragma region INIT_SHADOW_FBO
 	/* Initialize shadow map fbo */
 
 	glGenFramebuffers(1, &shadowMapFbo);
@@ -96,10 +96,36 @@ Scene::Scene()
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMapFboTexId, 0);
 
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		printf("ERROR::FRAMEBUFFER:: Framebuffer is not complete!\n");
+	}
+
 	// Needed since we don't touch the color buffer
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#pragma endregion
+#pragma region INIT_SCREEN_FBO
+	glGenFramebuffers(1, &screenFbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, screenFbo);
+	
+	glGenTextures(1, &screenFboTexId);
+	glBindTexture(GL_TEXTURE_2D, screenFboTexId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenFboTexId, 0);
+	
+	glGenRenderbuffers(1, &screenRbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, screenRbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, screenRbo);
+	
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		printf("ERROR::FRAMEBUFFER:: Framebuffer is not complete!\n");
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#pragma endregion
 
 	// Matrices needed for the light's perspective
 	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
@@ -114,28 +140,6 @@ Scene::Scene()
 
 	// Test shadow map
 	quad.setTexId(shadowMapFboTexId);
-	
-	float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-		// positions   // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f
-	};
-
-	unsigned int quadVAO, quadVBO;
-	glGenVertexArrays(1, &quadVAO);
-	glGenBuffers(1, &quadVBO);
-	glBindVertexArray(quadVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 	shaders[ShaderTypes::SCREEN].use();
 	shaders[ShaderTypes::SCREEN].setInt("screenTexture", 0);
@@ -249,17 +253,8 @@ void Scene::pick(int x, int y)
 
 void Scene::draw()
 {
-	/* Draw skybox */
-	shaders[ShaderTypes::SKYBOX].use();
-	shaders[ShaderTypes::SKYBOX].setMat4("viewMat", glm::mat4(glm::mat3(camera.getViewMatrix())));
-
-	shaders[ShaderTypes::SKYBOX].setInt("skybox", 0);
-	glActiveTexture(GL_TEXTURE0);
-
-	skybox.draw(shaders[ShaderTypes::SKYBOX]);
-
-
 	/* Draw picking frame buffer */
+	glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, pickingFbo);
 
@@ -273,28 +268,37 @@ void Scene::draw()
 	mesh.draw();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
+	/* Draw screen frame buffer*/
+	glBindFramebuffer(GL_FRAMEBUFFER, screenFbo);
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	/* Draw skybox */
+	shaders[ShaderTypes::SKYBOX].use();
+	shaders[ShaderTypes::SKYBOX].setMat4("viewMat", glm::mat4(glm::mat3(camera.getViewMatrix())));
+
+	shaders[ShaderTypes::SKYBOX].setInt("skybox", 0);
+	glActiveTexture(GL_TEXTURE0);
+
+	skybox.draw(shaders[ShaderTypes::SKYBOX]);
 
 	switch (mode)
 	{
 	case PickMode::POINT:
-		shaders[ShaderTypes::DRAW_POINT].use();
+		/*shaders[ShaderTypes::DRAW_POINT].use();
 		shaders[ShaderTypes::DRAW_POINT].setMat4("viewMat", camera.getViewMatrix());
-		mesh.drawPoint();
+		mesh.drawPoint();*/
 	case PickMode::ADD_FACE:
 	case PickMode::DELETE_FACE:
 
 		/* Draw selected faces */
-	
 
 		shaders[ShaderTypes::DRAW_FACE].use();
 		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
 		shaders[ShaderTypes::DRAW_FACE].setMat4("modelMat", mesh.getModelMat());
-		
-		mesh.drawSelected(shaders[ShaderTypes::DRAW_FACE]);
 
-	
-		
+		mesh.drawSelected(shaders[ShaderTypes::DRAW_FACE]);
 	}
 
 
@@ -307,7 +311,6 @@ void Scene::draw()
 	shaders[ShaderTypes::GRID].setMat4("modelMat", mesh.getModelMat());
 
 	mesh.draw();
-
 
 	/* Draw model */
 
@@ -335,7 +338,7 @@ void Scene::draw()
 	plane.draw(shaders[ShaderTypes::PLANE]);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
+
 
 	///* Draw quad */
 	//shaders[ShaderTypes::PLANE].use();
@@ -344,7 +347,19 @@ void Scene::draw()
 
 	//light.setLight2Shader(shaders[ShaderTypes::PLANE]);
 	//quad.draw(shaders[ShaderTypes::PLANE]);
+	glBindVertexArray(0);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/* Draw screen frame buffer image*/
+	glDisable(GL_DEPTH_TEST);
+
+	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	shaders[ShaderTypes::SCREEN].use();
+	glBindTexture(GL_TEXTURE_2D, screenFboTexId);
+	screenQuad.draw(shaders[ShaderTypes::SCREEN]);
 
 	glBindVertexArray(0);
 }

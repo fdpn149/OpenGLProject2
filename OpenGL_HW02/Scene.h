@@ -13,6 +13,7 @@
 #include "Light.h"
 #include "Quad.h"
 #include "Skybox.h"
+#include "ScreenQuad.h"
 
 namespace ShaderTypes
 {
@@ -89,22 +90,20 @@ private:
 
 	Skybox skybox;
 
+	ScreenQuad screenQuad;
+
 	/* Buffer object*/
 
 	unsigned int pickingFbo;
-
 	unsigned int pickingFboTexId;
-
-	unsigned int rbo;
+	unsigned int pickingRbo;
 
 	unsigned int shadowMapFbo;
-
 	unsigned int shadowMapFboTexId;
 
 	unsigned int screenFbo;
-
-
-
+	unsigned int screenRbo;
+	unsigned int screenFboTexId;
 
 	/* Other attributes */
 
