@@ -262,6 +262,8 @@ void Mesh::addVertex(int faceID, glm::vec3 worldPos)
 {
 
 	TriMesh::VertexHandle closestVH = findClosestPoint(faceID, worldPos);
+	if (!closestVH.is_valid())return;
+
 	TriMesh::Point closestPoint = modelMesh.point(closestVH);
 
 	setPointPosition(glm::vec3(closestPoint[0], closestPoint[1], closestPoint[2]));
