@@ -45,9 +45,10 @@ namespace CppCLRWinformsProject {
 	private: System::Windows::Forms::ToolStripMenuItem^ faceToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ pickToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ deleteToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ sobelFilterKeyToolStripMenuItem;
 
-	private: System::Windows::Forms::ToolStripMenuItem^ testKeyToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ vertexToolStripMenuItem;
+
+
 
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl2;
@@ -63,6 +64,7 @@ namespace CppCLRWinformsProject {
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
 	private: System::Windows::Forms::TextBox^ rotateTextBox;
 	private: System::Windows::Forms::TextBox^ scaleTextbox;
+	private: System::Windows::Forms::ToolStripMenuItem^ vertexToolStripMenuItem;
 
 
 
@@ -93,7 +95,7 @@ namespace CppCLRWinformsProject {
 	private: System::Void pickToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void deleteToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void vertexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void testKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+
 	private: System::Void hkoglPanelControl2_Load(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void hkoglPanelControl2_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e);
 	private: System::Void calculateButton_Click(System::Object^ sender, System::EventArgs^ e);
@@ -104,5 +106,6 @@ namespace CppCLRWinformsProject {
 	private: System::Void saveToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void loadToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	
+	private: System::Void sobelFilterKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }

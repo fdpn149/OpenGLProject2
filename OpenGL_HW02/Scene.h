@@ -69,6 +69,8 @@ public:
 	void draw();
 	void pick(int x, int y);
 
+	void toggleFilter();
+
 private:
 	void pickFace(unsigned int faceId);
 	void deleteFace(unsigned int faceId);
@@ -108,6 +110,8 @@ private:
 	/* Other attributes */
 
 	bool textureUpdated;
+
+	bool filterEnable;
 
 	PickMode::PickMode mode;
 

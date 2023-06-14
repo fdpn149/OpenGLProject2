@@ -13,6 +13,7 @@ Scene::Scene()
 	, light(Light(glm::vec3(0.0f) - glm::vec3(0.2f, 1.0f, 0.3f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f)))
 	, mode(PickMode::ADD_FACE)
 	, shadowMapLength(2048)
+	, filterEnable(false)
 {
 	/* OpenGL configs */
 
@@ -143,6 +144,7 @@ Scene::Scene()
 
 	shaders[ShaderTypes::SCREEN].use();
 	shaders[ShaderTypes::SCREEN].setInt("screenTexture", 0);
+	shaders[ShaderTypes::SCREEN].setInt("enableFilter", 0);
 
 	/* Set shader uniforms */
 
@@ -249,6 +251,14 @@ void Scene::pick(int x, int y)
 		pickingPoint(depthValue, faceID, x, y);
 		break;
 	}
+}
+
+void Scene::toggleFilter()
+{
+	filterEnable = !filterEnable;
+	shaders[ShaderTypes::SCREEN].use();
+	shaders[ShaderTypes::SCREEN].setInt("enableFilter", filterEnable ? 1 : 0);
+	glUseProgram(0);
 }
 
 void Scene::draw()
