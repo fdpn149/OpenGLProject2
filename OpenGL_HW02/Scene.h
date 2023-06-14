@@ -9,17 +9,23 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "Shader.h"
+#include "Plane.h"
+#include "Light.h"
+#include "Quad.h"
+#include "Skybox.h"
 
 namespace ShaderTypes
 {
 	enum ShaderTypes
 	{
 		PICK,
-		SCREEN,
+		MODEL,
 		DRAW_POINT,
 		DRAW_FACE,
-		DRAW_LINE,
 		GRID,
+		PLANE,
+		SHADOW_MAP,
+		SKYBOX,
 		MAX_SHADER_NUM
 	};
 }
@@ -67,20 +73,43 @@ private:
 	void pickingPoint(float depthValue, unsigned int faceId, int x, int y);
 
 private:
+	/* Objects */
 	Shader shaders[ShaderTypes::MAX_SHADER_NUM];
 
 	Camera camera;
 
+	Light light;
+
 	Mesh mesh;
 
-	//bool useTexture;
+	Plane plane;
+
+	Quad quad;
+
+	Skybox skybox;
+
+	/* Buffer object*/
+
+	unsigned int pickingFbo;
+
+	unsigned int pickingFboTexId;
+
+	unsigned int rbo;
+
+	unsigned int shadowMapFbo;
+
+	unsigned int shadowMapFboTexId;
+
+
+	/* Other attributes */
+
 	bool textureUpdated;
 
 	PickMode::PickMode mode;
 
-	unsigned int fbo;
-	unsigned int fboTexId;
-	unsigned int rbo;
-
 	glm::mat4 projMat;
+
+	glm::vec3 lightPos; // Using directional light but use a position to origin direction
+
+	unsigned int shadowMapLength;
 };

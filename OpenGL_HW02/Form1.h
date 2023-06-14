@@ -61,6 +61,10 @@ namespace CppCLRWinformsProject {
 
 	private: System::Windows::Forms::Button^ newSelectButton;
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
+	private: System::Windows::Forms::TextBox^ rotateTextBox;
+	private: System::Windows::Forms::TextBox^ scaleTextbox;
+
+
 
 
 

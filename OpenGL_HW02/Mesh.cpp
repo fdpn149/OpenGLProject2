@@ -44,72 +44,8 @@ namespace VertexObjType
 	};
 }
 
-void MeshData::to_json(json& j, const SelectedMeshData& data)
-{
-	std::vector<std::vector<float>> vertices(data.vertices.size(), std::vector<float>(3, 0.0f));
-
-
-	for (int iii = 0; iii < data.vertices.size(); ++iii)
-	{
-		for (int jjj = 0; jjj < 3; ++jjj)
-		{
-			vertices[iii][jjj] = data.vertices[iii][jjj];
-		}
-	}
-
-	std::vector<std::vector<float>> texcoords(data.texcoords.size(), std::vector<float>(2, 0.0f));
-	for (int iii = 0; iii < data.texcoords.size(); ++iii)
-	{
-		for (int jjj = 0; jjj < 2; ++jjj)
-		{
-			texcoords[iii][jjj] = data.texcoords[iii][jjj];
-		}
-	}
-
-	j = json{ { "vertices", vertices }, { "texcoords", texcoords }, { "indices", data.indices }, { "useTexture", data.useTexture } };
-}
-
-void MeshData::from_json(const json& j, SelectedMeshData& data)
-{
-	std::vector<std::vector<float>> vertices;
-	std::vector<std::vector<float>> texcoords;
-
-	j.at("vertices").get_to(vertices);
-	j.at("texcoords").get_to(texcoords);
-	j.at("indices").get_to(data.indices);
-	j.at("useTexture").get_to(data.useTexture);
-
-	data.vertices.resize(vertices.size());
-	for (int iii = 0; iii < vertices.size(); ++iii)
-	{
-		for (int jjj = 0; jjj < 3; ++jjj)
-		{
-			data.vertices[iii][jjj] = vertices[iii][jjj];
-		}
-	}
-
-	data.texcoords.resize(texcoords.size());
-	for (int iii = 0; iii < texcoords.size(); ++iii)
-	{
-		for (int jjj = 0; jjj < 2; ++jjj)
-		{
-			data.texcoords[iii][jjj] = texcoords[iii][jjj];
-		}
-	}
-}
-
-void MeshData::to_json(json& j, const SelectedTextureData& data)
-{
-	j = json{ { "file", data.file } };
-}
-
-void MeshData::from_json(const json& j, SelectedTextureData& data)
-{
-	j.at("file").get_to(data.file);
-}
-
 Mesh::Mesh()
-	: modelMat(glm::mat4(1.0f))
+	: modelMat(glm::scale(glm::mat4(1.0f), glm::vec3(3.0f, 3.0f, 3.0f)))
 {
 	selectedMesh.add_property(faceIdPropHanlde);
 	selectedMesh.add_property(vertIdPropHandle);
@@ -122,8 +58,8 @@ Mesh::Mesh()
 
 Mesh::Mesh(const std::string& file)
 {
-	Mesh();
 	loadMesh(file);
+	Mesh();
 }
 
 void Mesh::loadMesh(const std::string& file)
@@ -179,25 +115,6 @@ void Mesh::loadMesh(const std::string& file)
 		glGenBuffers(1, &modelEbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelEbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * modelIndices.size(), modelIndices.data(), GL_STATIC_DRAW);
-
-		glBindVertexArray(0);
-
-
-		/* Initialize Selected Buffer Object */
-
-		initSelectedBufferObjs();
-
-		//glGenBuffers(1, &selectedTexVbo);
-		//glBindBuffer(GL_ARRAY_BUFFER, selectedTexVbo);
-		//
-		//glEnableVertexAttribArray(1);
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
-
-
-
-		///* TEMP */
-		//glGenVertexArrays(1, &vao3);
-		//glGenBuffers(1, &vbo3);
 
 		glBindVertexArray(0);
 	}
@@ -267,9 +184,12 @@ void Mesh::loadSelectedFromJson(const std::string& file)
 
 void Mesh::setTexture(const std::string& file)
 {
-	unsigned id = Utils::loadTexture(file);
+	if ((*(selectedTextureData.end() - 1)).id != 0)
+	{
+		glDeleteTextures(1, &((*(selectedTextureData.end() - 1)).id));
+	}
 
-	std::cout << selectedTextureData.size() << std::endl;
+	unsigned id = Utils::loadTexture(file);
 
 	(*(selectedTextureData.end() - 1)).id = id;
 	(*(selectedTextureData.end() - 1)).file = file;
@@ -300,10 +220,10 @@ void Mesh::draw()
 
 void Mesh::drawSelected(Shader& shader)
 {
-	shader.use();
-
 	for (int iii = 0; iii != selectedMeshData.size(); ++iii)
 	{
+		shader.use();
+
 		shader.setInt("Texture", 0);
 		shader.setInt("UseTexture", selectedMeshData[iii].useTexture);
 
@@ -315,17 +235,10 @@ void Mesh::drawSelected(Shader& shader)
 		glBindVertexArray(selectedMeshData[iii].vao);
 		glDrawElements(GL_TRIANGLES, selectedMeshData[iii].indices.size(), GL_UNSIGNED_INT, (void*)0);
 		glBindVertexArray(0);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
-
-//void Mesh::drawSelecetedFaces()
-//{
-//	glBindTexture(GL_TEXTURE_2D, selectedTexId);
-//
-//	glBindVertexArray(selectedVao);
-//	glDrawElements(GL_TRIANGLES, selectedIndices.size(), GL_UNSIGNED_INT, (void*)0);
-//	glBindVertexArray(0);
-//}
 
 void Mesh::drawPoint()
 {
@@ -338,20 +251,16 @@ void Mesh::setNewSelectMesh()
 	selectedMeshData.push_back({ {}, {}, {}, false, 0, 0, 0 });
 	selectedTextureData.push_back({ 0, "" });
 
+	std::cout << selectedMeshData.size() << '|' << selectedTextureData.size() << std::endl;
+
 	initSelectedBufferObjs();
 
 	selectedMesh.clear();
+	selectedMesh.garbage_collection();
 
 	selectedModelFaceMap.clear();
 	selectedModelVertMap.clear();
 }
-
-//void Mesh::drawLine()
-//{
-//	glBindVertexArray(vao3);
-//	glDrawArrays(GL_LINES, 0, lines.size());
-//	glBindVertexArray(0);
-//}
 
 void Mesh::addVertex(int faceID, glm::vec3 worldPos)
 {
@@ -433,16 +342,6 @@ void Mesh::deleteFaceFromSelectedById(int faceId)
 	if (!fh_in_model.is_valid() || !modelMesh.status(fh_in_model).selected())
 		return;
 
-	//// New draw method
-	//for (int iii = 0; iii < 3; ++iii)
-	//{
-	//	modelVertices[faceId * 3 + iii].color = glm::vec3(1.0f, 1.0f, 1.0f);
-	//	modelVertices[faceId * 3 + iii].useTexture = false;
-	//}
-
-	//glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_DYNAMIC_DRAW);
-
 	modelMesh.status(fh_in_model).set_selected(false);
 	int id = selectedModelFaceMap[faceId];
 
@@ -509,15 +408,6 @@ void Mesh::setPointPosition(glm::vec3 position)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
 }
-
-//void Mesh::setLinePosition()
-//{
-//	glBindVertexArray(vao3);
-//	glBindBuffer(GL_ARRAY_BUFFER, vbo3);
-//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * lines.size() * 3, lines.data(), GL_STATIC_DRAW);
-//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//	glEnableVertexAttribArray(0);
-//}
 
 void Mesh::updateSelectedBufferObjects()
 {

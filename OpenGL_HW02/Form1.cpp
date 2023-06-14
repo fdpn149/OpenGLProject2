@@ -104,6 +104,8 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->calculateButton = (gcnew System::Windows::Forms::Button());
 	this->hkoglPanelControl2 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+	this->rotateTextBox = (gcnew System::Windows::Forms::TextBox());
+	this->scaleTextbox = (gcnew System::Windows::Forms::TextBox());
 	this->menuStrip1->SuspendLayout();
 	this->toolStripContainer2->ContentPanel->SuspendLayout();
 	this->toolStripContainer2->TopToolStripPanel->SuspendLayout();
@@ -211,14 +213,14 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// saveToolStripMenuItem
 	// 
 	this->saveToolStripMenuItem->Name = L"saveToolStripMenuItem";
-	this->saveToolStripMenuItem->Size = System::Drawing::Size(180, 22);
+	this->saveToolStripMenuItem->Size = System::Drawing::Size(103, 22);
 	this->saveToolStripMenuItem->Text = L"Save";
 	this->saveToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::saveToolStripMenuItem_Click);
 	// 
 	// loadToolStripMenuItem
 	// 
 	this->loadToolStripMenuItem->Name = L"loadToolStripMenuItem";
-	this->loadToolStripMenuItem->Size = System::Drawing::Size(180, 22);
+	this->loadToolStripMenuItem->Size = System::Drawing::Size(103, 22);
 	this->loadToolStripMenuItem->Text = L"Load";
 	this->loadToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::loadToolStripMenuItem_Click);
 	// 
@@ -228,6 +230,8 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// toolStripContainer2.ContentPanel
 	// 
+	this->toolStripContainer2->ContentPanel->Controls->Add(this->scaleTextbox);
+	this->toolStripContainer2->ContentPanel->Controls->Add(this->rotateTextBox);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->newSelectButton);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->loadTexButton);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->scaleButton);
@@ -235,6 +239,8 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->calculateButton);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl2);
 	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl1);
+	this->toolStripContainer2->ContentPanel->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+		static_cast<System::Byte>(136)));
 	this->toolStripContainer2->ContentPanel->Size = System::Drawing::Size(1264, 657);
 	this->toolStripContainer2->Dock = System::Windows::Forms::DockStyle::Fill;
 	this->toolStripContainer2->LeftToolStripPanelVisible = false;
@@ -252,7 +258,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// newSelectButton
 	// 
 	this->newSelectButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
-	this->newSelectButton->Location = System::Drawing::Point(855, 476);
+	this->newSelectButton->Location = System::Drawing::Point(855, 462);
 	this->newSelectButton->Name = L"newSelectButton";
 	this->newSelectButton->Size = System::Drawing::Size(248, 37);
 	this->newSelectButton->TabIndex = 6;
@@ -263,7 +269,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// loadTexButton
 	// 
 	this->loadTexButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
-	this->loadTexButton->Location = System::Drawing::Point(855, 433);
+	this->loadTexButton->Location = System::Drawing::Point(855, 419);
 	this->loadTexButton->Name = L"loadTexButton";
 	this->loadTexButton->Size = System::Drawing::Size(248, 37);
 	this->loadTexButton->TabIndex = 5;
@@ -274,11 +280,11 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// scaleButton
 	// 
 	this->scaleButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
-	this->scaleButton->Location = System::Drawing::Point(855, 390);
+	this->scaleButton->Location = System::Drawing::Point(855, 386);
 	this->scaleButton->Name = L"scaleButton";
-	this->scaleButton->Size = System::Drawing::Size(248, 37);
+	this->scaleButton->Size = System::Drawing::Size(155, 26);
 	this->scaleButton->TabIndex = 4;
-	this->scaleButton->Text = L"Scale 1.25x";
+	this->scaleButton->Text = L"Scale ";
 	this->scaleButton->UseVisualStyleBackColor = true;
 	this->scaleButton->Click += gcnew System::EventHandler(this, &Form1::scaleButton_Click);
 	// 
@@ -286,11 +292,11 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->rotateButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(136)));
-	this->rotateButton->Location = System::Drawing::Point(855, 347);
+	this->rotateButton->Location = System::Drawing::Point(855, 354);
 	this->rotateButton->Name = L"rotateButton";
-	this->rotateButton->Size = System::Drawing::Size(248, 37);
+	this->rotateButton->Size = System::Drawing::Size(155, 26);
 	this->rotateButton->TabIndex = 3;
-	this->rotateButton->Text = L"Rotate 30 degree";
+	this->rotateButton->Text = L"Rotate";
 	this->rotateButton->UseVisualStyleBackColor = true;
 	this->rotateButton->Click += gcnew System::EventHandler(this, &Form1::rotateButton_Click);
 	// 
@@ -327,6 +333,26 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// openFileDialog1
 	// 
 	this->openFileDialog1->FileName = L"openFileDialog1";
+	// 
+	// rotateTextBox
+	// 
+	this->rotateTextBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+		| System::Windows::Forms::AnchorStyles::Left)
+		| System::Windows::Forms::AnchorStyles::Right));
+	this->rotateTextBox->Location = System::Drawing::Point(1017, 354);
+	this->rotateTextBox->Name = L"rotateTextBox";
+	this->rotateTextBox->Size = System::Drawing::Size(86, 23);
+	this->rotateTextBox->TabIndex = 7;
+	// 
+	// scaleTextbox
+	// 
+	this->scaleTextbox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+		| System::Windows::Forms::AnchorStyles::Left)
+		| System::Windows::Forms::AnchorStyles::Right));
+	this->scaleTextbox->Location = System::Drawing::Point(1017, 390);
+	this->scaleTextbox->Name = L"scaleTextbox";
+	this->scaleTextbox->Size = System::Drawing::Size(86, 23);
+	this->scaleTextbox->TabIndex = 8;
 	// 
 	// Form1
 	// 
@@ -445,8 +471,10 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 		float deltaX = -(e->X - lastMouse3X) / Config::SCR_W;
 		float deltaY = (e->Y - lastMouse3Y) / Config::SCR_H;
 
+		glm::vec3 cameraUp = -glm::cross(scene->getCameraRef().getViewDir(), scene->getCameraRef().getRightVector());
+
 		glm::mat4 translateMat = glm::translate(glm::mat4(1.0f), deltaX * scene->getCameraRef().getRightVector());
-		translateMat = glm::translate(translateMat, deltaY * scene->getCameraRef().getUpVector());
+		translateMat = glm::translate(translateMat, deltaY * cameraUp);
 
 		position = translateMat * position;
 		pivot = translateMat * pivot;
@@ -545,18 +573,30 @@ System::Void CppCLRWinformsProject::Form1::calculateButton_Click(System::Object^
 
 System::Void CppCLRWinformsProject::Form1::rotateButton_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	ConvexCombMap::rotate(5.0f);
-	scene->updateSelectedMeshTexcoords();
-	hkoglPanelControl1->Invalidate();
-	hkoglPanelControl2->Invalidate();
+	float angle;
+	bool isNumeric = float::TryParse(rotateTextBox->Text, angle);
+
+	if (isNumeric)
+	{
+		ConvexCombMap::rotate(angle);
+		scene->updateSelectedMeshTexcoords();
+		hkoglPanelControl1->Invalidate();
+		hkoglPanelControl2->Invalidate();
+	}
 }
 
 System::Void CppCLRWinformsProject::Form1::scaleButton_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	ConvexCombMap::scale(0.8f);
-	scene->updateSelectedMeshTexcoords();
-	hkoglPanelControl1->Invalidate();
-	hkoglPanelControl2->Invalidate();
+	float ratio;
+	bool isNumeric = float::TryParse(scaleTextbox->Text, ratio);
+
+	if (isNumeric)
+	{
+		ConvexCombMap::scale(ratio);
+		scene->updateSelectedMeshTexcoords();
+		hkoglPanelControl1->Invalidate();
+		hkoglPanelControl2->Invalidate();
+	}
 }
 
 System::Void CppCLRWinformsProject::Form1::loadTexButton_Click(System::Object^ sender, System::EventArgs^ e)
@@ -582,7 +622,7 @@ System::Void CppCLRWinformsProject::Form1::loadTexButton_Click(System::Object^ s
 System::Void CppCLRWinformsProject::Form1::newSelectButton_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	scene->setNewSelectMesh();
-	painter->setTexture("");
+	painter->setDrawTexture(false);
 
 	hkoglPanelControl1->Invalidate();
 	hkoglPanelControl2->Invalidate();

@@ -18,6 +18,8 @@ public:
 	void setTexture(const std::string& file);
 	void setLineData(const std::vector<glm::vec2> lineVertices);
 	void setMesh2DData(const Mesh& mesh);
+	void setDrawTexture(bool on) { drawTexture = on; }
+
 
 	void draw();
 
@@ -37,6 +39,7 @@ private:
 
 	Shader myShader;
 
+	bool drawTexture;
 	bool textureUpdated;
 };
 

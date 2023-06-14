@@ -46,7 +46,7 @@ unsigned int Utils::loadTexture(const std::string& file)
 	}
 	else
 	{
-		std::cout << "Cubemap tex failed to load at path: " << std::endl;
+		std::cout << "Texture load failed at path: " << file << std::endl;
 		stbi_image_free(imageBytes);
 	}
 

@@ -37,6 +37,9 @@
     <Filter Include="Header Files\Enviroment">
       <UniqueIdentifier>{360820c9-1784-4772-94cb-1e4fe6ad3a1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader Files\Model">
+      <UniqueIdentifier>{2251d827-133b-4f97-8cc2-84b9a09aaa03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -45,9 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Form1.h">
@@ -78,7 +78,25 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Header Files\Assets</Filter>
+      <Filter>Header Files\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Header Files\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshData.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Quad.h">
+      <Filter>Header Files\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\Enviroment</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +133,21 @@
     <ClCompile Include="ConvexCombMap.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source Files\Enviroment</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Enviroment</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshData.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Quad.cpp">
+      <Filter>Source Files\Enviroment</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\Enviroment</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">
@@ -122,46 +155,58 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\drawFace.fs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\drawFace.vs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\drawModel.fs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\drawModel.vs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\drawPoint.fs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\drawPoint.vs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\picking.fs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\picking.vs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\grid.fs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\grid.vs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\drawLine.fs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="assets\shaders\drawLine.vs.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
     <None Include="assets\shaders\textureParam.fs.glsl">
       <Filter>Shader Files</Filter>
     </None>
     <None Include="assets\shaders\textureParam.vs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\plane.fs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\plane.vs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\drawModel.vs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\drawModel.fs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\drawFace.vs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\drawFace.fs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\drawPoint.fs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\drawPoint.vs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\grid.fs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\grid.vs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\picking.fs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\picking.vs.glsl">
+      <Filter>Shader Files\Model</Filter>
+    </None>
+    <None Include="assets\shaders\shadowMap.fs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\shadowMap.vs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\skybox.fs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\skybox.vs.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>

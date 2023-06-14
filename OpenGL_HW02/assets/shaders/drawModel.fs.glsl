@@ -1,10 +1,18 @@
 #version 410 core
 
-out vec4 FragColor;
+struct Light
+{
+    vec3 direction;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
 
-uniform vec3 Color;
+uniform Light light;
+
+uniform vec3 cameraPos;
 
 void main()
 {
-	FragColor = vec4(Color, 1.0f);
+	gl_FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
