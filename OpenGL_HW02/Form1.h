@@ -41,7 +41,7 @@ namespace CppCLRWinformsProject {
 	private: System::Windows::Forms::MenuStrip^ menuStrip1;
 	private: System::Windows::Forms::ToolStripMenuItem^ settingToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripContainer^ toolStripContainer1;
-	private: System::Windows::Forms::ToolStripContainer^ toolStripContainer2;
+
 	private: System::Windows::Forms::ToolStripMenuItem^ faceToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ pickToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ deleteToolStripMenuItem;
@@ -50,7 +50,7 @@ namespace CppCLRWinformsProject {
 
 
 
-	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
+
 	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl2;
 	private: System::Windows::Forms::Button^ calculateButton;
 	private: System::Windows::Forms::ToolStripMenuItem^ fileToolStripMenuItem;
@@ -66,6 +66,17 @@ namespace CppCLRWinformsProject {
 	private: System::Windows::Forms::TextBox^ scaleTextbox;
 	private: System::Windows::Forms::ToolStripMenuItem^ vertexToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ gridToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripPanel^ BottomToolStripPanel;
+	private: System::Windows::Forms::ToolStripPanel^ TopToolStripPanel;
+	private: System::Windows::Forms::ToolStripPanel^ RightToolStripPanel;
+	private: System::Windows::Forms::ToolStripPanel^ LeftToolStripPanel;
+	private: System::Windows::Forms::ToolStripContentPanel^ ContentPanel;
+	private: HKOGLPanel::HKOGLPanelControl^ hkoglPanelControl1;
+	private: System::Windows::Forms::TableLayoutPanel^ tableLayoutPanel1;
+	private: System::Windows::Forms::TableLayoutPanel^ tableLayoutPanel2;
+	private: System::Windows::Forms::SplitContainer^ splitContainer2;
+	private: System::Windows::Forms::SplitContainer^ splitContainer3;
+	private: System::Windows::Forms::TableLayoutPanel^ tableLayoutPanel3;
 
 
 

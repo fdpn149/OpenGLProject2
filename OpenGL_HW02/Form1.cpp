@@ -85,7 +85,6 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat1 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
 	HKOGLPanel::HKCOGLPanelCameraSetting^ hkcoglPanelCameraSetting2 = (gcnew HKOGLPanel::HKCOGLPanelCameraSetting());
 	HKOGLPanel::HKCOGLPanelPixelFormat^ hkcoglPanelPixelFormat2 = (gcnew HKOGLPanel::HKCOGLPanelPixelFormat());
-	this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 	this->settingToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->faceToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -93,10 +92,10 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->pickToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->deleteToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->sobelFilterKeyToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+	this->gridToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->saveToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 	this->loadToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-	this->toolStripContainer2 = (gcnew System::Windows::Forms::ToolStripContainer());
 	this->scaleTextbox = (gcnew System::Windows::Forms::TextBox());
 	this->rotateTextBox = (gcnew System::Windows::Forms::TextBox());
 	this->newSelectButton = (gcnew System::Windows::Forms::Button());
@@ -106,50 +105,41 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->calculateButton = (gcnew System::Windows::Forms::Button());
 	this->hkoglPanelControl2 = (gcnew HKOGLPanel::HKOGLPanelControl());
 	this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
-	this->gridToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+	this->BottomToolStripPanel = (gcnew System::Windows::Forms::ToolStripPanel());
+	this->TopToolStripPanel = (gcnew System::Windows::Forms::ToolStripPanel());
+	this->RightToolStripPanel = (gcnew System::Windows::Forms::ToolStripPanel());
+	this->LeftToolStripPanel = (gcnew System::Windows::Forms::ToolStripPanel());
+	this->ContentPanel = (gcnew System::Windows::Forms::ToolStripContentPanel());
+	this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
+	this->tableLayoutPanel1 = (gcnew System::Windows::Forms::TableLayoutPanel());
+	this->tableLayoutPanel2 = (gcnew System::Windows::Forms::TableLayoutPanel());
+	this->splitContainer2 = (gcnew System::Windows::Forms::SplitContainer());
+	this->splitContainer3 = (gcnew System::Windows::Forms::SplitContainer());
+	this->tableLayoutPanel3 = (gcnew System::Windows::Forms::TableLayoutPanel());
 	this->menuStrip1->SuspendLayout();
-	this->toolStripContainer2->ContentPanel->SuspendLayout();
-	this->toolStripContainer2->TopToolStripPanel->SuspendLayout();
-	this->toolStripContainer2->SuspendLayout();
+	this->tableLayoutPanel1->SuspendLayout();
+	this->tableLayoutPanel2->SuspendLayout();
+	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer2))->BeginInit();
+	this->splitContainer2->Panel1->SuspendLayout();
+	this->splitContainer2->Panel2->SuspendLayout();
+	this->splitContainer2->SuspendLayout();
+	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer3))->BeginInit();
+	this->splitContainer3->Panel1->SuspendLayout();
+	this->splitContainer3->Panel2->SuspendLayout();
+	this->splitContainer3->SuspendLayout();
+	this->tableLayoutPanel3->SuspendLayout();
 	this->SuspendLayout();
-	// 
-	// hkoglPanelControl1
-	// 
-	this->hkoglPanelControl1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
-		| System::Windows::Forms::AnchorStyles::Left)
-		| System::Windows::Forms::AnchorStyles::Right));
-	this->hkoglPanelControl1->AutoSize = true;
-	this->hkoglPanelControl1->AutoValidate = System::Windows::Forms::AutoValidate::Disable;
-	hkcoglPanelCameraSetting1->Far = 1000;
-	hkcoglPanelCameraSetting1->Fov = 45;
-	hkcoglPanelCameraSetting1->Near = -1000;
-	hkcoglPanelCameraSetting1->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
-	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting1;
-	this->hkoglPanelControl1->Location = System::Drawing::Point(11, 25);
-	this->hkoglPanelControl1->Margin = System::Windows::Forms::Padding(2);
-	this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-	hkcoglPanelPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat1;
-	this->hkoglPanelControl1->Size = System::Drawing::Size(800, 600);
-	this->hkoglPanelControl1->TabIndex = 0;
-	this->hkoglPanelControl1->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl1_Load);
-	this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
-	this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
-	this->hkoglPanelControl1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseMove);
-	this->hkoglPanelControl1->MouseWheel += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseWheel);
 	// 
 	// menuStrip1
 	// 
-	this->menuStrip1->Dock = System::Windows::Forms::DockStyle::None;
+	this->menuStrip1->Dock = System::Windows::Forms::DockStyle::Fill;
 	this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
 		this->settingToolStripMenuItem,
 			this->fileToolStripMenuItem
 	});
 	this->menuStrip1->Location = System::Drawing::Point(0, 0);
 	this->menuStrip1->Name = L"menuStrip1";
-	this->menuStrip1->Size = System::Drawing::Size(1264, 24);
+	this->menuStrip1->Size = System::Drawing::Size(1264, 25);
 	this->menuStrip1->TabIndex = 1;
 	this->menuStrip1->Text = L"menuStrip1";
 	// 
@@ -160,7 +150,7 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 			this->sobelFilterKeyToolStripMenuItem, this->gridToolStripMenuItem
 	});
 	this->settingToolStripMenuItem->Name = L"settingToolStripMenuItem";
-	this->settingToolStripMenuItem->Size = System::Drawing::Size(59, 20);
+	this->settingToolStripMenuItem->Size = System::Drawing::Size(59, 21);
 	this->settingToolStripMenuItem->Text = L"Setting";
 	// 
 	// faceToolStripMenuItem
@@ -201,6 +191,13 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	this->sobelFilterKeyToolStripMenuItem->Text = L"Sobel Filter";
 	this->sobelFilterKeyToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::sobelFilterKeyToolStripMenuItem_Click);
 	// 
+	// gridToolStripMenuItem
+	// 
+	this->gridToolStripMenuItem->Name = L"gridToolStripMenuItem";
+	this->gridToolStripMenuItem->Size = System::Drawing::Size(180, 22);
+	this->gridToolStripMenuItem->Text = L"Grid";
+	this->gridToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::gridToolStripMenuItem_Click);
+	// 
 	// fileToolStripMenuItem
 	// 
 	this->fileToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
@@ -208,80 +205,46 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 			this->loadToolStripMenuItem
 	});
 	this->fileToolStripMenuItem->Name = L"fileToolStripMenuItem";
-	this->fileToolStripMenuItem->Size = System::Drawing::Size(38, 20);
+	this->fileToolStripMenuItem->Size = System::Drawing::Size(38, 21);
 	this->fileToolStripMenuItem->Text = L"File";
 	// 
 	// saveToolStripMenuItem
 	// 
 	this->saveToolStripMenuItem->Name = L"saveToolStripMenuItem";
-	this->saveToolStripMenuItem->Size = System::Drawing::Size(103, 22);
+	this->saveToolStripMenuItem->Size = System::Drawing::Size(180, 22);
 	this->saveToolStripMenuItem->Text = L"Save";
 	this->saveToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::saveToolStripMenuItem_Click);
 	// 
 	// loadToolStripMenuItem
 	// 
 	this->loadToolStripMenuItem->Name = L"loadToolStripMenuItem";
-	this->loadToolStripMenuItem->Size = System::Drawing::Size(103, 22);
+	this->loadToolStripMenuItem->Size = System::Drawing::Size(180, 22);
 	this->loadToolStripMenuItem->Text = L"Load";
 	this->loadToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::loadToolStripMenuItem_Click);
 	// 
-	// toolStripContainer2
-	// 
-	this->toolStripContainer2->BottomToolStripPanelVisible = false;
-	// 
-	// toolStripContainer2.ContentPanel
-	// 
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->scaleTextbox);
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->rotateTextBox);
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->newSelectButton);
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->loadTexButton);
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->scaleButton);
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->rotateButton);
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->calculateButton);
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl2);
-	this->toolStripContainer2->ContentPanel->Controls->Add(this->hkoglPanelControl1);
-	this->toolStripContainer2->ContentPanel->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-		static_cast<System::Byte>(136)));
-	this->toolStripContainer2->ContentPanel->Size = System::Drawing::Size(1264, 657);
-	this->toolStripContainer2->Dock = System::Windows::Forms::DockStyle::Fill;
-	this->toolStripContainer2->LeftToolStripPanelVisible = false;
-	this->toolStripContainer2->Location = System::Drawing::Point(0, 0);
-	this->toolStripContainer2->Name = L"toolStripContainer2";
-	this->toolStripContainer2->RightToolStripPanelVisible = false;
-	this->toolStripContainer2->Size = System::Drawing::Size(1264, 681);
-	this->toolStripContainer2->TabIndex = 2;
-	this->toolStripContainer2->Text = L"toolStripContainer2";
-	// 
-	// toolStripContainer2.TopToolStripPanel
-	// 
-	this->toolStripContainer2->TopToolStripPanel->Controls->Add(this->menuStrip1);
-	// 
 	// scaleTextbox
 	// 
-	this->scaleTextbox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
-		| System::Windows::Forms::AnchorStyles::Left)
-		| System::Windows::Forms::AnchorStyles::Right));
-	this->scaleTextbox->Location = System::Drawing::Point(1017, 390);
+	this->scaleTextbox->Dock = System::Windows::Forms::DockStyle::Bottom;
+	this->scaleTextbox->Location = System::Drawing::Point(0, 2);
 	this->scaleTextbox->Name = L"scaleTextbox";
-	this->scaleTextbox->Size = System::Drawing::Size(86, 23);
+	this->scaleTextbox->Size = System::Drawing::Size(291, 22);
 	this->scaleTextbox->TabIndex = 8;
 	// 
 	// rotateTextBox
 	// 
-	this->rotateTextBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
-		| System::Windows::Forms::AnchorStyles::Left)
-		| System::Windows::Forms::AnchorStyles::Right));
-	this->rotateTextBox->Location = System::Drawing::Point(1017, 354);
+	this->rotateTextBox->Dock = System::Windows::Forms::DockStyle::Bottom;
+	this->rotateTextBox->Location = System::Drawing::Point(0, 2);
 	this->rotateTextBox->Name = L"rotateTextBox";
-	this->rotateTextBox->Size = System::Drawing::Size(86, 23);
+	this->rotateTextBox->Size = System::Drawing::Size(291, 22);
 	this->rotateTextBox->TabIndex = 7;
 	// 
 	// newSelectButton
 	// 
-	this->newSelectButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
-	this->newSelectButton->Location = System::Drawing::Point(855, 462);
+	this->newSelectButton->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->newSelectButton->Font = (gcnew System::Drawing::Font(L"Microsoft JhengHei", 12));
+	this->newSelectButton->Location = System::Drawing::Point(3, 560);
 	this->newSelectButton->Name = L"newSelectButton";
-	this->newSelectButton->Size = System::Drawing::Size(248, 37);
+	this->newSelectButton->Size = System::Drawing::Size(442, 37);
 	this->newSelectButton->TabIndex = 6;
 	this->newSelectButton->Text = L"Select new mesh";
 	this->newSelectButton->UseVisualStyleBackColor = true;
@@ -289,10 +252,11 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// loadTexButton
 	// 
-	this->loadTexButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
-	this->loadTexButton->Location = System::Drawing::Point(855, 419);
+	this->loadTexButton->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->loadTexButton->Font = (gcnew System::Drawing::Font(L"Microsoft JhengHei", 12));
+	this->loadTexButton->Location = System::Drawing::Point(3, 517);
 	this->loadTexButton->Name = L"loadTexButton";
-	this->loadTexButton->Size = System::Drawing::Size(248, 37);
+	this->loadTexButton->Size = System::Drawing::Size(442, 37);
 	this->loadTexButton->TabIndex = 5;
 	this->loadTexButton->Text = L"Load Texture";
 	this->loadTexButton->UseVisualStyleBackColor = true;
@@ -300,10 +264,11 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// scaleButton
 	// 
-	this->scaleButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12));
-	this->scaleButton->Location = System::Drawing::Point(855, 386);
+	this->scaleButton->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->scaleButton->Font = (gcnew System::Drawing::Font(L"Microsoft JhengHei", 12));
+	this->scaleButton->Location = System::Drawing::Point(0, 0);
 	this->scaleButton->Name = L"scaleButton";
-	this->scaleButton->Size = System::Drawing::Size(155, 26);
+	this->scaleButton->Size = System::Drawing::Size(147, 24);
 	this->scaleButton->TabIndex = 4;
 	this->scaleButton->Text = L"Scale ";
 	this->scaleButton->UseVisualStyleBackColor = true;
@@ -311,11 +276,12 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// rotateButton
 	// 
-	this->rotateButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+	this->rotateButton->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->rotateButton->Font = (gcnew System::Drawing::Font(L"Microsoft JhengHei", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(136)));
-	this->rotateButton->Location = System::Drawing::Point(855, 354);
+	this->rotateButton->Location = System::Drawing::Point(0, 0);
 	this->rotateButton->Name = L"rotateButton";
-	this->rotateButton->Size = System::Drawing::Size(155, 26);
+	this->rotateButton->Size = System::Drawing::Size(147, 24);
 	this->rotateButton->TabIndex = 3;
 	this->rotateButton->Text = L"Rotate";
 	this->rotateButton->UseVisualStyleBackColor = true;
@@ -323,11 +289,12 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// calculateButton
 	// 
-	this->calculateButton->Font = (gcnew System::Drawing::Font(L"微軟正黑體", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+	this->calculateButton->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->calculateButton->Font = (gcnew System::Drawing::Font(L"Microsoft JhengHei", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(136)));
-	this->calculateButton->Location = System::Drawing::Point(855, 25);
+	this->calculateButton->Location = System::Drawing::Point(3, 3);
 	this->calculateButton->Name = L"calculateButton";
-	this->calculateButton->Size = System::Drawing::Size(248, 37);
+	this->calculateButton->Size = System::Drawing::Size(442, 37);
 	this->calculateButton->TabIndex = 2;
 	this->calculateButton->Text = L"Calculate";
 	this->calculateButton->UseVisualStyleBackColor = true;
@@ -335,18 +302,20 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	// hkoglPanelControl2
 	// 
-	hkcoglPanelCameraSetting2->Far = 1000;
-	hkcoglPanelCameraSetting2->Fov = 45;
-	hkcoglPanelCameraSetting2->Near = -1000;
-	hkcoglPanelCameraSetting2->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
-	this->hkoglPanelControl2->Camera_Setting = hkcoglPanelCameraSetting2;
-	this->hkoglPanelControl2->Location = System::Drawing::Point(855, 68);
+	hkcoglPanelCameraSetting1->Far = 1000;
+	hkcoglPanelCameraSetting1->Fov = 45;
+	hkcoglPanelCameraSetting1->Near = -1000;
+	hkcoglPanelCameraSetting1->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl2->Camera_Setting = hkcoglPanelCameraSetting1;
+	this->hkoglPanelControl2->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->hkoglPanelControl2->Location = System::Drawing::Point(3, 45);
+	this->hkoglPanelControl2->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 	this->hkoglPanelControl2->Name = L"hkoglPanelControl2";
-	hkcoglPanelPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	hkcoglPanelPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
-	this->hkoglPanelControl2->Pixel_Format = hkcoglPanelPixelFormat2;
-	this->hkoglPanelControl2->Size = System::Drawing::Size(248, 259);
+	hkcoglPanelPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl2->Pixel_Format = hkcoglPanelPixelFormat1;
+	this->hkoglPanelControl2->Size = System::Drawing::Size(442, 407);
 	this->hkoglPanelControl2->TabIndex = 1;
 	this->hkoglPanelControl2->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl2_Load);
 	this->hkoglPanelControl2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl2_Paint);
@@ -355,31 +324,188 @@ void CppCLRWinformsProject::Form1::InitializeComponent(void)
 	// 
 	this->openFileDialog1->FileName = L"openFileDialog1";
 	// 
-	// gridToolStripMenuItem
+	// BottomToolStripPanel
 	// 
-	this->gridToolStripMenuItem->Name = L"gridToolStripMenuItem";
-	this->gridToolStripMenuItem->Size = System::Drawing::Size(180, 22);
-	this->gridToolStripMenuItem->Text = L"Grid";
-	this->gridToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::gridToolStripMenuItem_Click);
+	this->BottomToolStripPanel->Location = System::Drawing::Point(0, 0);
+	this->BottomToolStripPanel->Name = L"BottomToolStripPanel";
+	this->BottomToolStripPanel->Orientation = System::Windows::Forms::Orientation::Horizontal;
+	this->BottomToolStripPanel->RowMargin = System::Windows::Forms::Padding(3, 0, 0, 0);
+	this->BottomToolStripPanel->Size = System::Drawing::Size(0, 0);
+	// 
+	// TopToolStripPanel
+	// 
+	this->TopToolStripPanel->Location = System::Drawing::Point(0, 0);
+	this->TopToolStripPanel->Name = L"TopToolStripPanel";
+	this->TopToolStripPanel->Orientation = System::Windows::Forms::Orientation::Horizontal;
+	this->TopToolStripPanel->RowMargin = System::Windows::Forms::Padding(3, 0, 0, 0);
+	this->TopToolStripPanel->Size = System::Drawing::Size(0, 0);
+	// 
+	// RightToolStripPanel
+	// 
+	this->RightToolStripPanel->Location = System::Drawing::Point(0, 0);
+	this->RightToolStripPanel->Name = L"RightToolStripPanel";
+	this->RightToolStripPanel->Orientation = System::Windows::Forms::Orientation::Horizontal;
+	this->RightToolStripPanel->RowMargin = System::Windows::Forms::Padding(3, 0, 0, 0);
+	this->RightToolStripPanel->Size = System::Drawing::Size(0, 0);
+	// 
+	// LeftToolStripPanel
+	// 
+	this->LeftToolStripPanel->Location = System::Drawing::Point(0, 0);
+	this->LeftToolStripPanel->Name = L"LeftToolStripPanel";
+	this->LeftToolStripPanel->Orientation = System::Windows::Forms::Orientation::Horizontal;
+	this->LeftToolStripPanel->RowMargin = System::Windows::Forms::Padding(3, 0, 0, 0);
+	this->LeftToolStripPanel->Size = System::Drawing::Size(0, 0);
+	// 
+	// ContentPanel
+	// 
+	this->ContentPanel->Font = (gcnew System::Drawing::Font(L"Microsoft JhengHei", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+		static_cast<System::Byte>(136)));
+	this->ContentPanel->Size = System::Drawing::Size(1264, 681);
+	// 
+	// hkoglPanelControl1
+	// 
+	this->hkoglPanelControl1->AutoSize = true;
+	this->hkoglPanelControl1->AutoValidate = System::Windows::Forms::AutoValidate::Disable;
+	hkcoglPanelCameraSetting2->Far = 1000;
+	hkcoglPanelCameraSetting2->Fov = 45;
+	hkcoglPanelCameraSetting2->Near = -1000;
+	hkcoglPanelCameraSetting2->Type = HKOGLPanel::HKCOGLPanelCameraSetting::CAMERATYPE::ORTHOGRAPHIC;
+	this->hkoglPanelControl1->Camera_Setting = hkcoglPanelCameraSetting2;
+	this->hkoglPanelControl1->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->hkoglPanelControl1->Location = System::Drawing::Point(2, 3);
+	this->hkoglPanelControl1->Margin = System::Windows::Forms::Padding(2, 3, 2, 3);
+	this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
+	hkcoglPanelPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	hkcoglPanelPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCOGLPanelPixelFormat::PIXELBITS::BITS_0;
+	this->hkoglPanelControl1->Pixel_Format = hkcoglPanelPixelFormat2;
+	this->hkoglPanelControl1->Size = System::Drawing::Size(800, 600);
+	this->hkoglPanelControl1->TabIndex = 0;
+	this->hkoglPanelControl1->Load += gcnew System::EventHandler(this, &Form1::hkoglPanelControl1_Load);
+	this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
+	this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
+	this->hkoglPanelControl1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseMove);
+	this->hkoglPanelControl1->MouseWheel += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseWheel);
+	// 
+	// tableLayoutPanel1
+	// 
+	this->tableLayoutPanel1->ColumnCount = 2;
+	this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+		63.99046F)));
+	this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+		36.00954F)));
+	this->tableLayoutPanel1->Controls->Add(this->hkoglPanelControl1, 0, 0);
+	this->tableLayoutPanel1->Controls->Add(this->tableLayoutPanel2, 1, 0);
+	this->tableLayoutPanel1->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->tableLayoutPanel1->Location = System::Drawing::Point(3, 28);
+	this->tableLayoutPanel1->Name = L"tableLayoutPanel1";
+	this->tableLayoutPanel1->RowCount = 1;
+	this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 100)));
+	this->tableLayoutPanel1->Size = System::Drawing::Size(1258, 606);
+	this->tableLayoutPanel1->TabIndex = 0;
+	// 
+	// tableLayoutPanel2
+	// 
+	this->tableLayoutPanel2->ColumnCount = 1;
+	this->tableLayoutPanel2->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+		100)));
+	this->tableLayoutPanel2->Controls->Add(this->hkoglPanelControl2, 0, 1);
+	this->tableLayoutPanel2->Controls->Add(this->calculateButton, 0, 0);
+	this->tableLayoutPanel2->Controls->Add(this->loadTexButton, 0, 4);
+	this->tableLayoutPanel2->Controls->Add(this->newSelectButton, 0, 5);
+	this->tableLayoutPanel2->Controls->Add(this->splitContainer2, 0, 2);
+	this->tableLayoutPanel2->Controls->Add(this->splitContainer3, 0, 3);
+	this->tableLayoutPanel2->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->tableLayoutPanel2->Location = System::Drawing::Point(807, 3);
+	this->tableLayoutPanel2->Name = L"tableLayoutPanel2";
+	this->tableLayoutPanel2->RowCount = 6;
+	this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle()));
+	this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 100)));
+	this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
+	this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
+	this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle()));
+	this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle()));
+	this->tableLayoutPanel2->Size = System::Drawing::Size(448, 600);
+	this->tableLayoutPanel2->TabIndex = 1;
+	// 
+	// splitContainer2
+	// 
+	this->splitContainer2->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->splitContainer2->Location = System::Drawing::Point(3, 457);
+	this->splitContainer2->Name = L"splitContainer2";
+	// 
+	// splitContainer2.Panel1
+	// 
+	this->splitContainer2->Panel1->Controls->Add(this->rotateButton);
+	// 
+	// splitContainer2.Panel2
+	// 
+	this->splitContainer2->Panel2->Controls->Add(this->rotateTextBox);
+	this->splitContainer2->Size = System::Drawing::Size(442, 24);
+	this->splitContainer2->SplitterDistance = 147;
+	this->splitContainer2->TabIndex = 7;
+	// 
+	// splitContainer3
+	// 
+	this->splitContainer3->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->splitContainer3->Location = System::Drawing::Point(3, 487);
+	this->splitContainer3->Name = L"splitContainer3";
+	// 
+	// splitContainer3.Panel1
+	// 
+	this->splitContainer3->Panel1->Controls->Add(this->scaleButton);
+	// 
+	// splitContainer3.Panel2
+	// 
+	this->splitContainer3->Panel2->Controls->Add(this->scaleTextbox);
+	this->splitContainer3->Size = System::Drawing::Size(442, 24);
+	this->splitContainer3->SplitterDistance = 147;
+	this->splitContainer3->TabIndex = 8;
+	// 
+	// tableLayoutPanel3
+	// 
+	this->tableLayoutPanel3->ColumnCount = 1;
+	this->tableLayoutPanel3->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+		100)));
+	this->tableLayoutPanel3->Controls->Add(this->menuStrip1, 0, 0);
+	this->tableLayoutPanel3->Controls->Add(this->tableLayoutPanel1, 0, 1);
+	this->tableLayoutPanel3->Dock = System::Windows::Forms::DockStyle::Fill;
+	this->tableLayoutPanel3->Location = System::Drawing::Point(0, 0);
+	this->tableLayoutPanel3->Name = L"tableLayoutPanel3";
+	this->tableLayoutPanel3->RowCount = 3;
+	this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 25)));
+	this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 612)));
+	this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle()));
+	this->tableLayoutPanel3->Size = System::Drawing::Size(1264, 681);
+	this->tableLayoutPanel3->TabIndex = 2;
 	// 
 	// Form1
 	// 
 	this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 	this->ClientSize = System::Drawing::Size(1264, 681);
-	this->Controls->Add(this->toolStripContainer2);
+	this->Controls->Add(this->tableLayoutPanel3);
 	this->MainMenuStrip = this->menuStrip1;
 	this->Margin = System::Windows::Forms::Padding(2);
 	this->Name = L"Form1";
 	this->Text = L"Form1";
 	this->menuStrip1->ResumeLayout(false);
 	this->menuStrip1->PerformLayout();
-	this->toolStripContainer2->ContentPanel->ResumeLayout(false);
-	this->toolStripContainer2->ContentPanel->PerformLayout();
-	this->toolStripContainer2->TopToolStripPanel->ResumeLayout(false);
-	this->toolStripContainer2->TopToolStripPanel->PerformLayout();
-	this->toolStripContainer2->ResumeLayout(false);
-	this->toolStripContainer2->PerformLayout();
+	this->tableLayoutPanel1->ResumeLayout(false);
+	this->tableLayoutPanel1->PerformLayout();
+	this->tableLayoutPanel2->ResumeLayout(false);
+	this->splitContainer2->Panel1->ResumeLayout(false);
+	this->splitContainer2->Panel2->ResumeLayout(false);
+	this->splitContainer2->Panel2->PerformLayout();
+	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer2))->EndInit();
+	this->splitContainer2->ResumeLayout(false);
+	this->splitContainer3->Panel1->ResumeLayout(false);
+	this->splitContainer3->Panel2->ResumeLayout(false);
+	this->splitContainer3->Panel2->PerformLayout();
+	(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer3))->EndInit();
+	this->splitContainer3->ResumeLayout(false);
+	this->tableLayoutPanel3->ResumeLayout(false);
+	this->tableLayoutPanel3->PerformLayout();
 	this->ResumeLayout(false);
 
 }

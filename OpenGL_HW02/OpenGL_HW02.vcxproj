@@ -78,6 +78,7 @@
     <IntDir>$(SolutionDir)$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)includes;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -90,6 +91,7 @@
     <IntDir>$(SolutionDir)$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)includes;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
