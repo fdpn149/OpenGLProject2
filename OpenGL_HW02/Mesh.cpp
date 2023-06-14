@@ -271,11 +271,12 @@ void Mesh::addVertex(int faceID, glm::vec3 worldPos)
 	setPointPosition(glm::vec3(closestPoint[0], closestPoint[1], closestPoint[2]));
 
 
-	for (auto vf_it = modelMesh.vf_begin(closestVH); vf_it.is_valid(); vf_it++)
+	for (auto vv_it = modelMesh.vv_begin(closestVH); vv_it.is_valid(); vv_it++)
 	{
-		int neighbor_faceID = vf_it->idx();
-
-		addFace(neighbor_faceID);
+		for (auto vf_it = modelMesh.vf_begin(*vv_it); vf_it.is_valid(); vf_it++)
+		{
+			addFace(vf_it->idx());
+		}
 	}
 }
 
