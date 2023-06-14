@@ -172,6 +172,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="TextureParamPainter.h" />
     <ClInclude Include="utilities.h" />
     <ClInclude Include="util_glm.hpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="TextureParamPainter.cpp" />
     <ClCompile Include="utilities.cpp" />
   </ItemGroup>
@@ -232,6 +234,8 @@
     <None Include="assets\shaders\plane.vs.glsl" />
     <None Include="assets\shaders\shadowMap.fs.glsl" />
     <None Include="assets\shaders\shadowMap.vs.glsl" />
+    <None Include="assets\shaders\skybox.fs.glsl" />
+    <None Include="assets\shaders\skybox.vs.glsl" />
     <None Include="assets\shaders\textureParam.fs.glsl" />
     <None Include="assets\shaders\textureParam.vs.glsl" />
   </ItemGroup>

@@ -45,7 +45,7 @@ namespace VertexObjType
 }
 
 Mesh::Mesh()
-	: modelMat(glm::mat4(1.0f))
+	: modelMat(glm::scale(glm::mat4(1.0f), glm::vec3(3.0f, 3.0f, 3.0f)))
 {
 	selectedMesh.add_property(faceIdPropHanlde);
 	selectedMesh.add_property(vertIdPropHandle);

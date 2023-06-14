@@ -12,6 +12,7 @@
 #include "Plane.h"
 #include "Light.h"
 #include "Quad.h"
+#include "Skybox.h"
 
 namespace ShaderTypes
 {
@@ -24,7 +25,7 @@ namespace ShaderTypes
 		GRID,
 		PLANE,
 		SHADOW_MAP,
-		//SKYBOX,
+		SKYBOX,
 		MAX_SHADER_NUM
 	};
 }
@@ -85,6 +86,7 @@ private:
 
 	Quad quad;
 
+	Skybox skybox;
 
 	/* Buffer object*/
 

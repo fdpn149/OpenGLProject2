@@ -30,11 +30,16 @@ Scene::Scene()
 	shaders[ShaderTypes::GRID]			= Shader("assets/shaders/grid.vs.glsl"		, "assets/shaders/grid.fs.glsl"		);
 	shaders[ShaderTypes::PLANE]			= Shader("assets/shaders/plane.vs.glsl"		, "assets/shaders/plane.fs.glsl"	);
 	shaders[ShaderTypes::SHADOW_MAP]	= Shader("assets/shaders/shadowMap.vs.glsl" , "assets/shaders/shadowMap.fs.glsl");
-
+	shaders[ShaderTypes::SKYBOX]		= Shader("assets/shaders/skybox.vs.glsl"	, "assets/shaders/skybox.fs.glsl"	);
 	
+
 	/* Initialize mesh*/
 
 	mesh.loadMesh(Config::MODEL_PATH + "armadillo.obj");
+
+
+	/* Initialze skybox */
+	skybox.loadTexture(Config::TEXTURE_PATH + "skybox/");
 
 
 	/* Initialize camera */
@@ -129,6 +134,7 @@ Scene::Scene()
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	shaders[ShaderTypes::SHADOW_MAP].use();
+	shaders[ShaderTypes::SHADOW_MAP].setMat4("modelMat", mesh.getModelMat());
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
@@ -221,6 +227,16 @@ void Scene::pick(int x, int y)
 
 void Scene::draw()
 {
+	/* Draw skybox */
+	shaders[ShaderTypes::SKYBOX].use();
+	shaders[ShaderTypes::SKYBOX].setMat4("viewMat", glm::mat4(glm::mat3(camera.getViewMatrix())));
+
+	shaders[ShaderTypes::SKYBOX].setInt("skybox", 0);
+	glActiveTexture(GL_TEXTURE0);
+
+	skybox.draw(shaders[ShaderTypes::SKYBOX]);
+
+
 	/* Draw picking frame buffer */
 
 	glBindFramebuffer(GL_FRAMEBUFFER, pickingFbo);
@@ -230,15 +246,11 @@ void Scene::draw()
 
 	shaders[ShaderTypes::PICK].use();
 	shaders[ShaderTypes::PICK].setMat4("viewMat", camera.getViewMatrix());
+	shaders[ShaderTypes::PICK].setMat4("modelMat", mesh.getModelMat());
 
 	mesh.draw();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
 
 	switch (mode)
@@ -250,6 +262,7 @@ void Scene::draw()
 
 		shaders[ShaderTypes::DRAW_FACE].use();
 		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
+		shaders[ShaderTypes::DRAW_FACE].setMat4("modelMat", mesh.getModelMat());
 		
 		mesh.drawSelected(shaders[ShaderTypes::DRAW_FACE]);
 
@@ -274,6 +287,8 @@ void Scene::draw()
 
 	shaders[ShaderTypes::GRID].use();
 	shaders[ShaderTypes::GRID].setMat4("viewMat", camera.getViewMatrix());
+	shaders[ShaderTypes::GRID].setMat4("modelMat", mesh.getModelMat());
+
 	mesh.draw();
 
 
@@ -283,11 +298,13 @@ void Scene::draw()
 
 	shaders[ShaderTypes::MODEL].use();
 	shaders[ShaderTypes::MODEL].setMat4("viewMat", camera.getViewMatrix());
+	shaders[ShaderTypes::MODEL].setMat4("modelMat", mesh.getModelMat());
 
 	mesh.draw();
 
 
 	/* Draw plane */
+
 	shaders[ShaderTypes::PLANE].use();
 	shaders[ShaderTypes::PLANE].setMat4("viewMat", camera.getViewMatrix());
 	shaders[ShaderTypes::PLANE].setVec3("cameraPos", camera.getPosition());

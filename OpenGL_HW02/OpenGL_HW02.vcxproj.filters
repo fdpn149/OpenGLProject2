@@ -95,6 +95,9 @@
     <ClInclude Include="Quad.h">
       <Filter>Header Files\Enviroment</Filter>
     </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\Enviroment</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppCLR_WinformsProject.cpp">
@@ -140,6 +143,9 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Quad.cpp">
+      <Filter>Source Files\Enviroment</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
       <Filter>Source Files\Enviroment</Filter>
     </ClCompile>
   </ItemGroup>
@@ -195,6 +201,12 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="assets\shaders\shadowMap.vs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\skybox.fs.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="assets\shaders\skybox.vs.glsl">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
