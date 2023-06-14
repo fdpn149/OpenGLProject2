@@ -6,10 +6,12 @@ layout (location = 2) in vec2 aTexcoord;
 out vec3 position;
 out vec3 normal;
 out vec2 texcoord;
+out vec4 fragPosLight;
 
 uniform mat4 modelMat;
 uniform mat4 viewMat;
 uniform mat4 projMat;
+uniform mat4 lightProjMat;
 
 
 void main()
@@ -19,4 +21,5 @@ void main()
 	position = aPos;
 	normal = aNormal;
 	texcoord = aTexcoord;
+	fragPosLight = lightProjMat * modelMat * vec4(aPos, 1.0f);
 }

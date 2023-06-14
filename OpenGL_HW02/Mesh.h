@@ -59,6 +59,7 @@ public:
 	const std::vector<unsigned int>& getSelectedIndices() const { return (*(selectedMeshData.end() - 1)).indices; }
 	unsigned int getTexIdByIdx(int idx) { return textureIds.at(idx); }
 	int getTextureNum() { return textureIds.size(); }
+	glm::mat4 getModelMat() { return modelMat; }
 
 
 	/* Setters */

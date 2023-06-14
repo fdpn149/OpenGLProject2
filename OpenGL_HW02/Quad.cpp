@@ -1,11 +1,9 @@
 #include "pch.h"
-#include "Plane.h"
+#include "Quad.h"
 
 #include <vector>
-#include <iostream>
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
 
 #include "utilities.h"
 #include "Config.h"
@@ -21,10 +19,10 @@ namespace
 
 	const std::vector<Vertex> PLANE_VERTS =
 	{
-		Vertex{ glm::vec3(-5.0f,  -2.0f,  5.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2( 0.0f,  0.0f)},
-		Vertex{ glm::vec3(-5.0f,  -2.0f, -5.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2( 0.0f,  1.0f)},
-		Vertex{ glm::vec3( 5.0f,  -2.0f, -5.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2( 1.0f,  1.0f)},
-		Vertex{ glm::vec3( 5.0f,  -2.0f,  5.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2( 1.0f,  0.0f)}
+		Vertex{ glm::vec3(-1.0f,  1.0f,  2.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+		Vertex{ glm::vec3( 1.0f,  1.0f,  2.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+		Vertex{ glm::vec3( 1.0f, -1.0f,  2.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+		Vertex{ glm::vec3(-1.0f, -1.0f,  2.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 0.0f)}
 	};
 
 	const std::vector<unsigned int> PLANE_INDICES =
@@ -34,28 +32,26 @@ namespace
 	};
 }
 
-Plane::Plane()
+Quad::Quad()
 {
 	initBufferObjects();
 
-	diffuseTexId = Utils::loadTexture(Config::TEXTURE_PATH + "floor_diffuse.jpg");
-	specularTexId = Utils::loadTexture(Config::TEXTURE_PATH + "floor_specular.jpg");
-	//normalTexId = Utils::loadTexture("");
+	specular = Utils::loadTexture(Config::TEXTURE_PATH + "floor_specular.jpg");
 }
 
-void Plane::draw(Shader& shader)
+void Quad::draw(Shader& shader)
 {
 	shader.use();
 
 	// activate diffuse
 	shader.setInt("material.diffuse", 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, diffuseTexId);
+	glBindTexture(GL_TEXTURE_2D, diffuse);
 
 	// activate specular
 	shader.setInt("material.specular", 1);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, specularTexId);
+	glBindTexture(GL_TEXTURE_2D, specular);
 
 	shader.setFloat("material.shininess", 32.0f);
 
@@ -70,7 +66,7 @@ void Plane::draw(Shader& shader)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Plane::initBufferObjects()
+void Quad::initBufferObjects()
 {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);

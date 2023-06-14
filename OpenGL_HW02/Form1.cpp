@@ -622,6 +622,7 @@ System::Void CppCLRWinformsProject::Form1::loadTexButton_Click(System::Object^ s
 System::Void CppCLRWinformsProject::Form1::newSelectButton_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	scene->setNewSelectMesh();
+	painter->setDrawTexture(false);
 
 	hkoglPanelControl1->Invalidate();
 	hkoglPanelControl2->Invalidate();

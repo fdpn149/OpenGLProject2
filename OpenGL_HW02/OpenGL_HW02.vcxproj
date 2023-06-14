@@ -168,6 +168,7 @@
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="Quad.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
@@ -191,6 +192,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="TextureParamPainter.cpp" />
@@ -228,6 +230,8 @@
     <None Include="assets\shaders\picking.vs.glsl" />
     <None Include="assets\shaders\plane.fs.glsl" />
     <None Include="assets\shaders\plane.vs.glsl" />
+    <None Include="assets\shaders\shadowMap.fs.glsl" />
+    <None Include="assets\shaders\shadowMap.vs.glsl" />
     <None Include="assets\shaders\textureParam.fs.glsl" />
     <None Include="assets\shaders\textureParam.vs.glsl" />
   </ItemGroup>

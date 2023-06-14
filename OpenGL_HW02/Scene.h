@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "Plane.h"
 #include "Light.h"
+#include "Quad.h"
 
 namespace ShaderTypes
 {
@@ -22,6 +23,7 @@ namespace ShaderTypes
 		DRAW_FACE,
 		GRID,
 		PLANE,
+		SHADOW_MAP,
 		//SKYBOX,
 		MAX_SHADER_NUM
 	};
@@ -81,14 +83,20 @@ private:
 
 	Plane plane;
 
+	Quad quad;
+
 
 	/* Buffer object*/
 
-	unsigned int fbo;
+	unsigned int pickingFbo;
 
-	unsigned int fboTexId;
+	unsigned int pickingFboTexId;
 
 	unsigned int rbo;
+
+	unsigned int shadowMapFbo;
+
+	unsigned int shadowMapFboTexId;
 
 
 	/* Other attributes */
@@ -98,4 +106,8 @@ private:
 	PickMode::PickMode mode;
 
 	glm::mat4 projMat;
+
+	glm::vec3 lightPos; // Using directional light but use a position to origin direction
+
+	unsigned int shadowMapLength;
 };

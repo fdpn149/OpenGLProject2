@@ -17,13 +17,13 @@
 
 
 TextureParamPainter::TextureParamPainter()
+	: texId(0)
+	, drawTexture(false)
+	, textureUpdated(true)
 {
 	glDisable(GL_CULL_FACE);
 
 	myShader = Shader(Config::SHADER_PATH + "textureParam.vs.glsl", Config::SHADER_PATH + "textureParam.fs.glsl");
-
-	textureUpdated = true;
-	texId = 0;
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vertVbo);
@@ -42,6 +42,8 @@ void TextureParamPainter::setTexture(const std::string& file)
 	{
 		texId = Utils::loadTexture(file);
 	}
+
+	drawTexture = true;
 }
 
 void TextureParamPainter::setLineData(const std::vector<glm::vec2> lineVertices)
@@ -102,7 +104,7 @@ void TextureParamPainter::draw()
 		glDrawArrays(GL_LINES, 0, lineVertices.size());
 
 		// Draw texture
-		if (texId != 0)
+		if (texId != 0 && drawTexture)
 		{
 			myShader.setInt("UseTexture", 1);
 
@@ -116,6 +118,8 @@ void TextureParamPainter::draw()
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 		
 	}

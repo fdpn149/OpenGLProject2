@@ -3,6 +3,7 @@
 in vec3 position;
 in vec3 normal;
 in vec2 texcoord;
+in vec4 fragPosLight;
 
 struct Material
 {
@@ -23,7 +24,38 @@ uniform Material material;
 
 uniform Light light;
 
+uniform sampler2D shadowMap;
+
 uniform vec3 cameraPos;
+
+float calculateShadow(vec4 fragPosLight)
+{
+    vec3 projCoords = fragPosLight.xyz / fragPosLight.w;
+
+    projCoords = projCoords * 0.5 + 0.5;
+
+    float closetDepth = texture(shadowMap, projCoords.xy).r;
+
+    float currentDepth = projCoords.z;
+
+    float bias = max(0.05 * (1.0 - dot(normal, normalize(-light.direction))), 0.005);
+
+    float shadow = 0.0f;
+
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+
+    shadow /= 9.0;
+
+    return shadow;
+}
 
 
 void main()
@@ -45,7 +77,8 @@ void main()
     float spec = pow(max(dot(viewDir, reflectionDir), 0.0f), material.shininess);
     vec3 specular = light.specular * spec * vec3(texture(material.specular, texcoord));
     
+    float shadow = calculateShadow(fragPosLight);
 
-    vec3 result = ambient + diffuse + specular;
+    vec3 result = (ambient + (1.0f - shadow) * (diffuse + specular));
     gl_FragColor = vec4(result, 1.0f);
 }

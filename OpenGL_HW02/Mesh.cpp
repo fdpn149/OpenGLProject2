@@ -232,6 +232,8 @@ void Mesh::drawSelected(Shader& shader)
 		glBindVertexArray(selectedMeshData[iii].vao);
 		glDrawElements(GL_TRIANGLES, selectedMeshData[iii].indices.size(), GL_UNSIGNED_INT, (void*)0);
 		glBindVertexArray(0);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 
