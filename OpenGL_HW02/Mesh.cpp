@@ -135,8 +135,6 @@ void Mesh::saveSelectedAsJson(const std::string& file)
 	out << std::setw(4) << savedJson << std::endl;
 
 	out.close();
-
-	OpenMesh::IO::write_mesh(selectedMesh, Config::MODEL_PATH + "saves.obj");
 }
 
 void Mesh::loadSelectedFromJson(const std::string& file)
@@ -176,8 +174,6 @@ void Mesh::loadSelectedFromJson(const std::string& file)
 	}
 
 	setNewSelectMesh();
-
-	std::cout << selectedMeshData.size() << '|' << selectedTextureData.size() << std::endl;
 
 	in.close();
 }
