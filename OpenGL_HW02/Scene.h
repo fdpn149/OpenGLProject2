@@ -26,6 +26,7 @@ namespace ShaderTypes
 		PLANE,
 		SHADOW_MAP,
 		SKYBOX,
+		SCREEN,
 		MAX_SHADER_NUM
 	};
 }
@@ -99,6 +100,10 @@ private:
 	unsigned int shadowMapFbo;
 
 	unsigned int shadowMapFboTexId;
+
+	unsigned int screenFbo;
+
+
 
 
 	/* Other attributes */

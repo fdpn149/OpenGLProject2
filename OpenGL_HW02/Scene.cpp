@@ -31,7 +31,7 @@ Scene::Scene()
 	shaders[ShaderTypes::PLANE]			= Shader("assets/shaders/plane.vs.glsl"		, "assets/shaders/plane.fs.glsl"	);
 	shaders[ShaderTypes::SHADOW_MAP]	= Shader("assets/shaders/shadowMap.vs.glsl" , "assets/shaders/shadowMap.fs.glsl");
 	shaders[ShaderTypes::SKYBOX]		= Shader("assets/shaders/skybox.vs.glsl"	, "assets/shaders/skybox.fs.glsl"	);
-	
+	shaders[ShaderTypes::SCREEN]		= Shader("assets/shaders/screen.vs.glsl"	, "assets/shaders/screen.fs.glsl");
 
 	/* Initialize mesh*/
 
@@ -115,6 +115,30 @@ Scene::Scene()
 	// Test shadow map
 	quad.setTexId(shadowMapFboTexId);
 	
+	float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+		// positions   // texCoords
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f
+	};
+
+	unsigned int quadVAO, quadVBO;
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	shaders[ShaderTypes::SCREEN].use();
+	shaders[ShaderTypes::SCREEN].setInt("screenTexture", 0);
 
 	/* Set shader uniforms */
 
@@ -256,11 +280,7 @@ void Scene::draw()
 	case PickMode::POINT:
 		shaders[ShaderTypes::DRAW_POINT].use();
 		shaders[ShaderTypes::DRAW_POINT].setMat4("viewMat", camera.getViewMatrix());
-
 		mesh.drawPoint();
-
-		break;
-
 	case PickMode::ADD_FACE:
 	case PickMode::DELETE_FACE:
 

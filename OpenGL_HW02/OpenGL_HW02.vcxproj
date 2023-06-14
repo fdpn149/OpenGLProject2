@@ -232,6 +232,8 @@
     <None Include="assets\shaders\picking.vs.glsl" />
     <None Include="assets\shaders\plane.fs.glsl" />
     <None Include="assets\shaders\plane.vs.glsl" />
+    <None Include="assets\shaders\screen.fs.glsl" />
+    <None Include="assets\shaders\screen.vs.glsl" />
     <None Include="assets\shaders\shadowMap.fs.glsl" />
     <None Include="assets\shaders\shadowMap.vs.glsl" />
     <None Include="assets\shaders\skybox.fs.glsl" />
