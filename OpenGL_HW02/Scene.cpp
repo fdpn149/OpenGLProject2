@@ -14,6 +14,7 @@ Scene::Scene()
 	, mode(PickMode::ADD_FACE)
 	, shadowMapLength(2048)
 	, filterEnable(false)
+	, gridEnable(true)
 {
 	/* OpenGL configs */
 
@@ -315,14 +316,18 @@ void Scene::draw()
 
 	/* Draw model grid */
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (gridEnable)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	shaders[ShaderTypes::GRID].use();
-	shaders[ShaderTypes::GRID].setMat4("viewMat", camera.getViewMatrix());
-	shaders[ShaderTypes::GRID].setMat4("modelMat", mesh.getModelMat());
+		shaders[ShaderTypes::GRID].use();
+		shaders[ShaderTypes::GRID].setMat4("viewMat", camera.getViewMatrix());
+		shaders[ShaderTypes::GRID].setMat4("modelMat", mesh.getModelMat());
 
-	mesh.draw();
+		mesh.draw();
+	}
 
+	
 	/* Draw model */
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

@@ -65,6 +65,7 @@ namespace CppCLRWinformsProject {
 	private: System::Windows::Forms::TextBox^ rotateTextBox;
 	private: System::Windows::Forms::TextBox^ scaleTextbox;
 	private: System::Windows::Forms::ToolStripMenuItem^ vertexToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ gridToolStripMenuItem;
 
 
 
@@ -107,5 +108,6 @@ namespace CppCLRWinformsProject {
 	private: System::Void loadToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	
 	private: System::Void sobelFilterKeyToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void gridToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }

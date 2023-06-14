@@ -57,8 +57,6 @@ public:
 	const std::vector<TriMesh::Point>& getSelectedVertices() const { return (*(selectedMeshData.end() - 1)).vertices; }
 	const std::vector<glm::vec2>& getSelectedTexcoords() const { return (*(selectedMeshData.end() - 1)).texcoords; }
 	const std::vector<unsigned int>& getSelectedIndices() const { return (*(selectedMeshData.end() - 1)).indices; }
-	unsigned int getTexIdByIdx(int idx) { return textureIds.at(idx); }
-	int getTextureNum() { return textureIds.size(); }
 	glm::mat4 getModelMat() { return modelMat; }
 
 
@@ -96,6 +94,8 @@ private:
 	void initSelectedBufferObjs();
 	void loadSelectedBufferObjs();
 
+	unsigned int getSavedTextureId(const std::string& file);
+
 
 private:
 	TriMesh modelMesh;
@@ -114,6 +114,8 @@ private:
 	std::vector<MeshData::SelectedMeshData> selectedMeshData;
 	std::vector<MeshData::SelectedTextureData> selectedTextureData;
 
+	std::map<std::string, unsigned int> savedTextures;
+
 	glm::mat4 modelMat;
 
 	std::vector<TriMesh::Point> lines;
@@ -124,7 +126,6 @@ private:
 	unsigned int modelVao;
 	unsigned int modelEbo;
 
-	std::vector<unsigned int> textureIds;
 
 	unsigned int selectedTexId;
 };

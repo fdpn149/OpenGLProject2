@@ -53,11 +53,13 @@ public:
 	const TriMesh& getSelectedMeshRef() const { return mesh.getSelectedMeshRef(); }
 	const Mesh& getMeshRef() const { return mesh; }
 	bool isTextureUpdated() const { return textureUpdated; }
+	bool isGridEnabled() const { return gridEnable; }
 
 	/* Setters */
 	void setPickMode(PickMode::PickMode newMode) { mode = newMode; }
 	void setTextureToMesh(const std::string& file) { mesh.setTexture(file); }
 	void setTextureUpdatedState(bool updated) { textureUpdated = updated; }
+	void setGridEnable(bool enable) { gridEnable = enable; }
 
 	void updateSelectedMeshTexcoords() { mesh.setTexcoord(); }
 
@@ -112,6 +114,8 @@ private:
 	bool textureUpdated;
 
 	bool filterEnable;
+
+	bool gridEnable;
 
 	PickMode::PickMode mode;
 

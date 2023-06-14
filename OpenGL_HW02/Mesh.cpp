@@ -170,7 +170,7 @@ void Mesh::loadSelectedFromJson(const std::string& file)
 
 	for (auto& textureData : selectedTextureData)
 	{
-		textureData.id = Utils::loadTexture(textureData.file);
+		textureData.id = getSavedTextureId(textureData.file);
 	}
 
 	setNewSelectMesh();
@@ -547,4 +547,19 @@ void Mesh::loadSelectedBufferObjs()
 
 	glBindVertexArray(0);
 
+}
+
+unsigned int Mesh::getSavedTextureId(const std::string& file)
+{
+	for (const auto& pair : savedTextures)
+	{
+		if (pair.first == file)
+		{
+			return pair.second;
+		}
+	}
+
+	savedTextures[file] = Utils::loadTexture(file);
+
+	return savedTextures[file];
 }
