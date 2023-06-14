@@ -200,8 +200,7 @@ void Scene::pickingPoint(float depthValue, unsigned int faceId, int x, int y)
 
 	glm::vec4 viewport(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
 	glm::vec3 windowPos(x, y, depthValue);
-	glm::vec3 worldPos = glm::unProject(windowPos, camera.getViewMatrix(), projMat, viewport);
-
+	glm::vec3 worldPos = glm::unProject(windowPos, camera.getViewMatrix() * mesh.getModelMat(), projMat, viewport);
 #ifdef DEBUG
 	printf("Position:\t(%f, %f, %f)\n\n", worldPos.x, worldPos.y, worldPos.z);
 #endif // DEBUG
@@ -212,6 +211,7 @@ void Scene::pickingPoint(float depthValue, unsigned int faceId, int x, int y)
 	shaders[ShaderTypes::DRAW_POINT].use();
 	shaders[ShaderTypes::DRAW_POINT].setVec3("pointColor", glm::vec3(0.0f, 1.0f, 0.0f));
 	shaders[ShaderTypes::DRAW_POINT].setMat4("viewMat", camera.getViewMatrix());
+	shaders[ShaderTypes::DRAW_POINT].setMat4("modelMat", mesh.getModelMat());
 	glUseProgram(0);
 }
 
@@ -286,9 +286,10 @@ void Scene::draw()
 	switch (mode)
 	{
 	case PickMode::POINT:
-		/*shaders[ShaderTypes::DRAW_POINT].use();
+		shaders[ShaderTypes::DRAW_POINT].use();
 		shaders[ShaderTypes::DRAW_POINT].setMat4("viewMat", camera.getViewMatrix());
-		mesh.drawPoint();*/
+		shaders[ShaderTypes::DRAW_POINT].setMat4("modelMat", mesh.getModelMat());
+		mesh.drawPoint();
 	case PickMode::ADD_FACE:
 	case PickMode::DELETE_FACE:
 
