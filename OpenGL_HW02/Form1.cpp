@@ -471,8 +471,10 @@ System::Void CppCLRWinformsProject::Form1::hkoglPanelControl1_MouseMove(System::
 		float deltaX = -(e->X - lastMouse3X) / Config::SCR_W;
 		float deltaY = (e->Y - lastMouse3Y) / Config::SCR_H;
 
+		glm::vec3 cameraUp = -glm::cross(scene->getCameraRef().getViewDir(), scene->getCameraRef().getRightVector());
+
 		glm::mat4 translateMat = glm::translate(glm::mat4(1.0f), deltaX * scene->getCameraRef().getRightVector());
-		translateMat = glm::translate(translateMat, deltaY * scene->getCameraRef().getUpVector());
+		translateMat = glm::translate(translateMat, deltaY * cameraUp);
 
 		position = translateMat * position;
 		pivot = translateMat * pivot;

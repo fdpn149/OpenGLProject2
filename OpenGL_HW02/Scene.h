@@ -9,6 +9,8 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "Shader.h"
+#include "Plane.h"
+#include "Light.h"
 
 namespace ShaderTypes
 {
@@ -19,7 +21,8 @@ namespace ShaderTypes
 		DRAW_POINT,
 		DRAW_FACE,
 		GRID,
-		SKYBOX,
+		PLANE,
+		//SKYBOX,
 		MAX_SHADER_NUM
 	};
 }
@@ -67,20 +70,32 @@ private:
 	void pickingPoint(float depthValue, unsigned int faceId, int x, int y);
 
 private:
+	/* Objects */
 	Shader shaders[ShaderTypes::MAX_SHADER_NUM];
 
 	Camera camera;
 
+	Light light;
+
 	Mesh mesh;
 
-	//bool useTexture;
+	Plane plane;
+
+
+	/* Buffer object*/
+
+	unsigned int fbo;
+
+	unsigned int fboTexId;
+
+	unsigned int rbo;
+
+
+	/* Other attributes */
+
 	bool textureUpdated;
 
 	PickMode::PickMode mode;
-
-	unsigned int fbo;
-	unsigned int fboTexId;
-	unsigned int rbo;
 
 	glm::mat4 projMat;
 };

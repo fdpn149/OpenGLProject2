@@ -163,7 +163,9 @@
     <ClInclude Include="Form1.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshData.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Resource.h" />
@@ -179,7 +181,9 @@
     <ClCompile Include="ConvexCombMap.cpp" />
     <ClCompile Include="CppCLR_WinformsProject.cpp" />
     <ClCompile Include="Form1.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -214,8 +218,6 @@
   <ItemGroup>
     <None Include="assets\shaders\drawFace.fs.glsl" />
     <None Include="assets\shaders\drawFace.vs.glsl" />
-    <None Include="assets\shaders\drawLine.fs.glsl" />
-    <None Include="assets\shaders\drawLine.vs.glsl" />
     <None Include="assets\shaders\drawModel.fs.glsl" />
     <None Include="assets\shaders\drawModel.vs.glsl" />
     <None Include="assets\shaders\drawPoint.fs.glsl" />
@@ -224,6 +226,8 @@
     <None Include="assets\shaders\grid.vs.glsl" />
     <None Include="assets\shaders\picking.fs.glsl" />
     <None Include="assets\shaders\picking.vs.glsl" />
+    <None Include="assets\shaders\plane.fs.glsl" />
+    <None Include="assets\shaders\plane.vs.glsl" />
     <None Include="assets\shaders\textureParam.fs.glsl" />
     <None Include="assets\shaders\textureParam.vs.glsl" />
   </ItemGroup>

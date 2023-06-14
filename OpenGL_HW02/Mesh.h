@@ -27,61 +27,31 @@ using json = nlohmann::json;
 
 /*                 My Class                 */
 #include "Shader.h"
+#include "MeshData.h"
 
 
 /*                 Type def                 */
 typedef OpenMesh::TriMesh_ArrayKernelT<> TriMesh;
 
-namespace MeshData
-{
-	struct SelectedMeshData
-	{
-		std::vector<TriMesh::Point> vertices;
-		std::vector<glm::vec2> texcoords;
-		std::vector<unsigned int> indices;
-		bool useTexture;
-
-		unsigned int vao;
-		unsigned int vbo[2];
-		unsigned int ebo;
-	};
-
-	struct SelectedTextureData
-	{
-		unsigned int id;
-		std::string file;
-	};
-
-	void to_json(json& j, const SelectedMeshData& data);
-	void from_json(const json& j, SelectedMeshData& data);
-
-	void to_json(json& j, const SelectedTextureData& data);
-	void from_json(const json& j, SelectedTextureData& data);
-}
 
 class Mesh
 {	
 public:
-	/*struct SelectedMeshData
-	{
-		std::vector<TriMesh::Point> vertices;
-		std::vector<glm::vec2> texcoords;
-		std::vector<unsigned int> indices;
-		bool useTexture;
-
-		unsigned int vao;
-		unsigned int vbo[2];
-		unsigned int ebo;
-	};*/
-
 	Mesh();
 	Mesh(const std::string& file);
 
+	/* Load model */
+
 	void loadMesh(const std::string& file);
+
+
+	/* Save&load system */
 
 	void saveSelectedAsJson(const std::string& file);
 	void loadSelectedFromJson(const std::string& file);
 
+
+	/* Getters */
 
 	const TriMesh& getSelectedMeshRef() const { return selectedMesh; }
 	const std::vector<TriMesh::Point>& getSelectedVertices() const { return (*(selectedMeshData.end() - 1)).vertices; }
@@ -90,27 +60,32 @@ public:
 	unsigned int getTexIdByIdx(int idx) { return textureIds.at(idx); }
 	int getTextureNum() { return textureIds.size(); }
 
+
+	/* Setters */
+
 	void setTexture(const std::string& file);
 	void setTexcoord();
+	void setNewSelectMesh();
+
+
+	/* Draw methods */
 
 	void draw();
 	void drawSelected(Shader& shader);
-	//void drawSelecetedFaces();
 	void drawPoint();
-	//void drawLine();	//For Debug
 
-	void setNewSelectMesh();
 
+	/* Selected face modifirer */
 
 	void addFaceToSelectedById(int faceId);
 	void deleteFaceFromSelectedById(int faceId);
 
+
+	/* Pick vertex methods*/
+
 	TriMesh::Point findClosestPoint(uint faceID, glm::vec3 worldPos);
 	void setPointPosition(glm::vec3 position);
-	//void setLinePosition();
 
-	//void to_json(json& j, const SelectedMeshData& data);
-	//void from_json(json& j, SelectedMeshData& data);
 
 private:
 	void updateSelectedBufferObjects();
@@ -118,7 +93,6 @@ private:
 
 	void initSelectedBufferObjs();
 	void loadSelectedBufferObjs();
-	void loadSelectedTextures();
 
 
 private:
@@ -151,6 +125,4 @@ private:
 	std::vector<unsigned int> textureIds;
 
 	unsigned int selectedTexId;
-
-	//unsigned int vao3, vbo3;	//Draw Line (For Debug)
 };

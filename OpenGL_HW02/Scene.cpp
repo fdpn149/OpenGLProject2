@@ -9,7 +9,8 @@
 #include "Config.h"
 
 Scene::Scene()
-	: mode(PickMode::ADD_FACE)
+	: light(Light(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f), glm::vec3(1.0f)))
+	, mode(PickMode::ADD_FACE)
 {
 	/* OpenGL configs */
 
@@ -21,10 +22,11 @@ Scene::Scene()
 	/* Initialize shaders */
 
 	shaders[ShaderTypes::PICK]			= Shader("assets/shaders/picking.vs.glsl"	, "assets/shaders/picking.fs.glsl"	);
-	shaders[ShaderTypes::MODEL]		= Shader("assets/shaders/drawModel.vs.glsl"	, "assets/shaders/drawModel.fs.glsl");
+	shaders[ShaderTypes::MODEL]			= Shader("assets/shaders/drawModel.vs.glsl"	, "assets/shaders/drawModel.fs.glsl");
 	shaders[ShaderTypes::DRAW_POINT]	= Shader("assets/shaders/drawPoint.vs.glsl"	, "assets/shaders/drawPoint.fs.glsl");
 	shaders[ShaderTypes::DRAW_FACE]		= Shader("assets/shaders/drawFace.vs.glsl"	, "assets/shaders/drawFace.fs.glsl"	);
 	shaders[ShaderTypes::GRID]			= Shader("assets/shaders/grid.vs.glsl"		, "assets/shaders/grid.fs.glsl"		);
+	shaders[ShaderTypes::PLANE]			= Shader("assets/shaders/plane.vs.glsl"		, "assets/shaders/plane.fs.glsl"	);
 
 	
 	/* Initialize mesh*/
@@ -154,6 +156,8 @@ void Scene::pick(int x, int y)
 
 void Scene::draw()
 {
+	/* Draw picking frame buffer */
+
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -170,10 +174,14 @@ void Scene::draw()
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
 	switch (mode)
 	{
 	case PickMode::ADD_FACE:
 	case PickMode::DELETE_FACE:
+
+		/* Draw selected faces */
+
 		shaders[ShaderTypes::DRAW_FACE].use();
 		shaders[ShaderTypes::DRAW_FACE].setMat4("viewMat", camera.getViewMatrix());
 		
@@ -182,11 +190,19 @@ void Scene::draw()
 		break;
 
 	case PickMode::POINT:
+
+		/* Draw selected point */
+
 		shaders[ShaderTypes::DRAW_POINT].use();
 		shaders[ShaderTypes::DRAW_POINT].setMat4("viewMat", camera.getViewMatrix());
+
 		mesh.drawPoint();
+		
 		break;
 	}
+
+
+	/* Draw model grid */
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -194,13 +210,26 @@ void Scene::draw()
 	shaders[ShaderTypes::GRID].setMat4("viewMat", camera.getViewMatrix());
 	mesh.draw();
 
+
+	/* Draw model */
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	shaders[ShaderTypes::MODEL].use();
 	shaders[ShaderTypes::MODEL].setMat4("viewMat", camera.getViewMatrix());
-	shaders[ShaderTypes::MODEL].setVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	mesh.draw();
+
+
+	/* Draw plane */
+	shaders[ShaderTypes::PLANE].use();
+	shaders[ShaderTypes::PLANE].setMat4("viewMat", camera.getViewMatrix());
+	shaders[ShaderTypes::PLANE].setVec3("cameraPos", camera.getPosition());
+
+	light.setLight2Shader(shaders[ShaderTypes::PLANE]);
+
+	plane.draw(shaders[ShaderTypes::PLANE]);
+
 
 	glBindVertexArray(0);
 }
